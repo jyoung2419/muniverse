@@ -13,6 +13,7 @@ class MuniverseText extends StatelessWidget {
           colors: [Color(0xFF30CEFD), Color(0xFF8439FA)],
         ).createShader(bounds);
       },
+      blendMode: BlendMode.srcIn,
       child: Text(
         'MUNIVERSE',
         style: TextStyle(
@@ -22,7 +23,7 @@ class MuniverseText extends StatelessWidget {
           fontSize: fontSize,
           height: 1.0,
           letterSpacing: 0.0,
-          color: Colors.white,
+          color: Color(0xFF111111),
         ),
       ),
     );

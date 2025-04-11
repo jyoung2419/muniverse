@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
 import 'screens/user/x_signup_screen.dart';
+import 'screens/info/notice_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,11 +21,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'muniverse',
       theme: ThemeData(fontFamily: "NotoSansKR"),
-      initialRoute: '/login',
+      initialRoute: '/notice',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/google_signup': (context) => const GoogleSignUpScreen(),
         '/x_signup': (context) => const XSignUpScreen(),
+        '/notice': (context) => const NoticeScreen(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
