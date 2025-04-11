@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 
-class NoticeItem extends StatefulWidget {
+class FAQItem extends StatefulWidget {
   final String title;
-  final String date;
   final String content;
   final bool isExpanded;
   final VoidCallback onTap;
 
-  const NoticeItem({
+  const FAQItem({
     super.key,
     required this.title,
-    required this.date,
     required this.content,
     required this.isExpanded,
     required this.onTap,
   });
 
   @override
-  State<NoticeItem> createState() => _NoticeItemState();
+  State<FAQItem> createState() => _FAQItemState();
 }
 
-class _NoticeItemState extends State<NoticeItem> {
+class _FAQItemState extends State<FAQItem> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,16 +33,6 @@ class _NoticeItemState extends State<NoticeItem> {
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w600,
-            ),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              '등록일: ${widget.date}',
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 12,
-              ),
             ),
           ),
           trailing: Icon(
