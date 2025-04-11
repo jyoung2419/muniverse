@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/user/login_screen.dart';
+import 'screens/user/google_signup_screen.dart';
+import 'screens/user/x_signup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
+        '/google_signup': (context) => const GoogleSignUpScreen(),
+        '/x_signup': (context) => const XSignUpScreen(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

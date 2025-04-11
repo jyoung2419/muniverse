@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/muniverse_text.dart';
+import 'google_signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -55,16 +56,26 @@ class _LoginForm extends StatelessWidget {
             ),
           ),
         ),
-        const _SocialLoginButton(
-          text: 'Google로 로그인',
-          color: Colors.white,
-          textColor: Color(0xFF4A4A4A),
-          iconPath: 'assets/svg/google_logo.svg',
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/google_signup');
+          },
+          child: const _SocialLoginButton(
+            text: 'Google로 로그인',
+            color: Colors.white,
+            textColor: Color(0xFF4A4A4A),
+            iconPath: 'assets/svg/google_logo.svg',
+          ),
         ),
-        const _SocialLoginButton(
-          text: 'X로 로그인',
-          color: Colors.black,
-          iconPath: 'assets/svg/x_logo.svg',
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/x_signup');
+          },
+          child: const _SocialLoginButton(
+            text: 'X로 로그인',
+            color: Colors.black,
+            iconPath: 'assets/svg/x_logo.svg',
+          ),
         ),
       ],
     );
