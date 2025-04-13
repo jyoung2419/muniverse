@@ -58,7 +58,8 @@ class _LoginForm extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/google_signup');
+            // TODO: 로그인 로직 추가 예정
+            Navigator.pushReplacementNamed(context, '/home');
           },
           child: const _SocialLoginButton(
             text: 'Google로 로그인',
@@ -69,7 +70,8 @@ class _LoginForm extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/x_signup');
+            // TODO: 로그인 로직 추가 예정
+            Navigator.pushReplacementNamed(context, '/home');
           },
           child: const _SocialLoginButton(
             text: 'X로 로그인',

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../services/page_control.dart';
-import '../../widgets/muniverse_text.dart';
+import '../../widgets/common/app_drawer.dart';
+import '../../widgets/common/back_fab.dart';
 import '../../widgets/info/faq_item.dart';
+import '../../widgets/common/header.dart';
 
 class FAQScreen extends StatefulWidget {
   const FAQScreen({super.key});
@@ -43,24 +44,8 @@ class _FAQScreenState extends State<FAQScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF111111),
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          iconSize: 18,
-          padding: const EdgeInsets.only(left: 12),
-          onPressed: () => PageControl.back(context),
-        ),
-        title: const MuniverseText(fontSize: 28),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.menu, color: Colors.white),
-          ),
-        ],
-      ),
+      appBar: const Header(),
+      endDrawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -113,6 +98,7 @@ class _FAQScreenState extends State<FAQScreen> {
           ],
         ),
       ),
+      floatingActionButton: const BackFAB(),
     );
   }
 }

@@ -28,7 +28,7 @@ dependencies:
   provider: ^6.1.2
   flutter_animate: ^4.5.2
   fluttertoast: ^8.2.4
-
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +42,7 @@ flutter:
     - assets/env/.env
     - assets/svg/google_logo.svg
     - assets/svg/x_logo.svg
+    - assets/images/
 
   fonts:
     - family: NotoSansKR

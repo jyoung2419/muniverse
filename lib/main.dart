@@ -6,6 +6,7 @@ import 'screens/user/google_signup_screen.dart';
 import 'screens/user/x_signup_screen.dart';
 import 'screens/info/notice_screen.dart';
 import 'screens/info/faq_screen.dart';
+import 'screens/home/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,13 +23,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'muniverse',
       theme: ThemeData(fontFamily: "NotoSansKR"),
-      initialRoute: '/faq',
+      initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/google_signup': (context) => const GoogleSignUpScreen(),
         '/x_signup': (context) => const XSignUpScreen(),
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
+        '/home': (context) => const HomeScreen(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
