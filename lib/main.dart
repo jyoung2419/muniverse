@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:patrol_management_app/providers/vote_provider.dart';
+import 'package:provider/provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
 import 'screens/user/x_signup_screen.dart';
@@ -11,7 +13,14 @@ import 'screens/home/home_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/env/.env");
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => VoteProvider()..fetchVotes()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

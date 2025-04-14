@@ -36,7 +36,7 @@ class _FAQScreenState extends State<FAQScreen> {
     },
     {
       'title': 'Q. 본인의 로그인 정보가 아닐 경우 어떻게 하나요?',
-      'content': '알아서 하세요.'
+      'content': '고객센터에 연락해주세요.'
     },
   ];
 

@@ -43,7 +43,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/home',
-                  (route) => false, // 👉 스택 전부 제거하고 홈만 남김
+                  (route) => false,
             );
           }
         },
@@ -56,7 +56,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () {
-              Scaffold.of(context).openEndDrawer(); // 👉 오른쪽 drawer 열기
+              Scaffold.of(context).openEndDrawer();
             },
           ),
         ),

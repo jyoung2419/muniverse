@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/event_model.dart';
+import '../event/event_upcoming_screen.dart';
 
 class HomeBanner extends StatelessWidget {
   final EventModel event;
@@ -10,7 +11,12 @@ class HomeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/event/${event.id}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EventUpcomingScreen(event: event),
+          ),
+        );
       },
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.48,

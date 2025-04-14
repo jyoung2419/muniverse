@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: kToolbarHeight + 16),
+            const SizedBox(height: kToolbarHeight),
             const HomeBannerCarousel(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
