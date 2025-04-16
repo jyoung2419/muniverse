@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:patrol_management_app/providers/vote_provider.dart';
+import 'providers/event/event_streaming_provider.dart';
+import 'providers/event/event_vod_provider.dart';
+import 'providers/ticket/base_ticket_provider.dart';
+import 'providers/vote_provider.dart';
 import 'package:provider/provider.dart';
+import 'providers/ticket/streaming_ticket_provider.dart';
+import 'providers/ticket/vod_ticket_provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
 import 'screens/user/x_signup_screen.dart';
@@ -17,6 +22,11 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => VoteProvider()..fetchVotes()),
+        ChangeNotifierProvider(create: (_) => VODTicketProvider()),
+        ChangeNotifierProvider(create: (_) => EventVODProvider()),
+        ChangeNotifierProvider(create: (_) => StreamingTicketProvider()),
+        ChangeNotifierProvider(create: (_) => EventStreamingProvider()),
+        ChangeNotifierProvider(create: (_) => BaseTicketProvider()),
       ],
       child: const MyApp(),
     ),

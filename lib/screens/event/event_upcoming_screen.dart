@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../models/event_model.dart';
+import 'package:patrol_management_app/screens/event/event_live_tab.dart';
+import '../../models/event/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/dday_timer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'event_description_tab.dart';
+import 'event_ticket_tab.dart';
+import 'event_vod_tab.dart';
 import 'event_vote_tab.dart';
 
 class EventUpcomingScreen extends StatelessWidget {
@@ -35,9 +39,9 @@ class EventUpcomingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
-        backgroundColor: const Color(0xFF111111),
+        backgroundColor: const Color(0xFF171719),
         extendBodyBehindAppBar: true,
         appBar: const Header(),
         endDrawer: const AppDrawer(),
@@ -50,23 +54,22 @@ class EventUpcomingScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: kToolbarHeight),
                   BannerSection(
-                    imagePath: event.bannerImg,
-                    title: event.title,
-                    description: event.description,
-                    startDate: event.startDate,
-                    endDate: event.endDate,
-                    targetDate: event.startDate,
+                    imagePath: event.bannerUrl,
+                    title: event.name,
+                    description: event.content,
+                    startDate: event.openDateTime,
+                    endDate: event.endDateTime,
                   ),
                   Material(
                     color: Colors.transparent,
                     child: TabBar(
                       isScrollable: true,
-                      tabAlignment: TabAlignment.start,
-                      labelColor: Colors.white,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 15),
+                      tabAlignment: TabAlignment.center,
+                      labelColor: Color(0xFF2EFFAA),
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 20),
                       unselectedLabelColor: Colors.white60,
                       labelStyle: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0,
                       ),
@@ -75,32 +78,36 @@ class EventUpcomingScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0,
                       ),
-
+                      indicatorWeight: 0.1,
+                      indicatorColor: const Color(0xFF2EFFAA),
                       tabs: const [
-                        Tab(text: '설명'),
-                        Tab(text: '라인업'),
+                        Tab(text: '상세정보'),
+                        Tab(text: '상품'),
                         Tab(text: '투표'),
+                        Tab(text: '라이브'),
                         Tab(text: 'VOD'),
                       ],
                     ),
+
                   ),
                 ],
               ),
             ),
           ],
-    body: SizedBox( // ✅ 높이 제한 추가
-      height: MediaQuery.of(context).size.height * 0.5,
-      child: const TabBarView(
-        children: [
-          Center(child: Text('설명 탭', style: TextStyle(color: Colors.white))),
-          Center(child: Text('LINE UP 탭', style: TextStyle(color: Colors.white))),
-          EventVoteTab(),
-          Center(child: Text('VOD 탭', style: TextStyle(color: Colors.white))),
-        ],
-      ),
-    ),
+          body: SizedBox(
+            child: TabBarView(
+              children: [
+                EventDescriptionTab(event: event),
+                EventTicketTab(),
+                EventVoteTab(event: event),
+                EventLiveTab(),
+                EventVodTab()
+              ],
+            ),
+          ),
         ),
-      ),);
+      ),
+    );
   }
 }
 
@@ -110,7 +117,6 @@ class BannerSection extends StatelessWidget {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final DateTime targetDate;
 
   const BannerSection({
     super.key,
@@ -119,7 +125,6 @@ class BannerSection extends StatelessWidget {
     required this.description,
     required this.startDate,
     required this.endDate,
-    required this.targetDate,
   });
 
   @override
@@ -128,7 +133,7 @@ class BannerSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.48,
+          height: MediaQuery.of(context).size.height * 0.38,
           width: double.infinity,
           child: ClipRRect(child: Image.asset(imagePath, fit: BoxFit.cover)),
         ),
@@ -156,7 +161,7 @@ class BannerSection extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-          child: DdayTimer(target: targetDate),
+          child: DdayTimer(target: startDate),
         ),
       ],
     );
@@ -178,19 +183,19 @@ Widget _buildStyledDate(DateTime start, DateTime end) {
         TextSpan(
           text: '$startDate.',
           style: const TextStyle(
-            color: Color(0xFF9B51E0),
-            fontSize: 22,
-            fontWeight: FontWeight.w400,
+            color: Color(0xFF2EFFAA),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             fontFamily: 'NotoSans',
             height: 1.0,
           ),
         ),
         TextSpan(
-          text: '$startDay ~ ',
+          text: '$startDay (KST) ~ ',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             fontFamily: 'NotoSans',
             height: 1.0,
           ),
@@ -198,9 +203,9 @@ Widget _buildStyledDate(DateTime start, DateTime end) {
         TextSpan(
           text: '$endDate.',
           style: const TextStyle(
-            color: Color(0xFF9B51E0),
-            fontSize: 22,
-            fontWeight: FontWeight.w400,
+            color: Color(0xFF2EFFAA),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             fontFamily: 'NotoSans',
             height: 1.0,
           ),
@@ -209,8 +214,18 @@ Widget _buildStyledDate(DateTime start, DateTime end) {
           text: '$endDay',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'NotoSans',
+            height: 1.0,
+          ),
+        ),
+        TextSpan(
+          text: ' (KST)',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             fontFamily: 'NotoSans',
             height: 1.0,
           ),

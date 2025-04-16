@@ -47,8 +47,8 @@ class _DdayTimerState extends State<DdayTimer> {
 
     Widget timeUnit(String label, int value) {
       return Container(
-        width: 60,
-        height: 60,
+        width: 63,
+        height: 59,
         padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
@@ -71,7 +71,7 @@ class _DdayTimerState extends State<DdayTimer> {
               value.toString().padLeft(2, '0'),
               style: const TextStyle(
                 fontSize: 20,
-                color: Colors.yellow,
+                color: Color(0xFF2EFFAA),
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Inter',
               ),
@@ -90,7 +90,7 @@ class _DdayTimerState extends State<DdayTimer> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: 12, bottom: 20),
+      padding: const EdgeInsets.only(top: 12, bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

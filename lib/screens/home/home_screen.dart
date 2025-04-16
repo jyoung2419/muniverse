@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../providers/candidate_provider.dart';
 import '../../widgets/common/app_drawer.dart';
-import 'home_award_timer.dart';
-import 'home_candidate_list.dart';
-import 'home_vote_progress.dart';
+import 'home_award.dart';
 import '../../widgets/common/header.dart';
 import 'home_banner_carousel.dart';
+import 'home_vote.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -30,14 +28,10 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  const HomeAwardTimer(),
+                  const HomeAward(),
                   const SizedBox(height: 24),
-                  HomeCandidateList(candidates: candidates),
+                  HomeAwardSection(),
                   const SizedBox(height: 24),
-                  HomeVoteProgress(
-                    progress: 0.74,
-                    remainingTime: 'D-2',
-                  ),
                   const SizedBox(height: 40),
                 ],
               ),

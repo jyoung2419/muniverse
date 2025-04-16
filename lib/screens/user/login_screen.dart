@@ -42,7 +42,7 @@ class _LoginForm extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Center(
-          child: MuniverseText(fontSize: 48),
+          child: MuniverseLogo(height: 45,),
         ),
         const SizedBox(height: 150),
         const Center(

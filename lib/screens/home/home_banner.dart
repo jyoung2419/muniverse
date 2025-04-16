@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/event_model.dart';
+import '../../models/event/event_model.dart';
 import '../event/event_upcoming_screen.dart';
 
 class HomeBanner extends StatelessWidget {
@@ -24,7 +24,7 @@ class HomeBanner extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(0), // 필요 시 모서리 둥글게
           child: Image.asset(
-            event.bannerImg,
+            event.bannerUrl,
             fit: BoxFit.cover, // 화면 꽉 채우기
           ),
         ),

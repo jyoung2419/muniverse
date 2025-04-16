@@ -5,6 +5,9 @@ class VoteModel {
   final String imageUrl;
   final double voteRate; // 예: 56.0
   final int totalVotes; // 예: 40442
+  final String round;       // 🔥 추가: '1일차' 등
+  final String status;      // 🔥 추가: '진행 중'
+  final String dateRange;   // 🔥 추가: '2025.03.31 ~ 2025.04.06'
 
   VoteModel({
     required this.topic,
@@ -13,5 +16,8 @@ class VoteModel {
     required this.imageUrl,
     required this.voteRate,
     required this.totalVotes,
+    required this.round,
+    required this.status,
+    required this.dateRange,
   });
 }

@@ -64,7 +64,7 @@ class _FAQScreenState extends State<FAQScreen> {
             ),
             const SizedBox(height: 20),
             const Divider(
-              color: Color(0xFF6377C7),
+              color: Color(0xFF2EFFAA),
               thickness: 1.5,
               height: 1,
             ),

@@ -47,7 +47,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
             );
           }
         },
-        child: const MuniverseText(fontSize: 24),
+        child: const MuniverseLogo(),
       ),
 
       actions: showMenu

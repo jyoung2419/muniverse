@@ -161,7 +161,7 @@ class _XSignUpScreenState extends State<XSignUpScreen> {
                 ElevatedButton(
                   onPressed: _checkNickname,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6A1B9A),
+                    backgroundColor: const Color(0xFF2EFFAA),
                     elevation: 0,
                     minimumSize: const Size(80, 45),
                     shape: RoundedRectangleBorder(
@@ -170,7 +170,7 @@ class _XSignUpScreenState extends State<XSignUpScreen> {
                   ),
                   child: const Text(
                     '중복 확인',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black87),
                   ),
                 ),
               ],
@@ -194,7 +194,7 @@ class _XSignUpScreenState extends State<XSignUpScreen> {
               child: ElevatedButton(
                 onPressed: _submitSignUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6A1B9A),
+                  backgroundColor: const Color(0xFF2EFFAA),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -202,7 +202,7 @@ class _XSignUpScreenState extends State<XSignUpScreen> {
                 child: const Text(
                   '회원 가입',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),

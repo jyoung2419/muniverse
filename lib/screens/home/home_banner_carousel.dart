@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../providers/event_provider.dart';
+import '../../providers/event/event_provider.dart';
 import 'home_banner.dart';
 
 class HomeBannerCarousel extends StatefulWidget {
