@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/vote_model.dart';
 import '../../models/event/event_model.dart';
+import '../../widgets/common/free_vote_dialog.dart';
 class EventVoteDetailTab extends StatelessWidget {
   final VoteModel vote;
   final EventModel event;
@@ -28,7 +29,7 @@ class EventVoteDetailTab extends StatelessWidget {
           style: const TextStyle(color: Colors.white70, fontSize: 14),
         ),
         const SizedBox(height: 16),
-        const Text('여기에 투표 상세 UI 구현', style: TextStyle(color: Colors.white)),
+        const Text('여기에 투표 상세 UI 구현 예정', style: TextStyle(color: Colors.white)),
         const SizedBox(height: 16),
         ElevatedButton(
           onPressed: onBack,
@@ -50,9 +51,14 @@ class EventVoteDetailTab extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
         ElevatedButton(
-          onPressed: onBack,
+          onPressed: () {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (context) => const FreeVoteDialog(totalVotes: 3),
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF2EFFAA),
             foregroundColor: Colors.black,

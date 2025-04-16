@@ -6,17 +6,16 @@ import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/dday_timer.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'event_description_tab.dart';
 import 'event_ticket_tab.dart';
 import 'event_vod_tab.dart';
 import 'event_vote_tab.dart';
 
-class EventUpcomingScreen extends StatelessWidget {
+class EventScreen extends StatelessWidget {
   final EventModel event;
 
-  const EventUpcomingScreen({super.key, required this.event});
+  const EventScreen({super.key, required this.event});
 
   String getFormattedDateRange(DateTime start, DateTime end) {
     final formatter = DateFormat('yyyy.MM.dd (E)', 'ko');
@@ -38,8 +37,27 @@ class EventUpcomingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final showLiveTab = now.isBefore(event.openDateTime); // ✅ 라이브 탭 노출 여부
+
+    final tabList = [
+      const Tab(text: '상세정보'),
+      const Tab(text: '상품'),
+      const Tab(text: '투표'),
+      if (showLiveTab) const Tab(text: '라이브'), // ✅ 조건부 추가
+      const Tab(text: 'VOD'),
+    ];
+
+    final tabViews = [
+      EventDescriptionTab(event: event),
+      EventTicketTab(),
+      EventVoteTab(event: event),
+      if (showLiveTab) EventLiveTab(), // ✅ 조건부 추가
+      EventVodTab(),
+    ];
+
     return DefaultTabController(
-      length: 5,
+      length: tabList.length,
       child: Scaffold(
         backgroundColor: const Color(0xFF171719),
         extendBodyBehindAppBar: true,
@@ -80,13 +98,7 @@ class EventUpcomingScreen extends StatelessWidget {
                       ),
                       indicatorWeight: 0.1,
                       indicatorColor: const Color(0xFF2EFFAA),
-                      tabs: const [
-                        Tab(text: '상세정보'),
-                        Tab(text: '상품'),
-                        Tab(text: '투표'),
-                        Tab(text: '라이브'),
-                        Tab(text: 'VOD'),
-                      ],
+                      tabs: tabList,
                     ),
 
                   ),
@@ -94,17 +106,7 @@ class EventUpcomingScreen extends StatelessWidget {
               ),
             ),
           ],
-          body: SizedBox(
-            child: TabBarView(
-              children: [
-                EventDescriptionTab(event: event),
-                EventTicketTab(),
-                EventVoteTab(event: event),
-                EventLiveTab(),
-                EventVodTab()
-              ],
-            ),
-          ),
+          body: TabBarView(children: tabViews),
         ),
       ),
     );
@@ -161,7 +163,9 @@ class BannerSection extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-          child: DdayTimer(target: startDate),
+          child: DateTime.now().isBefore(startDate)
+              ? DdayTimer(target: startDate)
+              : const SizedBox.shrink(), // D-day 대신 비움
         ),
       ],
     );
