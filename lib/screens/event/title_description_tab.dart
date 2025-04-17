@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../models/event/event_model.dart';
 
-class EventDescriptionTab extends StatelessWidget {
+class TitleDescriptionTab extends StatelessWidget {
   final EventModel event;
 
-  const EventDescriptionTab({super.key, required this.event});
+  const TitleDescriptionTab({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../muniverse_text.dart';
+import '../muniverse_logo.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
   final double height;

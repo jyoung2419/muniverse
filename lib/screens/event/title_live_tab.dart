@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/event_streaming_provider.dart';
 
-class EventLiveTab extends StatelessWidget {
-  const EventLiveTab({super.key});
+class TitleLiveTab extends StatelessWidget {
+  const TitleLiveTab({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/artist_model.dart';
+import '../../models/artist/artist_model.dart';
 
 class ArtistProvider with ChangeNotifier {
   final List<ArtistModel> _artists = [

@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../providers/event/event_vod_provider.dart';
 
-class EventVodTab extends StatefulWidget {
-  const EventVodTab({super.key});
+class TitleVodTab extends StatefulWidget {
+  const TitleVodTab({super.key});
 
   @override
-  State<EventVodTab> createState() => _EventVodTabState();
+  State<TitleVodTab> createState() => _TitleVodTabState();
 }
 
-class _EventVodTabState extends State<EventVodTab> {
+class _TitleVodTabState extends State<TitleVodTab> {
   @override
   void initState() {
     super.initState();

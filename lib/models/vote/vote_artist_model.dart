@@ -1,4 +1,4 @@
-import '../artist_model.dart';
+import '../artist/artist_model.dart';
 import 'vote_model.dart';
 
 class VoteArtistModel {

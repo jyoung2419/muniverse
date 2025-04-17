@@ -4,12 +4,12 @@ import '../../models/vote/vote_model.dart';
 import '../../models/event/event_model.dart';
 import '../../widgets/common/free_vote_dialog.dart';
 
-class EventVoteDetailTab extends StatelessWidget {
+class TitleVoteDetailTab extends StatelessWidget {
   final VoteModel vote;
   final EventModel event;
   final VoidCallback onBack;
 
-  const EventVoteDetailTab({
+  const TitleVoteDetailTab({
     super.key,
     required this.vote,
     required this.event,

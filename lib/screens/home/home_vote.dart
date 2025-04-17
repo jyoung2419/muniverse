@@ -54,7 +54,7 @@ class _HomeAwardSectionState extends State<HomeAwardSection> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                'assets/images/vote.png',
+                'assets/images/vote1.png',
                 fit: BoxFit.cover,
                 height: 200,
                 width: double.infinity,

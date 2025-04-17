@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:patrol_management_app/screens/event/event_live_tab.dart';
+import 'package:patrol_management_app/screens/event/title_live_tab.dart';
 import '../../models/event/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/dday_timer.dart';
 
-import 'event_description_tab.dart';
-import 'event_ticket_tab.dart';
-import 'event_vod_tab.dart';
-import 'event_vote_tab.dart';
+import 'title_description_tab.dart';
+import 'title_ticket_tab.dart';
+import 'title_vod_tab.dart';
+import 'title_vote_tab.dart';
 
-class EventScreen extends StatelessWidget {
+class TitleHomeScreen extends StatelessWidget {
   final EventModel event;
 
-  const EventScreen({super.key, required this.event});
+  const TitleHomeScreen({super.key, required this.event});
 
   String getFormattedDateRange(DateTime start, DateTime end) {
     final formatter = DateFormat('yyyy.MM.dd (E)', 'ko');
@@ -49,11 +49,11 @@ class EventScreen extends StatelessWidget {
     ];
 
     final tabViews = [
-      EventDescriptionTab(event: event),
-      EventTicketTab(),
-      EventVoteTab(event: event),
-      if (showLiveTab) EventLiveTab(), // ✅ 조건부 추가
-      EventVodTab(),
+      TitleDescriptionTab(event: event),
+      TitleTicketTab(),
+      TitleVoteTab(event: event),
+      if (showLiveTab) TitleLiveTab(), // ✅ 조건부 추가
+      TitleVodTab(),
     ];
 
     return DefaultTabController(

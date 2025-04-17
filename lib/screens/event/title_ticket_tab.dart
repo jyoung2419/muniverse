@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/ticket/base_ticket_provider.dart';
 
-class EventTicketTab extends StatelessWidget {
-  const EventTicketTab({super.key});
+class TitleTicketTab extends StatelessWidget {
+  const TitleTicketTab({super.key});
 
   @override
   Widget build(BuildContext context) {

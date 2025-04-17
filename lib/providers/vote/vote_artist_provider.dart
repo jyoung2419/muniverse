@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_artist_model.dart';
 import '../../models/vote/vote_model.dart';
-import '../../models/artist_model.dart';
+import '../../models/artist/artist_model.dart';
 
 class VoteArtistProvider with ChangeNotifier {
   final List<VoteArtistModel> _voteArtists = [];

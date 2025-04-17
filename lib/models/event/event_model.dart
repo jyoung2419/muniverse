@@ -1,16 +1,16 @@
-import '../artist_model.dart';
+import '../artist/artist_model.dart';
 
 class EventModel {
   final String eventCode;
   final String name;
   final String content;
   final String status;
-  final String bannerUrl;
-  final String profileUrl;
-  final DateTime preOpenDateTime;
-  final DateTime openDateTime;
+  final String bannerUrl; // 배너 이미지
+  final String profileUrl;  // 카드 이미지
+  final DateTime preOpenDateTime; // 가오픈
+  final DateTime openDateTime;  // 오픈
   final DateTime endDateTime;
-  final DateTime performanceStartTime;
+  final DateTime performanceStartTime;  // 스트리밍 시작
   final DateTime performanceEndTime;
   final bool activeFlag;
   final DateTime createDate;

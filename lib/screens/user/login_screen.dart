@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../widgets/muniverse_text.dart';
+import '../../widgets/muniverse_logo.dart';
 import 'google_signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {

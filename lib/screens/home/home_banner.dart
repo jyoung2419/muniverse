@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/event/event_model.dart';
-import '../event/event_screen.dart';
+import '../event/title_home_screen.dart';
 
 class HomeBanner extends StatelessWidget {
   final EventModel event;
@@ -14,7 +14,7 @@ class HomeBanner extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => EventScreen(event: event),
+            builder: (_) => TitleHomeScreen(event: event),
           ),
         );
       },

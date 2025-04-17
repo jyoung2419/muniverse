@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/event/event_artist_model.dart';
 import '../../models/event/event_model.dart';
-import '../../models/artist_model.dart';
+import '../../models/artist/artist_model.dart';
 
 class EventArtistProvider with ChangeNotifier {
   final List<EventArtistModel> _eventArtists = [];

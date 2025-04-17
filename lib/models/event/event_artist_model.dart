@@ -1,4 +1,4 @@
-import '../artist_model.dart';
+import '../artist/artist_model.dart';
 import 'event_model.dart';
 
 class EventArtistModel {

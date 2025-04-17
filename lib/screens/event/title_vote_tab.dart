@@ -4,18 +4,18 @@ import 'package:intl/intl.dart';
 import '../../models/event/event_model.dart';
 import '../../models/vote/vote_model.dart';
 import '../../providers/vote/vote_provider.dart';
-import 'event_vote_detail_tab.dart';
+import 'title_vote_detail_tab.dart';
 
-class EventVoteTab extends StatefulWidget {
+class TitleVoteTab extends StatefulWidget {
   final EventModel event;
 
-  const EventVoteTab({super.key, required this.event});
+  const TitleVoteTab({super.key, required this.event});
 
   @override
-  State<EventVoteTab> createState() => _EventVoteTabState();
+  State<TitleVoteTab> createState() => _TitleVoteTabState();
 }
 
-class _EventVoteTabState extends State<EventVoteTab> {
+class _TitleVoteTabState extends State<TitleVoteTab> {
   String selectedStatus = '진행중';
   VoteModel? selectedVote;
 
@@ -26,7 +26,7 @@ class _EventVoteTabState extends State<EventVoteTab> {
   @override
   Widget build(BuildContext context) {
     if (selectedVote != null) {
-      return EventVoteDetailTab(
+      return TitleVoteDetailTab(
         vote: selectedVote!,
         event: widget.event,
         onBack: () => setState(() => selectedVote = null),
@@ -35,8 +35,9 @@ class _EventVoteTabState extends State<EventVoteTab> {
 
     final votes = Provider.of<VoteProvider>(context).votes;
     final filteredVotes = votes.where((v) {
-      final ongoing = isVoteOngoing(v);
-      return selectedStatus == '진행중' ? ongoing : !ongoing;
+      final isSameEvent = v.eventCode == widget.event.eventCode;
+      final isOngoing = isVoteOngoing(v);
+      return isSameEvent && (selectedStatus == '진행중' ? isOngoing : !isOngoing);
     }).toList();
 
     return Column(
@@ -109,87 +110,70 @@ class VoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 155,
-      decoration: BoxDecoration(
-        color: const Color(0xFF212225),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          // 이미지
-          Stack(
-            children: [
-              Container(
-                width: 180,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomLeft: Radius.circular(12),
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage(vote.voteImageUrl),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                  ),
+    return IntrinsicHeight(
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF212225),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 이미지 영역
+            Container(
+              width: 180,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                ),
+                image: DecorationImage(
+                  image: AssetImage(vote.voteImageUrl),
+                  fit: BoxFit.cover,
                 ),
               ),
-              Positioned(
-                top: 8,
-                left: 8,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2EFFAA),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    isOngoing() ? '진행중' : '종료',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
 
-          // 텍스트 정보
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    vote.voteName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+            // 텍스트 정보
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(event.content, style: const TextStyle(color: Colors.white, fontSize: 10)),
+                    const SizedBox(height: 6),
+                    Text(vote.voteName,
+                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 6),
+                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}',
+                        style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: const BoxDecoration(color: Color(0xFF121212)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.card_giftcard, size: 14, color: Colors.white),
+                              SizedBox(width: 4),
+                              Text('리워드', style: TextStyle(color: Colors.white, fontSize: 11)),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(vote.rewardContent,
+                              style: const TextStyle(color: Colors.white, fontSize: 11)),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '기간 : ${getDateRange(vote.startTime, vote.endTime)}',
-                    style: const TextStyle(color: Colors.white70, fontSize: 11),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${event.content}에서 가장 인기 있는 아이돌 그룹은 누구?',
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: ElevatedButton(
                         onPressed: onPressed,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2EFFAA),
@@ -197,26 +181,24 @@ class VoteCard extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          minimumSize: const Size(60, 30),
                           padding: const EdgeInsets.symmetric(horizontal: 8),
+                          minimumSize: const Size(60, 30),
                           elevation: 0,
                         ),
                         child: Text(
                           isOngoing() ? '투표 하기' : '결과 보기',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
 }
