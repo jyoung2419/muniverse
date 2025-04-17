@@ -1,6 +1,6 @@
 import 'base_ticket.dart';
 import '../event/event_model.dart';
-import '../user_model.dart';
+import '../user/user_model.dart';
 
 class VODTicket extends BaseTicket {
   final String vodPinNumber;
@@ -8,10 +8,10 @@ class VODTicket extends BaseTicket {
   final DateTime? endTime;
   final int expiredDate;
   final bool useFlag;
-  final User user;
+  final UserModel user;
   final EventModel event;
   final DateTime createDate;
-  final String? vodExImg; // ✅ 예시 이미지 경로 필드 추가
+  final String? vodExImg;
 
   VODTicket({
     required this.vodPinNumber,
@@ -22,8 +22,7 @@ class VODTicket extends BaseTicket {
     required this.user,
     required this.event,
     required this.createDate,
-    this.vodExImg, // ✅ 추가
-
+    this.vodExImg,
   });
 
   factory VODTicket.fromJson(Map<String, dynamic> json) {
@@ -33,12 +32,25 @@ class VODTicket extends BaseTicket {
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
       expiredDate: json['expiredDate'],
       useFlag: json['useFlag'],
-      user: User.fromJson(json['user']),
+      user: UserModel.fromJson(json['user']),
       event: EventModel.fromJson(json['event']),
       createDate: DateTime.parse(json['createDate']),
-      vodExImg: json['vodExImg'], // ✅ JSON 파싱에도 추가
-
+      vodExImg: json['vodExImg'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'vodPinNumber': vodPinNumber,
+      'startTime': startTime?.toIso8601String(),
+      'endTime': endTime?.toIso8601String(),
+      'expiredDate': expiredDate,
+      'useFlag': useFlag,
+      'user': user.toJson(),
+      'event': event.toJson(),
+      'createDate': createDate.toIso8601String(),
+      'vodExImg': vodExImg,
+    };
   }
 
   @override

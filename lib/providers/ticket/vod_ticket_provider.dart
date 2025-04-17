@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/ticket/vod_ticket_model.dart';
-import '../../models/user_model.dart';
+import '../../models/user/user_model.dart';
 import '../../models/event/event_model.dart';
 
 class VODTicketProvider with ChangeNotifier {
@@ -12,13 +12,27 @@ class VODTicketProvider with ChangeNotifier {
     _tickets = [
       VODTicket(
         vodPinNumber: 'vod-001',
-        startTime: DateTime.now(),
-        endTime: DateTime.now().add(const Duration(hours: 2)),
+        startTime: DateTime(2025, 7, 15, 20, 0),
+        endTime: DateTime(2025, 7, 15, 22, 0),
         expiredDate: 7,
         useFlag: false,
-        user: User(id: userId, name: '홍길동'),
+        user: UserModel(
+          seq: 1,
+          id: 'user001',
+          password: 'password123',
+          nickName: '뮤니',
+          email: 'muniverse01@email.com',
+          name: '김뮤니',
+          phoneNumber: '01012345678',
+          profileUrl: 'assets/images/profile1.png',
+          socialType: 'GOOGLE',
+          regisStatus: true,
+          createDate: DateTime(2025, 4, 1),
+          updateDate: null,
+          deleteFlag: false,
+        ),
         event: EventModel(
-          eventCode: 'EVT001',
+          eventCode: 'E001',
           name: '2025 MOKPO MUSICPLAY',
           content: '목포 뮤직플레이',
           status: 'ACTIVE',
@@ -33,17 +47,15 @@ class VODTicketProvider with ChangeNotifier {
           createDate: DateTime(2025, 6, 1),
           updateDate: null,
           deleteFlag: false,
-          artists: [], // 비워두거나 ArtistModel 예시 넣을 수 있음
+          artists: [],
         ),
-        vodExImg: 'assets/images/vod.png', // ✅ 예시 이미지 경로 추가
-
+        vodExImg: 'assets/images/vod.png',
         createDate: DateTime.now(),
       ),
     ];
 
     notifyListeners();
   }
-
 
   void clear() {
     _tickets = [];
