@@ -27,8 +27,23 @@ class ArtistModel {
       profileUrl: json['profileUrl'],
       artistType: json['artistType'],
       createDate: DateTime.parse(json['createDate']),
-      updateDate: json['updateDate'] != null ? DateTime.parse(json['updateDate']) : null,
+      updateDate: json['updateDate'] != null
+          ? DateTime.parse(json['updateDate'])
+          : null,
       deleteFlag: json['deleteFlag'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'artistCode': artistCode,
+      'name': name,
+      'content': content,
+      'profileUrl': profileUrl,
+      'artistType': artistType,
+      'createDate': createDate.toIso8601String(),
+      'updateDate': updateDate?.toIso8601String(),
+      'deleteFlag': deleteFlag,
+    };
   }
 }

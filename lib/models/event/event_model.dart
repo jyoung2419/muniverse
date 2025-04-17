@@ -61,4 +61,25 @@ class EventModel {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'eventCode': eventCode,
+      'name': name,
+      'content': content,
+      'status': status,
+      'bannerUrl': bannerUrl,
+      'profileUrl': profileUrl,
+      'preOpenDateTime': preOpenDateTime.toIso8601String(),
+      'openDateTime': openDateTime.toIso8601String(),
+      'endDateTime': endDateTime.toIso8601String(),
+      'performanceStartTime': performanceStartTime.toIso8601String(),
+      'performanceEndTime': performanceEndTime.toIso8601String(),
+      'activeFlag': activeFlag,
+      'createDate': createDate.toIso8601String(),
+      'updateDate': updateDate?.toIso8601String(),
+      'deleteFlag': deleteFlag,
+      'artists': artists?.map((a) => a.toJson()).toList(),
+    };
+  }
 }

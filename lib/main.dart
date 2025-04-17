@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'providers/artist_provider.dart';
+import 'providers/event/event_artist_provider.dart';
+import 'providers/event/event_provider.dart';
 import 'providers/event/event_streaming_provider.dart';
 import 'providers/event/event_vod_provider.dart';
 import 'providers/ticket/base_ticket_provider.dart';
-import 'providers/vote_provider.dart';
+import 'providers/vote/vote_artist_provider.dart';
+import 'providers/vote/vote_provider.dart';
 import 'package:provider/provider.dart';
 import 'providers/ticket/streaming_ticket_provider.dart';
 import 'providers/ticket/vod_ticket_provider.dart';
@@ -21,12 +25,16 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => VoteProvider()..fetchVotes()),
+        ChangeNotifierProvider(create: (_) => VoteProvider()),
         ChangeNotifierProvider(create: (_) => VODTicketProvider()),
         ChangeNotifierProvider(create: (_) => EventVODProvider()),
         ChangeNotifierProvider(create: (_) => StreamingTicketProvider()),
         ChangeNotifierProvider(create: (_) => EventStreamingProvider()),
         ChangeNotifierProvider(create: (_) => BaseTicketProvider()),
+        ChangeNotifierProvider(create: (_) => ArtistProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),
+        ChangeNotifierProvider(create: (_) => EventArtistProvider()),
       ],
       child: const MyApp(),
     ),

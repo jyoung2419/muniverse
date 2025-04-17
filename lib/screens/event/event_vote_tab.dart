@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../models/event/event_model.dart';
-import '../../models/vote_model.dart';
-import '../../providers/vote_provider.dart';
+import '../../models/vote/vote_model.dart';
+import '../../providers/vote/vote_provider.dart';
 import 'event_vote_detail_tab.dart';
 
 class EventVoteTab extends StatefulWidget {
@@ -18,18 +19,25 @@ class _EventVoteTabState extends State<EventVoteTab> {
   String selectedStatus = '진행중';
   VoteModel? selectedVote;
 
+  bool isVoteOngoing(VoteModel vote) {
+    return DateTime.now().isBefore(vote.endTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (selectedVote != null) {
       return EventVoteDetailTab(
         vote: selectedVote!,
         event: widget.event,
-        onBack: () => setState(() => selectedVote = null), // ✅ 리스트로 전환
+        onBack: () => setState(() => selectedVote = null),
       );
     }
 
     final votes = Provider.of<VoteProvider>(context).votes;
-    final filteredVotes = votes.where((v) => v.status == selectedStatus).toList();
+    final filteredVotes = votes.where((v) {
+      final ongoing = isVoteOngoing(v);
+      return selectedStatus == '진행중' ? ongoing : !ongoing;
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +51,7 @@ class _EventVoteTabState extends State<EventVoteTab> {
                 value: '진행중',
                 groupValue: selectedStatus,
                 onChanged: (value) => setState(() => selectedStatus = value!),
-                activeColor: Color(0xFF2EFFAA),
+                activeColor: const Color(0xFF2EFFAA),
                 visualDensity: VisualDensity(horizontal: -2, vertical: -4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
@@ -53,7 +61,7 @@ class _EventVoteTabState extends State<EventVoteTab> {
                 value: '종료',
                 groupValue: selectedStatus,
                 onChanged: (value) => setState(() => selectedStatus = value!),
-                activeColor: Color(0xFF2EFFAA),
+                activeColor: const Color(0xFF2EFFAA),
                 visualDensity: VisualDensity(horizontal: -2, vertical: -4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
@@ -67,7 +75,9 @@ class _EventVoteTabState extends State<EventVoteTab> {
             itemCount: filteredVotes.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: VoteCard(vote: filteredVotes[index], event: widget.event,
+              child: VoteCard(
+                vote: filteredVotes[index],
+                event: widget.event,
                 onPressed: () => setState(() => selectedVote = filteredVotes[index]),
               ),
             ),
@@ -77,6 +87,7 @@ class _EventVoteTabState extends State<EventVoteTab> {
     );
   }
 }
+
 class VoteCard extends StatelessWidget {
   final VoteModel vote;
   final EventModel event;
@@ -89,6 +100,13 @@ class VoteCard extends StatelessWidget {
     required this.onPressed,
   });
 
+  bool isOngoing() => DateTime.now().isBefore(vote.endTime);
+
+  String getDateRange(DateTime start, DateTime end) {
+    final formatter = DateFormat('yyyy.MM.dd');
+    return '${formatter.format(start)} ~ ${formatter.format(end)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,11 +117,11 @@ class VoteCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // 왼쪽 이미지 (패딩 없음, 전체 높이 꽉 채움)
+          // 이미지
           Stack(
             children: [
               Container(
-                width: 180, // 고정 넓이
+                width: 180,
                 height: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -111,9 +129,9 @@ class VoteCard extends StatelessWidget {
                     bottomLeft: Radius.circular(12),
                   ),
                   image: DecorationImage(
-                    image: AssetImage(vote.imageUrl),
-                    fit: BoxFit.cover, // 또는 BoxFit.none
-                    alignment: Alignment.center, // ✅ 중심 기준
+                    image: AssetImage(vote.voteImageUrl),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
                   ),
                 ),
               ),
@@ -127,7 +145,7 @@ class VoteCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    vote.status,
+                    isOngoing() ? '진행중' : '종료',
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 10,
@@ -139,18 +157,16 @@ class VoteCard extends StatelessWidget {
             ],
           ),
 
-          // 오른쪽 내용
+          // 텍스트 정보
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12), // 오른쪽 내부 여백만 유지
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min, // ✅ 추가
-
                 children: [
                   Text(
-                    vote.topic,
+                    vote.voteName,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -159,7 +175,7 @@ class VoteCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '기간 : ${vote.dateRange}',
+                    '기간 : ${getDateRange(vote.startTime, vote.endTime)}',
                     style: const TextStyle(color: Colors.white70, fontSize: 11),
                   ),
                   const SizedBox(height: 4),
@@ -174,7 +190,7 @@ class VoteCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: onPressed, // ✅ 이걸로 교체
+                        onPressed: onPressed,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2EFFAA),
                           foregroundColor: Colors.black,
@@ -186,7 +202,7 @@ class VoteCard extends StatelessWidget {
                           elevation: 0,
                         ),
                         child: Text(
-                          vote.status == '진행중' ? '투표 하기' : '결과 보기',
+                          isOngoing() ? '투표 하기' : '결과 보기',
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -204,5 +220,3 @@ class VoteCard extends StatelessWidget {
     );
   }
 }
-
-
