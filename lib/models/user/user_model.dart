@@ -1,3 +1,10 @@
+enum SocialType { GOOGLE, X, NONE }
+
+SocialType socialTypeFromString(String value) =>
+    SocialType.values.firstWhere((e) => e.name == value, orElse: () => SocialType.NONE);
+
+String socialTypeToString(SocialType type) => type.name;
+
 class UserModel {
   final int seq;
   final String id;
@@ -7,7 +14,7 @@ class UserModel {
   final String name;
   final String phoneNumber;
   final String? profileUrl;
-  final String socialType; // 예: 'GOOGLE', 'X', 등
+  final SocialType socialType;
   final bool regisStatus;
   final DateTime createDate;
   final DateTime? updateDate;
@@ -39,7 +46,7 @@ class UserModel {
       name: json['name'],
       phoneNumber: json['phoneNumber'],
       profileUrl: json['profileUrl'],
-      socialType: json['socialType'],
+      socialType: socialTypeFromString(json['socialType']),
       regisStatus: json['regisStatus'],
       createDate: DateTime.parse(json['createDate']),
       updateDate: json['updateDate'] != null ? DateTime.parse(json['updateDate']) : null,
@@ -57,7 +64,7 @@ class UserModel {
       'name': name,
       'phoneNumber': phoneNumber,
       'profileUrl': profileUrl,
-      'socialType': socialType,
+      'socialType': socialTypeToString(socialType),
       'regisStatus': regisStatus,
       'createDate': createDate.toIso8601String(),
       'updateDate': updateDate?.toIso8601String(),

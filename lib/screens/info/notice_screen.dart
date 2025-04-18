@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/info/notice_item.dart';
@@ -17,6 +18,8 @@ class _NoticeScreenState extends State<NoticeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final notices = context.watch<NoticeProvider>().notices;
+
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
       appBar: const Header(),
@@ -46,9 +49,9 @@ class _NoticeScreenState extends State<NoticeScreen> {
             const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
-                itemCount: noticeData.length,
+                itemCount: notices.length,
                 itemBuilder: (context, index) {
-                  final notice = noticeData[index];
+                  final notice = notices[index];
                   return NoticeItem(
                     title: notice.title,
                     createDate: notice.createDate,

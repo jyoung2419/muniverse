@@ -5,15 +5,16 @@ import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
 import 'providers/event/event_artist_provider.dart';
 import 'providers/event/event_provider.dart';
-import 'providers/event/event_streaming_provider.dart';
+import 'providers/event/event_live_provider.dart';
 import 'providers/event/event_vod_provider.dart';
-import 'providers/ticket/base_ticket_provider.dart';
+import 'providers/notice/notice_provider.dart';
+import 'providers/ticket/user_pass_provider.dart';
 import 'providers/ticket/vote_ticket_provider.dart';
 import 'providers/user/user_provider.dart';
 import 'providers/vote/vote_artist_provider.dart';
 import 'providers/vote/vote_provider.dart';
 import 'package:provider/provider.dart';
-import 'providers/ticket/streaming_ticket_provider.dart';
+import 'providers/ticket/live_ticket_provider.dart';
 import 'providers/ticket/vod_ticket_provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
@@ -28,21 +29,22 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => VoteProvider()),
-        ChangeNotifierProvider(create: (_) => VODTicketProvider()),
-        ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
-        ChangeNotifierProvider(create: (_) => EventVODProvider()),
-        ChangeNotifierProvider(create: (_) => StreamingTicketProvider()),
-        ChangeNotifierProvider(create: (_) => EventStreamingProvider()),
-        ChangeNotifierProvider(create: (_) => BaseTicketProvider()),
         ChangeNotifierProvider(create: (_) => ArtistProvider()),
         ChangeNotifierProvider(create: (context) => ArtistGroupProvider(
-            Provider.of<ArtistProvider>(context, listen: false),
+          Provider.of<ArtistProvider>(context, listen: false),
           ),
         ),
         ChangeNotifierProvider(create: (_) => EventProvider()),
-        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),
         ChangeNotifierProvider(create: (_) => EventArtistProvider()),
+        ChangeNotifierProvider(create: (_) => EventVODProvider()),
+        ChangeNotifierProvider(create: (_) => EventLiveProvider()),
+        ChangeNotifierProvider(create: (_) => NoticeProvider()),
+        ChangeNotifierProvider(create: (_) => VODTicketProvider()),
+        ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
+        ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
+        ChangeNotifierProvider(create: (_) => UserPassProvider()),
+        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),
+        ChangeNotifierProvider(create: (_) => VoteProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),

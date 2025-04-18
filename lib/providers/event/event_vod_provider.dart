@@ -13,8 +13,10 @@ class EventVODProvider with ChangeNotifier {
         vodCode: 'vod-001',
         name: '2025 MOKPO MUSICPLAY',
         content: '목포 뮤직플레이 다시보기',
+        profileImageUrl: 'assets/images/vod.png', // ✅ 예시 이미지
+        videoUrl: 'https://example.com/vod/video1.mp4', // ✅ 추후 실주소로 교체
         event: EventModel(
-          eventCode: 'EVT001',
+          eventCode: 'E001',
           name: '2025 MOKPO MUSICPLAY',
           content: '목포 뮤직플레이',
           status: 'ACTIVE',
@@ -31,9 +33,10 @@ class EventVODProvider with ChangeNotifier {
           deleteFlag: false,
           artists: [],
         ),
+        eventYear: 2025,
+        openDate: DateTime(2025, 7, 15),
         createDate: DateTime.now(),
         updateDate: null,
-        vodExImg: 'assets/images/vod.png',
       ),
     ];
 

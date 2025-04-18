@@ -19,12 +19,14 @@ class _TitleVodTabState extends State<TitleVodTab> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     final vodList = context.watch<EventVODProvider>().vods;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // 필터 (년도)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
@@ -50,10 +52,10 @@ class _TitleVodTabState extends State<TitleVodTab> {
           ),
         ),
 
-        // 🔽 카드 리스트
+        // VOD 리스트
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: 16, left: 16, right:16, top:0),
+            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: vodList.length,
             itemBuilder: (context, index) {
               final vod = vodList[index];
@@ -76,7 +78,11 @@ class _TitleVodTabState extends State<TitleVodTab> {
                           bottomLeft: Radius.circular(12),
                         ),
                         image: DecorationImage(
-                          image: AssetImage(vod.vodExImg!),
+                          image: AssetImage(
+                            vod.profileImageUrl.isNotEmpty
+                                ? vod.profileImageUrl
+                                : 'assets/images/vod.png',
+                          ),
                           fit: BoxFit.cover,
                           alignment: Alignment.center,
                         ),
@@ -116,7 +122,9 @@ class _TitleVodTabState extends State<TitleVodTab> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    // 구매하기 클릭 시 처리 로직
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF2EFFAA),
                                     foregroundColor: Colors.black,

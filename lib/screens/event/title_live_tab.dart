@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_streaming_provider.dart';
+import '../../providers/event/event_live_provider.dart';
 
 class TitleLiveTab extends StatelessWidget {
   const TitleLiveTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final streamings = context.watch<EventStreamingProvider>().streamings;
+    final streamings = context.watch<EventLiveProvider>().streamings;
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -28,7 +28,9 @@ class TitleLiveTab extends StatelessWidget {
             children: [
               // 배경 이미지
               Image.asset(
-                streaming.imagePath ?? 'assets/images/live.png', // 기본 이미지 경로
+                streaming.profileImageUrl.isNotEmpty
+                    ? streaming.profileImageUrl
+                    : 'assets/images/live.png',
                 fit: BoxFit.cover,
               ),
 
@@ -61,7 +63,7 @@ class TitleLiveTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      DateFormat('yyyy.MM.dd.(EEE)', 'en_US').format(streaming.createDate),
+                      DateFormat('yyyy.MM.dd (EEE)', 'en_US').format(streaming.taskDate),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,

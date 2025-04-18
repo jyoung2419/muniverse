@@ -1,17 +1,16 @@
-import 'base_ticket.dart';
-import '../event/event_model.dart';
+import '../event/event_vod_model.dart';
 import '../user/user_model.dart';
 
-class VODTicket extends BaseTicket {
+class VODTicket {
   final String vodPinNumber;
   final DateTime? startTime;
   final DateTime? endTime;
   final int expiredDate;
   final bool useFlag;
-  final UserModel user;
-  final EventModel event;
   final DateTime createDate;
-  final String? vodExImg;
+  final UserModel userId;
+  final EventVODModel eventVOD;
+  // final String? vodExImg; // UI용 썸네일 (서버 응답에 없을 수 있음)
 
   VODTicket({
     required this.vodPinNumber,
@@ -19,10 +18,10 @@ class VODTicket extends BaseTicket {
     this.endTime,
     required this.expiredDate,
     required this.useFlag,
-    required this.user,
-    required this.event,
     required this.createDate,
-    this.vodExImg,
+    required this.userId,
+    required this.eventVOD,
+    // this.vodExImg,
   });
 
   factory VODTicket.fromJson(Map<String, dynamic> json) {
@@ -32,10 +31,10 @@ class VODTicket extends BaseTicket {
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
       expiredDate: json['expiredDate'],
       useFlag: json['useFlag'],
-      user: UserModel.fromJson(json['user']),
-      event: EventModel.fromJson(json['event']),
       createDate: DateTime.parse(json['createDate']),
-      vodExImg: json['vodExImg'],
+      userId: UserModel.fromJson(json['userId']),
+      eventVOD: EventVODModel.fromJson(json['eventVOD']),
+      // vodExImg: json['vodExImg'], // 없으면 null로 받음
     );
   }
 
@@ -46,22 +45,16 @@ class VODTicket extends BaseTicket {
       'endTime': endTime?.toIso8601String(),
       'expiredDate': expiredDate,
       'useFlag': useFlag,
-      'user': user.toJson(),
-      'event': event.toJson(),
       'createDate': createDate.toIso8601String(),
-      'vodExImg': vodExImg,
+      'userId': userId.toJson(),
+      'eventVOD': eventVOD.toJson(),
+      // 'vodExImg': vodExImg,
     };
   }
 
-  @override
-  String get title => event.name;
-
-  @override
-  DateTime get date => startTime ?? DateTime.now();
-
-  @override
-  String get imagePath => vodExImg ?? 'assets/images/vod.png';
-
-  @override
+  // UI 편의 필드
+  String get title => eventVOD.name;
+  DateTime get date => startTime ?? createDate;
+  // String get imagePath => vodExImg ?? 'assets/images/vod.png';
   String get type => 'VOD';
 }
