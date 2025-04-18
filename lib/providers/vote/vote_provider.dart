@@ -11,7 +11,7 @@ class VoteProvider with ChangeNotifier {
       freeCountLimit: 3,
       eventCode: 'E001',
       rewardContent: '아티스트에게 특별 굿즈 증정',
-      startTime: DateTime(2025, 5, 1, 0, 0),
+      startTime: DateTime(2025, 4, 14, 0, 0),
       endTime: DateTime(2025, 5, 5, 23, 59),
       resultOpenTime: DateTime(2025, 5, 6, 12, 0),
       createDate: DateTime(2025, 4, 15, 8, 0),
@@ -73,5 +73,24 @@ class VoteProvider with ChangeNotifier {
     } catch (_) {
       return null;
     }
+  }
+
+  List<VoteModel> filterVotes(String status, String eventCode) {
+    final now = DateTime.now();
+    return _votes.where((vote) {
+      if (vote.eventCode != eventCode) return false;
+      switch (status) {
+        case '전체':
+          return true;
+        case '진행중':
+          return now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
+        case '진행완료':
+          return now.isAfter(vote.endTime) || now.isAtSameMomentAs(vote.endTime);
+        case '진행예정':
+          return now.isBefore(vote.startTime);
+        default:
+          return false;
+      }
+    }).toList();
   }
 }

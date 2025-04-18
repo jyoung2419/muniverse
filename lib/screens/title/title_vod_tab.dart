@@ -55,6 +55,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
         // VOD 리스트
         Expanded(
           child: ListView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: vodList.length,
             itemBuilder: (context, index) {
@@ -67,24 +68,23 @@ class _TitleVodTabState extends State<TitleVodTab> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 왼쪽 이미지
-                    Container(
-                      width: 180,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          bottomLeft: Radius.circular(12),
-                        ),
-                        image: DecorationImage(
-                          image: AssetImage(
-                            vod.profileImageUrl.isNotEmpty
-                                ? vod.profileImageUrl
-                                : 'assets/images/vod.png',
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 0, right: 10, bottom: 0),
+                      child: Container(
+                        width: 170,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              vod.profileImageUrl.isNotEmpty
+                                  ? vod.profileImageUrl
+                                  : 'assets/images/vod.png',
+                            ),
+                            fit: BoxFit.cover,
                           ),
-                          fit: BoxFit.cover,
-                          alignment: Alignment.center,
                         ),
                       ),
                     ),
@@ -92,7 +92,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                     // 오른쪽 텍스트 + 버튼
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,

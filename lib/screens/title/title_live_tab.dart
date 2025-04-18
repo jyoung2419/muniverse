@@ -11,6 +11,7 @@ class TitleLiveTab extends StatelessWidget {
     final streamings = context.watch<EventLiveProvider>().streamings;
 
     return ListView.builder(
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       itemCount: streamings.length,
       itemBuilder: (context, index) {

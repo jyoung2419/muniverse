@@ -9,6 +9,7 @@ class TitleDescriptionTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Image.asset(
