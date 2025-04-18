@@ -17,34 +17,16 @@ class TitleHomeScreen extends StatelessWidget {
 
   const TitleHomeScreen({super.key, required this.event});
 
-  String getFormattedDateRange(DateTime start, DateTime end) {
-    final formatter = DateFormat('yyyy.MM.dd (E)', 'ko');
-    return '${formatter.format(start)} ~ ${formatter.format(end)}';
-  }
-
-  String getDDay(DateTime target) {
-    final now = DateTime.now();
-    final difference =
-        target.difference(DateTime(now.year, now.month, now.day)).inDays;
-    if (difference > 0) {
-      return 'D-$difference';
-    } else if (difference == 0) {
-      return 'D-DAY';
-    } else {
-      return '종료됨';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final showLiveTab = now.isBefore(event.openDateTime); // ✅ 라이브 탭 노출 여부
+    final showLiveTab = now.isAfter(event.openDateTime);
 
     final tabList = [
       const Tab(text: '상세정보'),
       const Tab(text: '상품'),
       const Tab(text: '투표'),
-      if (showLiveTab) const Tab(text: '라이브'), // ✅ 조건부 추가
+      if (showLiveTab) const Tab(text: '라이브'),
       const Tab(text: 'VOD'),
     ];
 
@@ -52,20 +34,20 @@ class TitleHomeScreen extends StatelessWidget {
       TitleDescriptionTab(event: event),
       TitleTicketTab(),
       TitleVoteTab(event: event),
-      if (showLiveTab) TitleLiveTab(), // ✅ 조건부 추가
+      if (showLiveTab) TitleLiveTab(),
       TitleVodTab(),
     ];
 
     return DefaultTabController(
       length: tabList.length,
       child: Scaffold(
-        backgroundColor: const Color(0xFF171719),
+        backgroundColor: const Color(0xFF0B0C0C),
         extendBodyBehindAppBar: true,
         appBar: const Header(),
         endDrawer: const AppDrawer(),
         floatingActionButton: const BackFAB(),
         body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          headerSliverBuilder: (context, _) => [
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,17 +55,27 @@ class TitleHomeScreen extends StatelessWidget {
                   const SizedBox(height: kToolbarHeight),
                   BannerSection(
                     imagePath: event.bannerUrl,
-                    title: event.name,
-                    description: event.content,
-                    startDate: event.openDateTime,
-                    endDate: event.endDateTime,
+                    performanceStartTime: event.performanceStartTime,
                   ),
-                  Material(
-                    color: Colors.transparent,
+                  const SizedBox(height: 10),
+                  // ✅ 여기 핵심 적용
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      dividerColor: Colors.transparent,
+                      tabBarTheme: const TabBarTheme(
+                        dividerColor: Colors.transparent,
+                        overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                        indicator: UnderlineTabIndicator(
+                          borderSide: BorderSide(width: 2, color: Color(0xFF2EFFAA)),
+                          insets: EdgeInsets.symmetric(horizontal: 20),
+                        ),
+                      ),
+                    ),
                     child: TabBar(
                       isScrollable: true,
+                      indicatorSize: TabBarIndicatorSize.tab,
                       tabAlignment: TabAlignment.center,
-                      labelColor: Color(0xFF2EFFAA),
+                      labelColor: const Color(0xFF2EFFAA),
                       labelPadding: const EdgeInsets.symmetric(horizontal: 20),
                       unselectedLabelColor: Colors.white60,
                       labelStyle: const TextStyle(
@@ -96,11 +88,8 @@ class TitleHomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0,
                       ),
-                      indicatorWeight: 0.1,
-                      indicatorColor: const Color(0xFF2EFFAA),
                       tabs: tabList,
                     ),
-
                   ),
                 ],
               ),
@@ -115,126 +104,59 @@ class TitleHomeScreen extends StatelessWidget {
 
 class BannerSection extends StatelessWidget {
   final String imagePath;
-  final String title;
-  final String description;
-  final DateTime startDate;
-  final DateTime endDate;
+  final DateTime performanceStartTime;
 
   const BannerSection({
     super.key,
     required this.imagePath,
-    required this.title,
-    required this.description,
-    required this.startDate,
-    required this.endDate,
+    required this.performanceStartTime,
   });
+
+  int getStreamingRound(DateTime now) {
+    final diff = now.difference(performanceStartTime).inHours;
+    if (diff < 0) return 1;
+    return (diff ~/ 24) + 2;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.48,
-          width: double.infinity,
-          child: ClipRRect(child: Image.asset(imagePath, fit: BoxFit.cover)),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+    final now = DateTime.now();
+    final isBeforePerformance = now.isBefore(performanceStartTime);
+    final round = getStreamingRound(now);
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.45,
+      width: double.infinity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(imagePath, fit: BoxFit.cover),
+          Container(color: Colors.black.withOpacity(0.7)),
+          if (isBeforePerformance || round <= 3)
+            Positioned(
+              bottom: 20,
+              left: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$round 회차 스트리밍까지 남은시간',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  DdayTimer(
+                    target: performanceStartTime.add(Duration(hours: (round - 1) * 24)),
+                    alignStart: true,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            description,
-            style: const TextStyle(color: Colors.white60, fontSize: 14),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: _buildStyledDate(startDate, endDate),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-          child: DateTime.now().isBefore(startDate)
-              ? DdayTimer(target: startDate)
-              : const SizedBox.shrink(), // D-day 대신 비움
-        ),
-      ],
+        ],
+      ),
     );
   }
-}
-
-Widget _buildStyledDate(DateTime start, DateTime end) {
-  final dateFormat = DateFormat('yyyy.MM.dd', 'en');
-  final dayFormat = DateFormat('EEE', 'en');
-
-  final startDate = dateFormat.format(start);
-  final startDay = dayFormat.format(start);
-  final endDate = dateFormat.format(end);
-  final endDay = dayFormat.format(end);
-
-  return Text.rich(
-    TextSpan(
-      children: [
-        TextSpan(
-          text: '$startDate.',
-          style: const TextStyle(
-            color: Color(0xFF2EFFAA),
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'NotoSans',
-            height: 1.0,
-          ),
-        ),
-        TextSpan(
-          text: '$startDay (KST) ~ ',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'NotoSans',
-            height: 1.0,
-          ),
-        ),
-        TextSpan(
-          text: '$endDate.',
-          style: const TextStyle(
-            color: Color(0xFF2EFFAA),
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'NotoSans',
-            height: 1.0,
-          ),
-        ),
-        TextSpan(
-          text: '$endDay',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'NotoSans',
-            height: 1.0,
-          ),
-        ),
-        TextSpan(
-          text: ' (KST)',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'NotoSans',
-            height: 1.0,
-          ),
-        ),
-      ],
-    ),
-  );
 }

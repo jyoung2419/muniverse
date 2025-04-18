@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/vote/vote_model.dart';
 import '../../models/event/event_model.dart';
-import '../../widgets/common/free_vote_dialog.dart';
+import '../../widgets/common/vote/free_vote_dialog.dart';
 
 class TitleVoteDetailTab extends StatelessWidget {
   final VoteModel vote;

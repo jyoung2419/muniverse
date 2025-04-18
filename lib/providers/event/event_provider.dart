@@ -12,7 +12,7 @@ class EventProvider with ChangeNotifier {
       profileUrl: 'assets/images/mokpo_profile.png',
       preOpenDateTime: DateTime(2025, 4, 1),
       openDateTime: DateTime(2025, 4, 15),
-      endDateTime: DateTime(2025, 4, 18),
+      endDateTime: DateTime(2025, 5, 18),
       performanceStartTime: DateTime(2025, 5, 15, 18, 0),
       performanceEndTime: DateTime(2025, 5, 18, 22, 0),
       activeFlag: true,

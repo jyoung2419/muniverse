@@ -44,7 +44,7 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Row(
             children: [
               const Spacer(),
@@ -72,7 +72,7 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
         ),
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
             itemCount: filteredVotes.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.only(bottom: 16),

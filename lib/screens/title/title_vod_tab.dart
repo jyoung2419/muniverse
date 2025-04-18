@@ -28,7 +28,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
       children: [
         // 필터 (년도)
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

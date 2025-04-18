@@ -7,7 +7,7 @@ class TitleTicketTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Text(
           '🎫 티켓 상품은 추후 추가될 예정입니다.\n조금만 기다려주세요!',
           style: TextStyle(
