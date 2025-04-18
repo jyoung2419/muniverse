@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:patrol_management_app/screens/event/title_live_tab.dart';
+import 'title_live_tab.dart';
 import '../../models/event/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
@@ -135,7 +135,7 @@ class BannerSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.38,
+          height: MediaQuery.of(context).size.height * 0.48,
           width: double.infinity,
           child: ClipRRect(child: Image.asset(imagePath, fit: BoxFit.cover)),
         ),

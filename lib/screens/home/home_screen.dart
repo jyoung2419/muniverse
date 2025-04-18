@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/event/event_provider.dart';
 import '../../widgets/common/app_drawer.dart';
-import 'home_award.dart';
 import '../../widgets/common/header.dart';
-import 'home_banner_carousel.dart';
+import 'home_award.dart';
+import 'home_banner_section.dart';
+import 'home_event_profile_list.dart';
 import 'home_vote.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
       extendBodyBehindAppBar: true,
-      appBar: const Header(),
+      appBar: const Header(isHome: true),
       endDrawer: const AppDrawer(),
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
@@ -21,18 +24,23 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: kToolbarHeight),
-            const HomeBannerCarousel(),
+            // ✅ 배너 + 프로필 리스트를 하나의 Stack으로
+            Stack(
+              children: const [
+                HomeBannerSection(),
+                HomeEventProfileList(),
+              ],
+            ),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  const HomeAward(),
-                  const SizedBox(height: 24),
+                children: const [
+                  HomeAward(),
+                  SizedBox(height: 24),
                   HomeAwardSection(),
-                  const SizedBox(height: 24),
-                  const SizedBox(height: 40),
+                  SizedBox(height: 40),
                 ],
               ),
             ),

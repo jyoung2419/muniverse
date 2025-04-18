@@ -31,7 +31,7 @@ class VODTicketProvider with ChangeNotifier {
       name: '2025 MOKPO MUSICPLAY',
       content: '목포 뮤직플레이',
       status: 'ACTIVE',
-      bannerUrl: 'assets/images/banner_mokpo.png',
+      bannerUrl: 'assets/images/mokpo_banner.png',
       profileUrl: 'assets/images/event_description_bof.png',
       preOpenDateTime: DateTime(2025, 7, 1),
       openDateTime: DateTime(2025, 7, 15),

@@ -54,7 +54,7 @@ class _HomeAwardSectionState extends State<HomeAwardSection> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                'assets/images/vote1.png',
+                'assets/images/vote/vote1.png',
                 fit: BoxFit.cover,
                 height: 200,
                 width: double.infinity,
@@ -110,11 +110,11 @@ class _HomeAwardSectionState extends State<HomeAwardSection> {
             final namesEng = ['SHINee', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
             final percents = [56, 23, 18, 12, 6];
             final images = [
-              'shinee.png',
-              'btsv.png',
-              'blackpink.png',
-              'thekingdom.png',
-              'lesserafim.png',
+              'artist/shinee.png',
+              'artist/btsv.png',
+              'artist/blackpink.png',
+              'artist/thekingdom.png',
+              'artist/lesserafim.png',
             ];
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),

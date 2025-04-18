@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:patrol_management_app/screens/mypage/ticket_management_screen.dart';
-import 'package:patrol_management_app/screens/mypage/winner_history_screen.dart';
+import '../../screens/mypage/ticket_management_screen.dart';
+import '../../screens/mypage/winner_history_screen.dart';
 import '../../screens/info/faq_screen.dart';
 import '../../screens/info/notice_screen.dart';
 import '../../screens/mypage/purchase_history_screen.dart';

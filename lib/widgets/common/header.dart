@@ -1,35 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../muniverse_logo.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final bool showMenu;
+  final bool isHome;
 
-  const Header({super.key, this.height = kToolbarHeight, this.showMenu = true});
+  const Header({
+    super.key,
+    this.height = kToolbarHeight,
+    this.showMenu = true,
+    this.isHome = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xB2111111),
+      backgroundColor: isHome ? Colors.transparent : const Color(0xFF0B0C0C),
       elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       centerTitle: true,
+      flexibleSpace: isHome
+          ? ShaderMask(
+        shaderCallback: (Rect bounds) {
+          return const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Colors.white54,
+              Colors.transparent,
+            ],
+            stops: [0.8, 0.9, 1.0],
+          ).createShader(bounds);
+        },
+        blendMode: BlendMode.dstIn,
+        child: Container(
+          color: const Color(0xFF0B0C0C),
+        ),
+      )
+          : null,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16),
         child: Center(
           child: TextButton(
-            onPressed: () {
-              // TODO: 언어 변경 기능 연결
-            },
+            onPressed: () {},
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: const Size(40, 32),
             ),
-            child: Text(
-              'LAN',
-              style: GoogleFonts.kodchasan(
+            child: const Text(
+              '한국어',
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -40,24 +65,17 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         onTap: () {
           final currentRoute = ModalRoute.of(context)?.settings.name;
           if (currentRoute != '/home') {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-                  (route) => false,
-            );
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           }
         },
         child: const MuniverseLogo(),
       ),
-
       actions: showMenu
           ? [
         Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
+            onPressed: () => Scaffold.of(context).openEndDrawer(),
           ),
         ),
       ]

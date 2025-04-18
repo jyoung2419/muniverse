@@ -1,4 +1,4 @@
-name: patrol_management_app
+name: muniverse_app
 description: "A new Flutter project."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -44,6 +44,8 @@ flutter:
     - assets/svg/x_logo.svg
     - assets/svg/Muniverse.svg
     - assets/images/
+    - assets/images/artist/
+    - assets/images/vote/
 
   fonts:
     - family: NotoSansKR

@@ -35,7 +35,7 @@ class LiveTicketProvider with ChangeNotifier {
       name: 'BIG 콘서트',
       content: 'BIG 콘서트 현장 스트리밍',
       status: 'ACTIVE',
-      bannerUrl: 'assets/images/banner_mokpo.png',
+      bannerUrl: 'assets/images/mokpo_banner.png',
       profileUrl: 'assets/images/event_description_bof.png',
       preOpenDateTime: DateTime(2025, 6, 1),
       openDateTime: DateTime(2025, 6, 10),
