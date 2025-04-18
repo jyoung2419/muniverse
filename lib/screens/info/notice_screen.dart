@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/info/notice_item.dart';
-import '../../providers/notice_provider.dart';
+import '../../providers/notice/notice_provider.dart';
 import '../../widgets/common/header.dart';
 
 class NoticeScreen extends StatefulWidget {
@@ -51,7 +51,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
                   final notice = noticeData[index];
                   return NoticeItem(
                     title: notice.title,
-                    date: notice.date,
+                    createDate: notice.createDate,
                     content: notice.content,
                     isExpanded: _expandedIndex == index,
                     onTap: () {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NoticeItem extends StatefulWidget {
   final String title;
-  final String date;
+  final DateTime createDate;
   final String content;
   final bool isExpanded;
   final VoidCallback onTap;
@@ -10,7 +11,7 @@ class NoticeItem extends StatefulWidget {
   const NoticeItem({
     super.key,
     required this.title,
-    required this.date,
+    required this.createDate,
     required this.content,
     required this.isExpanded,
     required this.onTap,
@@ -21,6 +22,9 @@ class NoticeItem extends StatefulWidget {
 }
 
 class _NoticeItemState extends State<NoticeItem> {
+  String get formattedDate =>
+      DateFormat('yyyy.MM.dd').format(widget.createDate);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -40,7 +44,7 @@ class _NoticeItemState extends State<NoticeItem> {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              '등록일: ${widget.date}',
+              '등록일: $formattedDate',
               style: const TextStyle(
                 color: Colors.white60,
                 fontSize: 12,
