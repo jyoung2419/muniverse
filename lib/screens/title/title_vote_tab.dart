@@ -6,6 +6,7 @@ import '../../models/vote/vote_model.dart';
 import '../../providers/vote/vote_provider.dart';
 import '../../widgets/common/vote/vote_filter_widget.dart';
 import 'title_vote_detail_tab.dart';
+import '../../providers/vote/vote_reward_media_provider.dart';
 
 class TitleVoteTab extends StatefulWidget {
   final EventModel event;
@@ -19,6 +20,16 @@ class TitleVoteTab extends StatefulWidget {
 class _TitleVoteTabState extends State<TitleVoteTab> {
   String selectedStatus = '전체';
   VoteModel? selectedVote;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final votes = context.read<VoteProvider>().votes;
+      context.read<VoteRewardMediaProvider>().fetchRewardMedia(votes);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +103,8 @@ class VoteCard extends StatelessWidget {
     final isUpcoming = now.isBefore(vote.startTime);
     final isEnded = now.isAfter(vote.endTime);
     final remainingDays = vote.endTime.difference(now).inDays;
+    final rewardMediaList = context.watch<VoteRewardMediaProvider>().getMediaByVoteCode(vote.voteCode);
+    final rewardText = rewardMediaList.isNotEmpty ? rewardMediaList.first.rewardContent : '리워드 정보 없음';
 
     return IntrinsicHeight(
       child: Container(
@@ -221,7 +234,7 @@ class VoteCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(vote.rewardContent, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                          Text(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
                         ],
                       ),
                     ),

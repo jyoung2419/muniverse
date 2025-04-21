@@ -58,7 +58,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                 children: [
                   TextSpan(
                     text: '${widget.totalVotes}',
-                    style: const TextStyle(color: Color(0xFF2EFFAA), fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Color(0xFFFFFF00), fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(text: '회 투표 가능합니다.'),
                 ],
@@ -119,7 +119,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                   foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                child: const Text('투표 하기'),
+                child: const Text('투표권 사용'),
               ),
             ),
           ],

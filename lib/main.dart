@@ -13,6 +13,7 @@ import 'providers/ticket/vote_ticket_provider.dart';
 import 'providers/user/user_provider.dart';
 import 'providers/vote/vote_artist_provider.dart';
 import 'providers/vote/vote_provider.dart';
+import 'providers/vote/vote_reward_media_provider.dart';
 import 'package:provider/provider.dart';
 import 'providers/ticket/live_ticket_provider.dart';
 import 'providers/ticket/vod_ticket_provider.dart';
@@ -45,6 +46,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
         ChangeNotifierProvider(create: (_) => VoteArtistProvider()),
         ChangeNotifierProvider(create: (_) => VoteProvider()),
+        ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),

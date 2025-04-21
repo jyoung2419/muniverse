@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_artist_model.dart';
 import '../../models/vote/vote_model.dart';
@@ -12,24 +13,31 @@ class VoteArtistProvider with ChangeNotifier {
     required List<VoteModel> votes,
     required List<ArtistModel> artists,
   }) {
-    _voteArtists.clear(); // 기존 데이터 초기화
+    _voteArtists.clear();
 
-    _voteArtists.addAll([
-      VoteArtistModel(
-        seq: 1,
-        voteCount: 12345,
-        artist: artists.firstWhere((a) => a.artistCode == 'A001'),
-        vote: votes.firstWhere((v) => v.voteCode == 'V001'),
-        createDate: DateTime(2025, 4, 10),
-      ),
-      VoteArtistModel(
-        seq: 2,
-        voteCount: 9876,
-        artist: artists.firstWhere((a) => a.artistCode == 'A002'),
-        vote: votes.firstWhere((v) => v.voteCode == 'V002'),
-        createDate: DateTime(2025, 4, 20),
-      ),
-    ]);
+    final voteMap = {
+      'V001': ['A001', 'A002', 'A003', 'A004', 'A005'],
+      'V002': ['A002', 'A003', 'A004'],
+      'V003': ['A003', 'A005'],
+      'V004': ['A001', 'A002', 'A003', 'A004', 'A005'],
+      'V005': ['A001', 'A002', 'A003', 'A004', 'A005'],
+    };
+
+    final random = Random();
+    int seq = 1;
+    for (final entry in voteMap.entries) {
+      final vote = votes.firstWhere((v) => v.voteCode == entry.key);
+      for (final artistCode in entry.value) {
+        final artist = artists.firstWhere((a) => a.artistCode == artistCode);
+        _voteArtists.add(VoteArtistModel(
+          seq: seq++,
+          voteCount: 500 + random.nextInt(5000), // 500~5499 랜덤
+          artist: artist,
+          vote: vote,
+          createDate: DateTime.now(),
+        ));
+      }
+    }
 
     notifyListeners();
   }

@@ -5,7 +5,6 @@ class VoteModel {
   final String voteImageUrl;
   final int freeCountLimit;
   final String eventCode; // event 객체가 아닌 식별자만
-  final String rewardContent;
   final DateTime startTime;
   final DateTime endTime;
   final DateTime resultOpenTime;
@@ -20,7 +19,6 @@ class VoteModel {
     required this.voteImageUrl,
     required this.freeCountLimit,
     required this.eventCode,
-    required this.rewardContent,
     required this.startTime,
     required this.endTime,
     required this.resultOpenTime,
@@ -37,7 +35,6 @@ class VoteModel {
       voteImageUrl: json['voteImageUrl'],
       freeCountLimit: json['freeCountLimit'],
       eventCode: json['eventCode'], // nested event 대신 ID만 받는다고 가정
-      rewardContent: json['rewardContent'],
       startTime: DateTime.parse(json['startTime']),
       endTime: DateTime.parse(json['endTime']),
       resultOpenTime: DateTime.parse(json['resultOpenTime']),
@@ -55,7 +52,6 @@ class VoteModel {
       'voteImageUrl': voteImageUrl,
       'freeCountLimit': freeCountLimit,
       'eventCode': eventCode,
-      'rewardContent': rewardContent,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'resultOpenTime': resultOpenTime.toIso8601String(),
