@@ -7,7 +7,6 @@ import '../../providers/vote/vote_provider.dart';
 import '../../widgets/common/vote/vote_filter_widget.dart';
 import 'title_vote_detail_tab.dart';
 
-
 class TitleVoteTab extends StatefulWidget {
   final EventModel event;
 
@@ -81,8 +80,6 @@ class VoteCard extends StatelessWidget {
     required this.selectedStatus,
   });
 
-  bool isOngoing() => DateTime.now().isBefore(vote.endTime);
-
   String getDateRange(DateTime start, DateTime end) {
     final formatter = DateFormat('yyyy.MM.dd');
     return '${formatter.format(start)} ~ ${formatter.format(end)}';
@@ -111,7 +108,6 @@ class VoteCard extends StatelessWidget {
                 children: [
                   Container(
                     width: 170,
-                    // height: 120,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(
@@ -125,17 +121,15 @@ class VoteCard extends StatelessWidget {
                       top: 8,
                       left: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFF2EFFAA),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Text(
                           '진행중',
-                          style: TextStyle(color: Colors.black,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),
+                          style: TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -143,6 +137,7 @@ class VoteCard extends StatelessWidget {
                       top: 8,
                       left: 52,
                       child: Container(
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.7),
@@ -153,7 +148,7 @@ class VoteCard extends StatelessWidget {
                             const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
                             const SizedBox(width: 3),
                             Text(
-                              'D-DAY ${remainingDays}',
+                              'D-DAY $remainingDays',
                               style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
                             ),
                           ],
@@ -161,30 +156,28 @@ class VoteCard extends StatelessWidget {
                       ),
                     ),
                   ] else if (isUpcoming && selectedStatus != '진행완료' && selectedStatus != '진행중') ...[
-                    // ✅ 투표 예정 표시
                     Positioned(
                       top: 8,
                       left: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFF2EFFAA),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Text(
                           '투표 예정',
-                          style: TextStyle(color: Colors.black,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),),
+                          style: TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
                   ] else if (isEnded && selectedStatus != '진행중') ...[
-                    // ✅ 종료 표시
                     Positioned(
                       top: 8,
                       left: 8,
                       child: Container(
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: Colors.black,
@@ -198,9 +191,8 @@ class VoteCard extends StatelessWidget {
                     ),
                   ],
                 ],
-              )
+              ),
             ),
-            // 텍스트 정보
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
@@ -209,11 +201,9 @@ class VoteCard extends StatelessWidget {
                   children: [
                     Text(event.content, style: const TextStyle(color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
-                    Text(vote.voteName,
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                    Text(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
-                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}',
-                        style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}', style: const TextStyle(color: Colors.white70, fontSize: 11)),
                     const SizedBox(height: 6),
                     Container(
                       width: double.infinity,
@@ -231,8 +221,7 @@ class VoteCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(vote.rewardContent,
-                              style: const TextStyle(color: Colors.white, fontSize: 11)),
+                          Text(vote.rewardContent, style: const TextStyle(color: Colors.white, fontSize: 11)),
                         ],
                       ),
                     ),
@@ -252,10 +241,7 @@ class VoteCard extends StatelessWidget {
                           minimumSize: const Size(60, 30),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          '투표 하기',
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                        ),
+                        child: const Text('투표 하기', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
                       )
                           : OutlinedButton(
                         onPressed: onPressed,
@@ -270,11 +256,7 @@ class VoteCard extends StatelessWidget {
                         ),
                         child: Text(
                           isUpcoming ? '투표 예정' : '결과 보기',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF2EFFAA),
-                          ),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF2EFFAA)),
                         ),
                       ),
                     ),

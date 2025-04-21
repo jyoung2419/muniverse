@@ -9,74 +9,171 @@ class TitleLiveTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final streamings = context.watch<EventLiveProvider>().streamings;
+    final now = DateTime.now();
 
-    return ListView.builder(
-      physics: const ClampingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      itemCount: streamings.length,
-      itemBuilder: (context, index) {
-        final streaming = streamings[index];
-
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          clipBehavior: Clip.hardEdge,
-          child: Stack(
-            fit: StackFit.expand,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 필터 (년도)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // 배경 이미지
-              Image.asset(
-                streaming.profileImageUrl.isNotEmpty
-                    ? streaming.profileImageUrl
-                    : 'assets/images/live.png',
-                fit: BoxFit.cover,
-              ),
-
-              // 어두운 오버레이
               Container(
-                color: Colors.black.withOpacity(0.8),
-              ),
-
-              Align(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+                child: Row(
+                  children: const [
+                    Icon(Icons.filter_alt, color: Colors.white, size: 12),
+                    SizedBox(width: 4),
                     Text(
-                      streaming.name,
-                      style: const TextStyle(
-                        color: Color(0xFFFFFF00),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Opening Soon',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      DateFormat('yyyy.MM.dd (EEE)', 'en_US').format(streaming.taskDate),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
+                      '2025년',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-        );
-      },
+        ),
+
+        // 📺 스트리밍 리스트
+        Expanded(
+          child: ListView.builder(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+            itemCount: streamings.length,
+            itemBuilder: (context, index) {
+              final item = streamings[index];
+
+              // 상태 계산
+              String status;
+              if (now.isBefore(item.taskDate)) {
+                status = '진행예정';
+              } else if (now.isAfter(item.taskEndDate)) {
+                status = '종료';
+              } else {
+                status = '진행중';
+              }
+
+              return Container(
+                height: 140,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF212225),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Container(
+                            width: 170,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              image: DecorationImage(
+                                image: AssetImage(item.profileImageUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // 상태 뱃지
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: status == '종료' ? Colors.black : const Color(0xFF2EFFAA),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                color: status == '종료'
+                                    ? const Color(0xFF2EFFAA)
+                                    : Colors.black,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // 오른쪽 영역
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '공연 일시: ${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDate)}(KST) ~ ${DateFormat('HH:mm').format(item.taskEndDate)}(KST)',
+                              style: const TextStyle(color: Colors.white70, fontSize: 11),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              item.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              item.content,
+                              style: const TextStyle(
+                                color: Colors.white54,
+                                fontSize: 12,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const Spacer(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // TODO: 시청하기 버튼 처리
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2EFFAA),
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    minimumSize: const Size(60, 30),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    elevation: 0,
+                                  ),
+                                  child: const Text(
+                                    '시청하기',
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -28,21 +28,17 @@ class _TitleVodTabState extends State<TitleVodTab> {
       children: [
         // 필터 (년도)
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 1),
-                ),
                 child: Row(
                   children: const [
                     Icon(Icons.filter_alt, color: Colors.white, size: 12),
                     SizedBox(width: 4),
                     Text(
-                      '년도',
+                      '2025년',
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],
@@ -51,7 +47,6 @@ class _TitleVodTabState extends State<TitleVodTab> {
             ],
           ),
         ),
-
         // VOD 리스트
         Expanded(
           child: ListView.builder(

@@ -185,11 +185,11 @@ class _VotingResultListState extends State<VotingResultList> {
             controller: _scrollController,
             thumbVisibility: true,
             radius: const Radius.circular(8),
-            thickness: 4,
+            thickness: 6,
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 60),
               child: Row(
                 children: [
                   buildRankCard(index: 1, icon: Icons.emoji_events, iconColor: Colors.grey),
