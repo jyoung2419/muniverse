@@ -23,7 +23,7 @@ class NoticeItem extends StatefulWidget {
 
 class _NoticeItemState extends State<NoticeItem> {
   String get formattedDate =>
-      DateFormat('yyyy.MM.dd').format(widget.createDate);
+      DateFormat('yyyy / MM / dd').format(widget.createDate);
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +33,32 @@ class _NoticeItemState extends State<NoticeItem> {
           contentPadding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           tileColor: Colors.transparent,
-          title: Text(
-            widget.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+          title: Row(
+            children: [
+              const Icon(
+                Icons.arrow_circle_right,
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              '등록일: $formattedDate',
+              '$formattedDate',
               style: const TextStyle(
                 color: Colors.white60,
                 fontSize: 12,

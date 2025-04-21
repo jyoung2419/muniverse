@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_provider.dart';
+import '../../providers/vote/vote_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
 import 'home_award.dart';
@@ -13,6 +13,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vote = context.read<VoteProvider>().getVoteByCode('V005');
+
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
       extendBodyBehindAppBar: true,
@@ -24,7 +26,6 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: kToolbarHeight),
-            // ✅ 배너 + 프로필 리스트를 하나의 Stack으로
             Stack(
               children: const [
                 HomeBannerSection(),
@@ -36,11 +37,11 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  HomeAward(),
-                  SizedBox(height: 24),
-                  HomeAwardSection(),
-                  SizedBox(height: 40),
+                children: [
+                  const HomeAward(),
+                  const SizedBox(height: 24),
+                  if (vote != null) HomeAwardSection(vote: vote),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

@@ -43,7 +43,7 @@ class _FAQScreenState extends State<FAQScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF111111),
+      backgroundColor: const Color(0xFF0B0C0C),
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       body: Padding(
@@ -56,30 +56,13 @@ class _FAQScreenState extends State<FAQScreen> {
               child: Text(
                 'FAQ',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Color(0xFF2EFFAA),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            const Divider(
-              color: Color(0xFF2EFFAA),
-              thickness: 1.5,
-              height: 1,
-            ),
-            const SizedBox(height: 16),
-            const Center(
-              child: Text(
-                '자주 묻는 질문',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 30),
             Expanded(
               child: ListView.builder(
                 itemCount: faqs.length,
