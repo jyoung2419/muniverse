@@ -58,7 +58,6 @@ class TitleHomeScreen extends StatelessWidget {
                     performanceStartTime: event.performanceStartTime,
                   ),
                   const SizedBox(height: 10),
-                  // ✅ 여기 핵심 적용
                   Theme(
                     data: Theme.of(context).copyWith(
                       dividerColor: Colors.transparent,
