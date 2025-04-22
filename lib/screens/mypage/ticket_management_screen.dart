@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../widgets/common/app_drawer.dart';
+import '../../widgets/common/header.dart';
+import '../../widgets/common/back_fab.dart';
 
 class TicketManagementScreen extends StatelessWidget {
   const TicketManagementScreen({super.key});
@@ -6,15 +9,17 @@ class TicketManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF171719),
-      appBar: AppBar(
-        title: const Text('이용권 관리'),
-        backgroundColor: Colors.black,
-      ),
+      backgroundColor: const Color(0xFF0B0C0C),
+      appBar: const Header(),
+      endDrawer: const AppDrawer(),
+      floatingActionButton: const BackFAB(),
       body: const Center(
-        child: Text(
-          '보유한 이용권이 없습니다.',
-          style: TextStyle(color: Colors.white),
+        child: Padding(
+          padding: EdgeInsets.only(top: kToolbarHeight + 24),
+          child: Text(
+            '보유한 이용권이 없습니다.',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
