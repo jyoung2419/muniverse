@@ -18,7 +18,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = context.read<UserProvider>().getUserById('user001'); // 실제 로그인 ID로 대체 예정
+    final user = context.read<UserProvider>().currentUser;
     _nicknameController = TextEditingController(text: user?.nickName ?? '');
   }
 
@@ -30,7 +30,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().getUserById('user001');
+    final user = context.watch<UserProvider>().currentUser;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -54,7 +54,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            // 프로필 이미지 + 버튼
             Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -95,20 +94,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
             const SizedBox(height: 32),
-
-            // 이메일
             _buildLabel('이메일'),
             const SizedBox(height: 5),
             _buildReadOnlyField(user?.email ?? ''),
             const SizedBox(height: 20),
-
-            // 이름
             _buildLabel('이름'),
             const SizedBox(height: 5),
             _buildReadOnlyField(user?.name ?? ''),
             const SizedBox(height: 20),
-
-            // 닉네임
             _buildLabel('닉네임'),
             const SizedBox(height: 5),
             Row(
@@ -140,10 +133,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 )
               ],
             ),
-
             const SizedBox(height: 40),
-
-            // 하단 버튼
             Row(
               children: [
                 Expanded(
@@ -156,7 +146,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       backgroundColor: Color(0xFF212225),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        ),
+                      ),
                     ),
                     child: const Text(
                       '취소',
@@ -224,12 +214,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none, // 선 제거
+          borderSide: BorderSide.none,
         ),
       ),
     );
   }
-
 
   InputDecoration _inputDecoration() {
     return InputDecoration(

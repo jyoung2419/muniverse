@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../services/user/google_auth_service.dart';
 import '../../widgets/muniverse_logo.dart';
 import 'google_signup_screen.dart';
 
@@ -61,6 +62,9 @@ class _LoginForm extends StatelessWidget {
             // TODO: 로그인 로직 추가 예정
             Navigator.pushReplacementNamed(context, '/home');
           },
+          // onTap: () async {
+          //   await signInWithGoogle(context);
+          // },
           child: const _SocialLoginButton(
             text: 'Google로 로그인',
             color: Colors.white,

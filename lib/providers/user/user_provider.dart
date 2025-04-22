@@ -1,47 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../../models/user/user_model.dart';
+import '../../services/user/dio_client.dart';
 
 class UserProvider with ChangeNotifier {
-  final List<UserModel> _users = [
-    UserModel(
-      seq: 1,
-      id: 'user001',
-      password: 'password123',
-      nickName: '뮤니',
-      email: 'muniverse01@email.com',
-      name: '김뮤니',
-      phoneNumber: '01012345678',
-      profileUrl: 'assets/images/user_profile.png',
-      socialType: SocialType.GOOGLE,
-      regisStatus: true,
-      createDate: DateTime(2025, 4, 1),
-      updateDate: null,
-      deleteFlag: false,
-    ),
-    UserModel(
-      seq: 2,
-      id: 'user002',
-      password: 'securepwd456',
-      nickName: '우주',
-      email: 'woojoo@email.com',
-      name: '이우주',
-      phoneNumber: '01087654321',
-      profileUrl: 'assets/images/user_profile.png',
-      socialType: SocialType.X,
-      regisStatus: true,
-      createDate: DateTime(2025, 4, 3),
-      updateDate: DateTime(2025, 4, 10),
-      deleteFlag: false,
-    ),
-  ];
+  UserModel? _currentUser;
 
-  List<UserModel> get users => _users;
+  UserModel? get currentUser => _currentUser;
 
-  UserModel? getUserById(String id) {
+  Future<void> fetchCurrentUser() async {
     try {
-      return _users.firstWhere((user) => user.id == id);
-    } catch (_) {
-      return null;
+      final dio = DioClient().dio;
+      final response = await dio.get('/api/v1/user/me');
+      final data = response.data;
+      _currentUser = UserModel.fromJson(data);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('🚨 사용자 정보 불러오기 실패: \$e');
     }
+  }
+
+  void clearUser() {
+    _currentUser = null;
+    notifyListeners();
   }
 }

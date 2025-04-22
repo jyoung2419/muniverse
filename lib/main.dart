@@ -23,10 +23,12 @@ import 'screens/user/x_signup_screen.dart';
 import 'screens/info/notice_screen.dart';
 import 'screens/info/faq_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'services/user/dio_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/env/.env");
+  await DioClient().init();
   runApp(
     MultiProvider(
       providers: [

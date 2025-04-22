@@ -29,7 +29,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
-    final user = context.read<UserProvider>().getUserById('user001'); // 예시용 ID
+    final user = context.read<UserProvider>().currentUser;
 
     return Align(
       alignment: Alignment.centerRight,

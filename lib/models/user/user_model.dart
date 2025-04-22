@@ -8,7 +8,7 @@ String socialTypeToString(SocialType type) => type.name;
 class UserModel {
   final int seq;
   final String id;
-  final String password;
+  final String? password;
   final String nickName;
   final String email;
   final String name;
