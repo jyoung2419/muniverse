@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import '../../models/event/event_model.dart';
 import '../../models/vote/vote_model.dart';
 import '../../providers/vote/vote_provider.dart';
-import '../../widgets/common/vote/vote_filter_widget.dart';
-import 'title_vote_detail_tab.dart';
+import '../../widgets/vote/vote_filter_widget.dart';
 import '../../providers/vote/vote_reward_media_provider.dart';
+import '../vote/vote_detail_screen.dart';
 
 class TitleVoteTab extends StatefulWidget {
   final EventModel event;
@@ -33,14 +33,6 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (selectedVote != null) {
-      return TitleVoteDetailTab(
-        vote: selectedVote!,
-        event: widget.event,
-        onBack: () => setState(() => selectedVote = null),
-      );
-    }
-
     final filteredVotes = context
         .read<VoteProvider>()
         .filterVotes(selectedStatus, widget.event.eventCode);
@@ -243,7 +235,14 @@ class VoteCard extends StatelessWidget {
                       alignment: Alignment.bottomRight,
                       child: isRunning
                           ? ElevatedButton(
-                        onPressed: onPressed,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VoteDetailScreen(vote: vote),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2EFFAA),
                           foregroundColor: Colors.black,
@@ -257,7 +256,14 @@ class VoteCard extends StatelessWidget {
                         child: const Text('투표 하기', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
                       )
                           : OutlinedButton(
-                        onPressed: onPressed,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VoteDetailScreen(vote: vote),
+                            ),
+                          );
+                        },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF2EFFAA),
                           side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),

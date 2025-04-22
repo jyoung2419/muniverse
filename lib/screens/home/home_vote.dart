@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../models/vote/vote_model.dart';
-import '../../widgets/common/vote/voting_progress_list.dart';
-import '../../widgets/common/vote/voting_result_list.dart';
+import '../../widgets/vote/voting_progress_list.dart';
+import '../../widgets/vote/voting_result_list.dart';
 
 class HomeAwardSection extends StatefulWidget {
   final VoteModel vote;

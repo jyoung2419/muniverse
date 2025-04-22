@@ -38,7 +38,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HomeAward(),
+                  if (vote != null) HomeAward(vote: vote),
                   const SizedBox(height: 24),
                   if (vote != null) HomeAwardSection(vote: vote),
                   const SizedBox(height: 40),

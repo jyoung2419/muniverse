@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../models/vote/vote_model.dart';
+import '../vote/vote_detail_screen.dart';
 
-import '../vote/vote_home_screen.dart';
+class HomeAward extends StatefulWidget {
+  final VoteModel vote;
 
-class HomeAward extends StatelessWidget {
-  const HomeAward({super.key});
+  const HomeAward({super.key, required this.vote});
 
+  @override
+  State<HomeAward> createState() => _HomeAwardState();
+}
+
+class _HomeAwardState extends State<HomeAward> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -52,7 +59,7 @@ class HomeAward extends StatelessWidget {
               const Text(
                 '4월 1주차 주간인기상 투표에 참여하세요',
                 style: TextStyle(
-                  color: Color(0xFFC2C4C8E0),
+                  color: Color(0xC2C4C8E0),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
@@ -65,7 +72,9 @@ class HomeAward extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const VoteHomeScreen()),
+              MaterialPageRoute(
+                builder: (_) => VoteDetailScreen(vote: widget.vote),
+              ),
             );
           },
           child: Row(
@@ -81,7 +90,7 @@ class HomeAward extends StatelessWidget {
               ),
               SizedBox(width: 4),
               Padding(
-                padding: const EdgeInsets.only(top: 1.5), // 숫자는 상황에 맞게 조절
+                padding: EdgeInsets.only(top: 1.5),
                 child: Icon(
                   Icons.arrow_forward_ios,
                   size: 12,

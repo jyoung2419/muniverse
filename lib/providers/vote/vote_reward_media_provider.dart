@@ -7,6 +7,9 @@ class VoteRewardMediaProvider with ChangeNotifier {
 
   List<VoteRewardMediaModel> get media => _media;
 
+  List<String> get voteRewardMediaUrl =>
+      _media.map((e) => e.voteRewardMediaUrl).toList();
+
   void fetchRewardMedia(List<VoteModel> votes) {
     _media.clear();
 

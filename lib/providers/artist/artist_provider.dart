@@ -6,7 +6,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A001',
       name: '르세라핌',
-      content: '차세대 글로벌 K-POP 걸그룹',
+      content: 'LESSRAFIM',
       profileUrl: 'assets/images/artist/lesserafim.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 1),
@@ -15,7 +15,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A002',
       name: '더킹덤',
-      content: '강렬한 퍼포먼스의 보이 그룹',
+      content: 'THE KINGDOM',
       profileUrl: 'assets/images/artist/thekingdom.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 2),
@@ -24,7 +24,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A003',
       name: '캣츠아이',
-      content: '글로벌 프로젝트 걸그룹',
+      content: 'KATSEYE',
       profileUrl: 'assets/images/artist/katseye.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 3),
@@ -33,7 +33,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A004',
       name: '베이비몬스터',
-      content: 'Y** 신예 걸그룹',
+      content: 'BABYMONSTER',
       profileUrl: 'assets/images/artist/babymonster.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 4),
@@ -42,7 +42,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A005',
       name: '큐더블유이알',
-      content: '밴드 기반 신인 걸그룹',
+      content: 'QWER',
       profileUrl: 'assets/images/artist/qwer.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 5),
