@@ -11,7 +11,7 @@ import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
-import '../../widgets/common/dday_timer.dart';
+import '../../widgets/common/remaining_time_text.dart';
 import '../../widgets/vote/vote_artist_progress_tile.dart';
 
 class VoteDetailScreen extends StatefulWidget {
@@ -41,13 +41,12 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
   @override
   Widget build(BuildContext context) {
     final vote = widget.vote;
-    final rewardImages =
-        Provider.of<VoteRewardMediaProvider>(context).voteRewardMediaUrl;
+    final rewardMediaList = Provider.of<VoteRewardMediaProvider>(context).getMediaByVoteCode(vote.voteCode);
     final artists = Provider.of<VoteArtistProvider>(context).voteArtists;
     final totalVotes = artists.fold(0, (sum, a) => sum + a.voteCount);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: const Color(0xFF0B0C0C),
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
@@ -59,8 +58,7 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
             child: Text(
               vote.voteName,
               style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -92,30 +90,34 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DdayTimer(target: vote.endTime),
-                        const SizedBox(height: 8),
+                        RemainingTimeText(endTime: vote.endTime),
+                        const SizedBox(height: 30),
                         Text(
-                          '${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}',
-                          style: const TextStyle(color: Colors.white60),
+                          '기간: ${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                         const SizedBox(height: 12),
                         Text(
                           vote.content,
                           style: const TextStyle(color: Colors.white),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 40),
+                        Text(
+                          '보상 이벤트',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 12),
                         SizedBox(
                           height: 120,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: rewardImages.length,
+                            itemCount: rewardMediaList.length,
                             itemBuilder: (context, index) => Card(
                               clipBehavior: Clip.antiAlias,
                               margin: const EdgeInsets.only(right: 12),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                               child: Image.asset(
-                                rewardImages[index],
+                                rewardMediaList[index].voteRewardMediaUrl,
                                 width: 200,
                                 height: 120,
                                 fit: BoxFit.cover,

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../models/vote/vote_model.dart';
+import '../../providers/vote/vote_provider.dart';
+import '../../providers/vote/vote_reward_media_provider.dart';
 import '../vote/vote_detail_screen.dart';
 
 class HomeAward extends StatefulWidget {
@@ -70,6 +73,9 @@ class _HomeAwardState extends State<HomeAward> {
         // 오른쪽 링크
         TextButton(
           onPressed: () {
+            context.read<VoteRewardMediaProvider>().fetchRewardMedia(
+              context.read<VoteProvider>().votes,
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -77,6 +83,7 @@ class _HomeAwardState extends State<HomeAward> {
               ),
             );
           },
+
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: const [
