@@ -6,7 +6,7 @@ class ArtistProvider with ChangeNotifier {
     ArtistModel(
       artistCode: 'A001',
       name: '르세라핌',
-      content: 'LESSRAFIM',
+      content: 'LESSERAFIM',
       profileUrl: 'assets/images/artist/lesserafim.png',
       artistType: 'GROUP',
       createDate: DateTime(2024, 1, 1),
@@ -48,6 +48,51 @@ class ArtistProvider with ChangeNotifier {
       createDate: DateTime(2024, 1, 5),
       deleteFlag: false,
     ),
+    ArtistModel(
+      artistCode: 'A006',
+      name: '블랙핑크',
+      content: 'BLACKPINK',
+      profileUrl: 'assets/images/artist/blackpink.png',
+      artistType: 'GROUP',
+      createDate: DateTime(2024, 1, 6),
+      deleteFlag: false,
+    ),
+    ArtistModel(
+      artistCode: 'A007',
+      name: '방탄소년단 V',
+      content: 'BTS V',
+      profileUrl: 'assets/images/artist/btsv.png',
+      artistType: 'SOLO',
+      createDate: DateTime(2024, 1, 7),
+      deleteFlag: false,
+    ),
+    ArtistModel(
+      artistCode: 'A008',
+      name: '엔시티위시',
+      content: 'NCT WISH',
+      profileUrl: 'assets/images/artist/nctwish.png',
+      artistType: 'GROUP',
+      createDate: DateTime(2024, 1, 8),
+      deleteFlag: false,
+    ),
+    ArtistModel(
+      artistCode: 'A009',
+      name: '샤이니',
+      content: 'SHINee',
+      profileUrl: 'assets/images/artist/shinee.png',
+      artistType: 'GROUP',
+      createDate: DateTime(2024, 1, 9),
+      deleteFlag: false,
+    ),
+    ArtistModel(
+      artistCode: 'A010',
+      name: '태민',
+      content: 'TAEMIN',
+      profileUrl: 'assets/images/artist/taemin.png',
+      artistType: 'SOLO',
+      createDate: DateTime(2024, 1, 9),
+      deleteFlag: false,
+    ),
   ];
 
   List<ArtistModel> get artists => _artists;
@@ -60,3 +105,4 @@ class ArtistProvider with ChangeNotifier {
     }
   }
 }
+

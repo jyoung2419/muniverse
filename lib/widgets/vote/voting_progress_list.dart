@@ -6,10 +6,10 @@ class VotingProgressList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final names = ['태민', '방탄소년단 뷔', '블랙핑크', 'The KingDom', '르세라핌'];
-    final namesEng = ['SHINee', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
+    final namesEng = ['TAEMIN', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
     final percents = [56, 23, 18, 12, 6];
     final images = [
-      'artist/shinee.png',
+      'artist/taemin.png',
       'artist/btsv.png',
       'artist/blackpink.png',
       'artist/thekingdom.png',

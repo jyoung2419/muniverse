@@ -11,10 +11,10 @@ class _VotingResultListState extends State<VotingResultList> {
   final ScrollController _scrollController = ScrollController();
 
   final names = ['태민', '방탄소년단 뷔', '블랙핑크', 'The KingDom', '르세라핌'];
-  final namesEng = ['SHINee', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
+  final namesEng = ['TAEMIN', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
   final percents = [56, 23, 18, 12, 6];
   final images = [
-    'artist/shinee.png',
+    'artist/taemin.png',
     'artist/btsv.png',
     'artist/blackpink.png',
     'artist/thekingdom.png',
@@ -138,7 +138,7 @@ class _VotingResultListState extends State<VotingResultList> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.asset(
-                          'assets/images/artist/shinee.png',
+                          'assets/images/artist/taemin.png',
                           width: 185,
                           height: 185,
                           fit: BoxFit.cover,

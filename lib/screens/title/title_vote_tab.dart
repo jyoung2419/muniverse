@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../models/event/event_model.dart';
 import '../../models/vote/vote_model.dart';
+import '../../providers/artist/artist_provider.dart';
+import '../../providers/vote/vote_artist_provider.dart';
 import '../../providers/vote/vote_provider.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
 import '../../providers/vote/vote_reward_media_provider.dart';
@@ -27,6 +29,11 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
 
     Future.microtask(() {
       final votes = context.read<VoteProvider>().votes;
+      final artists = context.read<ArtistProvider>().artists;
+      context.read<VoteArtistProvider>().fetchVoteArtists(
+        votes: votes,
+        artists: artists,
+      );
       context.read<VoteRewardMediaProvider>().fetchRewardMedia(votes);
     });
   }

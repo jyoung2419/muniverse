@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../models/vote/vote_model.dart';
-import '../../models/vote/vote_model.dart';
-import '../../providers/vote/vote_artist_provider.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
-import '../../providers/vote/vote_provider.dart';
-import '../../providers/vote/vote_artist_provider.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
-import '../../widgets/common/remaining_time_text.dart';
-import '../../widgets/vote/vote_artist_progress_tile.dart';
+import '../../widgets/vote/vote_detail_info_tab.dart';
+import '../../widgets/vote/vote_detail_progress_tab.dart';
+import '../../widgets/vote/vote_detail_reward_tab.dart';
 
 class VoteDetailScreen extends StatefulWidget {
   final VoteModel vote;
@@ -25,11 +18,29 @@ class VoteDetailScreen extends StatefulWidget {
 class _VoteDetailScreen extends State<VoteDetailScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  late List<Tab> _tabs;
+  late List<Widget> _tabViews;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    final vote = widget.vote;
+    final now = DateTime.now();
+    final showRewardTab = now.isAfter(vote.resultOpenTime);
+
+    _tabs = [
+      const Tab(text: '상세정보'),
+      const Tab(text: '후보'),
+      if (showRewardTab) const Tab(text: '리워드'),
+    ];
+
+    _tabViews = [
+      VoteDetailInfoTab(vote: vote),
+      VoteDetailProgressTab(vote: vote),
+      if (showRewardTab) VoteDetailRewardTab(vote: vote),
+    ];
+
+    _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
   @override
@@ -41,9 +52,6 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
   @override
   Widget build(BuildContext context) {
     final vote = widget.vote;
-    final rewardMediaList = Provider.of<VoteRewardMediaProvider>(context).getMediaByVoteCode(vote.voteCode);
-    final artists = Provider.of<VoteArtistProvider>(context).voteArtists;
-    final totalVotes = artists.fold(0, (sum, a) => sum + a.voteCount);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -58,7 +66,7 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
             child: Text(
               vote.voteName,
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -72,108 +80,14 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
               labelColor: const Color(0xFF2EFFAA),
               unselectedLabelColor: Colors.white60,
               indicatorColor: const Color(0xFF2EFFAA),
-              tabs: const [
-                Tab(text: '상세정보'),
-                Tab(text: '투표'),
-              ],
+              tabs: _tabs,
             ),
           ),
           const SizedBox(height: 12),
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                // 상세정보 탭
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RemainingTimeText(endTime: vote.endTime),
-                        const SizedBox(height: 30),
-                        Text(
-                          '기간: ${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          vote.content,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(height: 40),
-                        Text(
-                          '보상 이벤트',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 120,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: rewardMediaList.length,
-                            itemBuilder: (context, index) => Card(
-                              clipBehavior: Clip.antiAlias,
-                              margin: const EdgeInsets.only(right: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              child: Image.asset(
-                                rewardMediaList[index].voteRewardMediaUrl,
-                                width: 200,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // 투표 탭
-                Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('총 참여 인원: $totalVotes명',
-                              style: const TextStyle(color: Colors.white)),
-                          const SizedBox(height: 12),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: artists.length,
-                                itemBuilder: (context, index) {
-                                  final artist = artists[index];
-                                  final String percent = totalVotes == 0
-                                      ? '0'
-                                      : (artist.voteCount / totalVotes * 100).toStringAsFixed(1);
-
-                                  return VoteArtistProgressTile(
-                                    rank: index + 1,
-                                    artistModel: artist,
-                                    percent: percent,
-                                  );
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: FloatingActionButton(
-                        onPressed: () =>
-                            Scrollable.ensureVisible(context), // 단순 예시
-                        backgroundColor: const Color(0xFF2EFFAA),
-                        child: const Icon(Icons.arrow_upward, color: Colors.black),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+              children: _tabViews,
             ),
           ),
         ],
