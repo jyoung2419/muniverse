@@ -58,13 +58,9 @@ class _LoginForm extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            // TODO: 로그인 로직 추가 예정
-            Navigator.pushReplacementNamed(context, '/home');
+          onTap: () async {
+            await signInWithGoogle(context);
           },
-          // onTap: () async {
-          //   await signInWithGoogle(context);
-          // },
           child: const _SocialLoginButton(
             text: 'Google로 로그인',
             color: Colors.white,
