@@ -3,11 +3,14 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();
   factory DioClient() => _instance;
   late final Dio dio;
+  PersistCookieJar? _cookieJar;
 
   DioClient._internal();
 
@@ -31,6 +34,7 @@ class DioClient {
     ));
 
     dio.interceptors.add(CookieManager(cookieJar));
+    dio.interceptors.add(LogInterceptor(responseHeader: true));
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
         if (error.response?.statusCode == 401 &&
@@ -51,6 +55,10 @@ class DioClient {
               return handler.resolve(clonedRequest);
             }
           } catch (e) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+
+            navigatorKey.currentState?.pushNamedAndRemoveUntil('/login', (route) => false);
             return handler.reject(error);
           }
         }
@@ -58,4 +66,12 @@ class DioClient {
       },
     ));
   }
+
+  Future<void> loadCookies() async {
+    final dir = await getApplicationDocumentsDirectory();
+    _cookieJar = PersistCookieJar(storage: FileStorage("${dir.path}/.cookies/"));
+    dio.interceptors.add(CookieManager(_cookieJar!));
+  }
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(); // 전역적으로 접근 가능

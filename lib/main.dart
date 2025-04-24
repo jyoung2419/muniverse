@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
 import 'providers/event/event_artist_provider.dart';
@@ -10,6 +11,7 @@ import 'providers/event/event_vod_provider.dart';
 import 'providers/notice/notice_provider.dart';
 import 'providers/ticket/user_pass_provider.dart';
 import 'providers/ticket/vote_ticket_provider.dart';
+import 'providers/user/google_oauth_provider.dart';
 import 'providers/user/user_provider.dart';
 import 'providers/vote/vote_artist_provider.dart';
 import 'providers/vote/vote_provider.dart';
@@ -19,16 +21,21 @@ import 'providers/ticket/live_ticket_provider.dart';
 import 'providers/ticket/vod_ticket_provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
-import 'screens/user/x_signup_screen.dart';
+import 'screens/user/twitter_signup_screen.dart';
 import 'screens/info/notice_screen.dart';
 import 'screens/info/faq_screen.dart';
 import 'screens/home/home_screen.dart';
-import 'services/user/dio_client.dart';
+import 'utils/dio_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/env/.env");
   await DioClient().init();
+  await DioClient().loadCookies();
+
+  final prefs = await SharedPreferences.getInstance();
+  final userId = prefs.getString('userId');
+
   runApp(
     MultiProvider(
       providers: [
@@ -50,30 +57,47 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VoteProvider()),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'muniverse',
       theme: ThemeData(fontFamily: "NotoSansKR"),
-      initialRoute: '/login',
+      initialRoute: initialRoute,
+
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/google_signup': (context) => const GoogleSignUpScreen(),
-        '/x_signup': (context) => const XSignUpScreen(),
+        '/twitter_signup': (context) => const TwitterSignUpScreen(),
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
       },
+
+      onGenerateRoute: (settings) {
+        if (settings.name == '/google_signup') {
+          final args = settings.arguments as Map<String, dynamic>; // ✅ 수정
+          return MaterialPageRoute(
+            builder: (context) => GoogleSignUpScreen(
+              email: args['email'] ?? '',
+              name: args['name'] ?? '',
+            ),
+          );
+        }
+        return null;
+      },
+
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

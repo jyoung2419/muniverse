@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../services/page_control.dart';
 
-class XSignUpScreen extends StatefulWidget {
-  const XSignUpScreen({super.key});
+class TwitterSignUpScreen extends StatefulWidget {
+  const TwitterSignUpScreen({super.key});
 
   @override
-  State<XSignUpScreen> createState() => _XSignUpScreenState();
+  State<TwitterSignUpScreen> createState() => _TwitterSignUpScreenState();
 }
 
-class _XSignUpScreenState extends State<XSignUpScreen> {
+class _TwitterSignUpScreenState extends State<TwitterSignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
   final String _name = "정진영";

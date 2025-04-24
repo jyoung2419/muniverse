@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import '../../models/user/user_model.dart';
-import '../../services/user/dio_client.dart';
+import '../../services/user/user_service.dart';
 
 class UserProvider with ChangeNotifier {
-  UserModel? _currentUser;
+  final UserService _userService = UserService();
 
+  UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
 
   Future<void> fetchCurrentUser() async {
     try {
-      final dio = DioClient().dio;
-      final response = await dio.get('/api/v1/user/me');
-      final data = response.data;
-      _currentUser = UserModel.fromJson(data);
+      _currentUser = await _userService.fetchCurrentUser();
       notifyListeners();
     } catch (e) {
-      debugPrint('🚨 사용자 정보 불러오기 실패: \$e');
+      debugPrint('🚨 사용자 정보 불러오기 실패: $e');
     }
   }
 

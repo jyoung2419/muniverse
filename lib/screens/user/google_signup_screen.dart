@@ -1,8 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../services/page_control.dart';
+import '../../services/user/google_oauth_service.dart';
+import '../../services/user/user_validation_service.dart';
+import '../../utils/shared_prefs_util.dart';
 
 class GoogleSignUpScreen extends StatefulWidget {
-  const GoogleSignUpScreen({super.key});
+  final String email;
+  final String name;
+
+  const GoogleSignUpScreen({
+    super.key,
+    required this.email,
+    required this.name,
+  });
 
   @override
   State<GoogleSignUpScreen> createState() => _GoogleSignUpScreenState();
@@ -10,75 +21,110 @@ class GoogleSignUpScreen extends StatefulWidget {
 
 class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
   final TextEditingController _nicknameController = TextEditingController();
-  final String _email = "testuser@gmail.com";
-  final String _name = "정진영";
+  final _validationService = UserValidationService();
+  final _googleOauthService = GoogleOauthService();
 
   String? _nicknameMessage;
   String? _nicknameErrorText;
   bool _isNicknameAvailable = false;
   bool _nicknameChecked = false;
 
-  void _checkNickname() {
-    setState(() {
-      final nickname = _nicknameController.text.trim();
-      _nicknameChecked = true;
+  void _checkNickname() async {
+    final nickname = _nicknameController.text.trim();
+    _nicknameChecked = true;
 
+    setState(() {
       if (nickname.isEmpty) {
         _nicknameErrorText = "닉네임을 입력해주세요.";
         _nicknameMessage = null;
         _isNicknameAvailable = false;
         return;
       }
-
-      if (nickname == "usednickname") {
-        _nicknameMessage = "중복된 닉네임입니다.";
-        _isNicknameAvailable = false;
-      } else {
-        _nicknameMessage = "사용 가능한 닉네임입니다.";
-        _isNicknameAvailable = true;
-      }
-
       _nicknameErrorText = null;
     });
+
+    try {
+      final result = await _validationService.checkNickname(nickname);
+      final isDuplicate = result['duplicated'] == true;
+      final message = result['message'] as String;
+
+      setState(() {
+        if (isDuplicate) {
+          if (message == "허용되지 않은 닉네임 형식입니다.") {
+            _nicknameMessage = "❌ 닉네임 형식이 올바르지 않습니다.";
+          } else if (message == "이미 사용 중인 닉네임입니다.") {
+            _nicknameMessage = "❌ 이미 사용 중인 닉네임입니다.";
+          } else {
+            _nicknameMessage = "❌ 사용 불가능한 닉네임입니다.";
+          }
+          _isNicknameAvailable = false;
+        } else {
+          _nicknameMessage = "✅ 사용 가능한 닉네임입니다.";
+          _isNicknameAvailable = true;
+        }
+      });
+    } catch (e) {
+      print('❌ 예외 발생: $e');
+      if (e is DioException) {
+        print('서버 응답: ${e.response?.data}');
+        print('상태 코드: ${e.response?.statusCode}');
+      }
+
+      setState(() {
+        _nicknameMessage = "🚨 서버 오류가 발생했습니다.";
+        _isNicknameAvailable = false;
+      });
+    }
   }
 
-  void _submitSignUp() {
+  void _submitSignUp() async {
     final nickname = _nicknameController.text.trim();
 
-    setState(() {
-      _nicknameErrorText = nickname.isEmpty ? "닉네임을 입력해주세요." : null;
-    });
-
-    if (nickname.isEmpty) return;
+    if (nickname.isEmpty) {
+      setState(() {
+        _nicknameErrorText = "닉네임을 입력해주세요.";
+      });
+      return;
+    }
 
     if (!_nicknameChecked) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("닉네임 중복 확인을 해주세요."),
-          duration: Duration(seconds: 1),
-        ),
+        const SnackBar(content: Text("닉네임 중복 확인을 해주세요.")),
       );
       return;
     }
 
     if (!_isNicknameAvailable) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("중복된 닉네임입니다."),
-          duration: Duration(seconds: 1),
-        ),
+        SnackBar(content: Text(_nicknameMessage ?? "사용할 수 없는 닉네임입니다.")),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("회원가입이 완료되었습니다."),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    try {
+      final userId = await SharedPrefsUtil.getUserId();
 
-    Navigator.pushReplacementNamed(context, '/login');
+      await _googleOauthService.completeGoogleUserInfo(
+        userId: userId,
+        nickName: nickname,
+        phoneNumber: '00000000000',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("회원가입이 완료되었습니다.")),
+      );
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("❌ 회원가입 실패: ${e.toString()}")),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("email: ${widget.email}, name: ${widget.name}");
   }
 
   @override
@@ -110,7 +156,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
             SizedBox(
               height: 45,
               child: TextFormField(
-                initialValue: _email,
+                initialValue: widget.email,
                 enabled: false,
                 style: const TextStyle(color: Colors.white),
                 decoration: _inputDecoration(),
@@ -123,7 +169,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
             SizedBox(
               height: 45,
               child: TextFormField(
-                initialValue: _name,
+                initialValue: widget.name,
                 enabled: false,
                 style: const TextStyle(color: Colors.white),
                 decoration: _inputDecoration(),
