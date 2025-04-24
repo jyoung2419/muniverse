@@ -160,7 +160,7 @@ class VoteCard extends StatelessWidget {
                             const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
                             const SizedBox(width: 3),
                             Text(
-                              'D-DAY $remainingDays',
+                              '남은 투표기간 $remainingDays일',
                               style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
                             ),
                           ],

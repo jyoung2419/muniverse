@@ -77,6 +77,22 @@ class VoteRewardMediaProvider with ChangeNotifier {
         type: VoteRewardMediaType.IMAGE,
         createDate: DateTime.now(),
       ),
+      VoteRewardMediaModel(
+        seq: 7,
+        voteRewardMediaUrl: 'assets/images/vote/reward.png',
+        rewardContent: '뮤직비디오 라이브 지원',
+        vote: v003,
+        type: VoteRewardMediaType.IMAGE,
+        createDate: DateTime.now(),
+      ),
+      VoteRewardMediaModel(
+        seq: 8,
+        voteRewardMediaUrl: 'assets/images/vote/reward.png',
+        rewardContent: '뮤직비디오 라이브 지원',
+        vote: v003,
+        type: VoteRewardMediaType.IMAGE,
+        createDate: DateTime.now(),
+      ),
     ]);
 
     notifyListeners();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'titel_related_video_tab.dart';
 import 'title_live_tab.dart';
 import '../../models/event/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
@@ -28,6 +29,7 @@ class TitleHomeScreen extends StatelessWidget {
       const Tab(text: '투표'),
       if (showLiveTab) const Tab(text: '라이브'),
       const Tab(text: 'VOD'),
+      const Tab(text: '관련 영상'),
     ];
 
     final tabViews = [
@@ -36,6 +38,7 @@ class TitleHomeScreen extends StatelessWidget {
       TitleVoteTab(event: event),
       if (showLiveTab) TitleLiveTab(),
       TitleVodTab(),
+      TitleRelatedVideoTab(event: event),
     ];
 
     return DefaultTabController(

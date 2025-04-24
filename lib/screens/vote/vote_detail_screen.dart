@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../models/vote/vote_model.dart';
+import '../../providers/event/event_provider.dart';
+import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
-import '../../widgets/vote/vote_detail_info_tab.dart';
-import '../../widgets/vote/vote_detail_progress_tab.dart';
-import '../../widgets/vote/vote_detail_reward_tab.dart';
+import '../vote/detail/vote_detail_info_tab.dart';
+import '../vote/detail/vote_detail_progress_tab.dart';
+import '../vote/detail/vote_detail_result_tab.dart';
+import '../vote/detail/vote_detail_reward_tab.dart';
 
 class VoteDetailScreen extends StatefulWidget {
   final VoteModel vote;
@@ -18,79 +24,296 @@ class VoteDetailScreen extends StatefulWidget {
 class _VoteDetailScreen extends State<VoteDetailScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  late List<Tab> _tabs;
-  late List<Widget> _tabViews;
+  late int _currentTabIndex;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopButton = false;
 
   @override
   void initState() {
     super.initState();
-    final vote = widget.vote;
     final now = DateTime.now();
-    final showRewardTab = now.isAfter(vote.resultOpenTime);
+    final showRewardTab = now.isAfter(widget.vote.resultOpenTime);
 
-    _tabs = [
-      const Tab(text: '상세정보'),
-      const Tab(text: '후보'),
-      if (showRewardTab) const Tab(text: '리워드'),
-    ];
+    _tabController = TabController(
+      length: showRewardTab ? 3 : 2,
+      vsync: this,
+      initialIndex: 1,
+    );
+    _currentTabIndex = 1;
 
-    _tabViews = [
-      VoteDetailInfoTab(vote: vote),
-      VoteDetailProgressTab(vote: vote),
-      if (showRewardTab) VoteDetailRewardTab(vote: vote),
-    ];
-
-    _tabController = TabController(length: _tabs.length, vsync: this);
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 300 && !_showTopButton) {
+        setState(() => _showTopButton = true);
+      } else if (_scrollController.offset <= 300 && _showTopButton) {
+        setState(() => _showTopButton = false);
+      }
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final vote = widget.vote;
+    final eventProvider = Provider.of<EventProvider>(context, listen: false);
+    final event = eventProvider.getEventByCode(vote.eventCode);
+    final eventName = event?.name ?? '이벤트명 없음';
+    final now = DateTime.now();
+    final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
+    final isUpcoming = now.isBefore(vote.startTime);
+    final isEnded = now.isAfter(vote.endTime);
+    final remainingDays = vote.endTime.difference(now).inDays;
+    final rewardMediaList = context.watch<VoteRewardMediaProvider>().getMediaByVoteCode(vote.voteCode);
+    final rewardText = rewardMediaList.isNotEmpty ? rewardMediaList.first.rewardContent : '리워드 정보 없음';
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          const SizedBox(height: 16),
-          Center(
-            child: Text(
-              vote.voteName,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          RawScrollbar(
+            controller: _scrollController,
+            thumbVisibility: true,
+            radius: const Radius.circular(4),
+            thickness: 6,
+            thumbColor: const Color(0xFFD9D9D9),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      '투표',
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  IntrinsicHeight(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF212225),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 170,
+                                  height: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    image: DecorationImage(
+                                      image: AssetImage(vote.voteImageUrl),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                if (isRunning)
+                                  _buildBadge('진행중', color: const Color(0xFF2EFFAA), textColor: Colors.black),
+                                if (isRunning)
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 8, left: 50),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.7),
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
+                                            const SizedBox(width: 3),
+                                            Text(
+                                              '남은 투표기간 $remainingDays일',
+                                              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                if (isUpcoming)
+                                  _buildBadge('투표 예정', color: const Color(0xFF2EFFAA), textColor: Colors.black),
+                                if (isEnded)
+                                  _buildBadge('종료', color: Colors.black.withOpacity(0.7), textColor: const Color(0xFF2EFFAA)),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        eventName,
+                                        style: const TextStyle(fontSize: 12, color: Colors.white70),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        vote.voteName,
+                                        style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '기간: ${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}',
+                                    style: const TextStyle(fontSize: 11, color: Colors.white70),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    vote.content,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 11, color: Colors.white),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: const BoxDecoration(color: Color(0xFF121212)),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            Icon(Icons.card_giftcard, size: 14, color: Colors.white),
+                                            SizedBox(width: 4),
+                                            Text('리워드', style: TextStyle(color: Colors.white, fontSize: 11)),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TabBar(
+                      controller: _tabController,
+                      onTap: (index) => setState(() => _currentTabIndex = index),
+                      labelColor: const Color(0xFF2EFFAA),
+                      unselectedLabelColor: Colors.white60,
+                      indicatorColor: const Color(0xFF2EFFAA),
+                      tabs: _tabController.length == 3
+                          ? const [
+                        Tab(text: '상세정보'),
+                        Tab(text: '후보'),
+                        Tab(text: '리워드'),
+                      ]
+                          : const [
+                        Tab(text: '상세정보'),
+                        Tab(text: '후보'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_currentTabIndex == 0) VoteDetailInfoTab(vote: vote),
+                  if (_currentTabIndex == 1)
+                        () {
+                      final now = DateTime.now();
+                      if (now.isAfter(vote.startTime) && now.isBefore(vote.endTime)) {
+                        return VoteDetailProgressTab(vote: vote);
+                      } else if (now.isAfter(vote.endTime) && now.isBefore(vote.resultOpenTime)) {
+                        return const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Center(
+                            child: Text(
+                              '결과 집계중입니다!',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                        );
+                      } else if (now.isAfter(vote.resultOpenTime)) {
+                        return VoteDetailResultTab(vote: vote);
+                      }
+                      return const SizedBox();
+                    }(),
+                  if (_currentTabIndex == 2 && _tabController.length == 3) VoteDetailRewardTab(vote: vote),
+                  const SizedBox(height: 80),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TabBar(
-              controller: _tabController,
-              labelColor: const Color(0xFF2EFFAA),
-              unselectedLabelColor: Colors.white60,
-              indicatorColor: const Color(0xFF2EFFAA),
-              tabs: _tabs,
+          if (_showTopButton)
+            Positioned(
+              bottom: 40,
+              right: 10,
+              child: GestureDetector(
+                onTap: _scrollToTop,
+                child: SvgPicture.asset(
+                  'assets/svg/scroll_top.svg',
+                  width: 100,
+                  height: 100,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: _tabViews,
-            ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBadge(String text,
+      {Alignment alignment = Alignment.topLeft,
+        EdgeInsets padding = const EdgeInsets.only(top: 8, left: 8),
+        Color color = Colors.black,
+        Color textColor = Colors.white}) {
+    return Align(
+      alignment: alignment,
+      child: Padding(
+        padding: padding,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(color: textColor, fontSize: 10, fontWeight: FontWeight.w500),
+          ),
+        ),
       ),
     );
   }

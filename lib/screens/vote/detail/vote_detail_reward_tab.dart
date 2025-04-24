@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/vote/vote_model.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
+import '../../../models/vote/vote_model.dart';
+import '../../../providers/vote/vote_reward_media_provider.dart';
 import 'package:provider/provider.dart';
 
 class VoteDetailRewardTab extends StatelessWidget {
@@ -18,7 +18,7 @@ class VoteDetailRewardTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '보상 이벤트',
+            '보상 이벤트 결과',
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -26,23 +26,19 @@ class VoteDetailRewardTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: rewardMediaList.length,
-              itemBuilder: (context, index) => Card(
-                clipBehavior: Clip.antiAlias,
-                margin: const EdgeInsets.only(right: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Image.asset(
-                  rewardMediaList[index].voteRewardMediaUrl,
-                  width: 200,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: rewardMediaList.length,
+            itemBuilder: (context, index) => Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Image.asset(
+                rewardMediaList[index].voteRewardMediaUrl,
+                fit: BoxFit.contain,
               ),
             ),
           ),
