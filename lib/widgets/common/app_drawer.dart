@@ -7,6 +7,7 @@ import '../../screens/mypage/winner_history_screen.dart';
 import '../../screens/info/faq_screen.dart';
 import '../../screens/info/notice_screen.dart';
 import '../../screens/mypage/purchase_history_screen.dart';
+import '../../services/user/user_service.dart';
 import '../muniverse_logo.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -110,9 +111,15 @@ class AppDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: GestureDetector(
-                  onTap: () {
-                    // TODO: 로그아웃 처리
+                  onTap: () async {
                     Navigator.of(context).pop();
+
+                    final userService = UserService();
+                    await userService.logout();
+
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false); // 로그인 화면으로 이동
+                    }
                   },
                   child: Row(
                     children: const [
