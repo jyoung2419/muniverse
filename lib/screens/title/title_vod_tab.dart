@@ -32,29 +32,28 @@ class _TitleVodTabState extends State<TitleVodTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                child: Row(
-                  children: const [
-                    Icon(Icons.filter_alt, color: Colors.white, size: 12),
-                    SizedBox(width: 4),
-                    Text(
-                      '2025년',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
-                ),
+              Row(
+                children: const [
+                  Icon(Icons.filter_alt, color: Colors.white, size: 12),
+                  SizedBox(width: 4),
+                  Text(
+                    '2025년',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+
         // VOD 리스트
         Expanded(
           child: ListView.builder(
-            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: vodList.length,
             itemBuilder: (context, index) {
               final vod = vodList[index];
+
               return Container(
                 height: 140,
                 margin: const EdgeInsets.only(bottom: 16),
@@ -65,8 +64,9 @@ class _TitleVodTabState extends State<TitleVodTab> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // 썸네일
                     Padding(
-                      padding: const EdgeInsets.only(left: 0, top: 0, right: 10, bottom: 0),
+                      padding: const EdgeInsets.only(right: 10),
                       child: Container(
                         width: 170,
                         height: double.infinity,
@@ -84,7 +84,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                       ),
                     ),
 
-                    // 오른쪽 텍스트 + 버튼
+                    // 텍스트 + 버튼
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
@@ -98,7 +98,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              vod.event.name,
+                              vod.event?.name ?? '',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -107,7 +107,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              vod.event.content,
+                              vod.event?.content ?? '',
                               style: const TextStyle(color: Colors.white54, fontSize: 12),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -118,7 +118,8 @@ class _TitleVodTabState extends State<TitleVodTab> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    // 구매하기 클릭 시 처리 로직
+                                    // TODO: 구매하기 버튼 로직
+                                    print('VOD 구매: ${vod.vodCode}');
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF2EFFAA),

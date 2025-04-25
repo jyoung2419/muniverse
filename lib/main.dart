@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:muniverse_app/providers/event/event_main_provider.dart';
 import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
@@ -46,6 +47,7 @@ Future<void> main() async {
           ),
         ),
         ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => EventMainProvider()),
         ChangeNotifierProvider(create: (_) => EventArtistProvider()),
         ChangeNotifierProvider(create: (_) => EventVODProvider()),
         ChangeNotifierProvider(create: (_) => EventLiveProvider()),

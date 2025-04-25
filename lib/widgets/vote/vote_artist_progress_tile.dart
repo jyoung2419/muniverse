@@ -37,7 +37,7 @@ class VoteArtistProgressTile extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.asset(
-                artist.profileUrl,
+                artist.profileUrl ?? 'assets/images/default_profile.png',
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,

@@ -37,6 +37,10 @@ class LiveTicketProvider with ChangeNotifier {
       status: 'ACTIVE',
       bannerUrl: 'assets/images/mokpo_banner.png',
       profileUrl: 'assets/images/event_description_bof.png',
+      cardUrl: 'assets/images/mokpo_card.png',
+      introContent: 'BIG 콘서트 소개',
+      manager: 'admin01',
+      shortName: 'BIG콘',
       preOpenDateTime: DateTime(2025, 6, 1),
       openDateTime: DateTime(2025, 6, 10),
       endDateTime: DateTime(2025, 6, 15),
@@ -50,17 +54,19 @@ class LiveTicketProvider with ChangeNotifier {
     );
 
     final dummyLive = EventLiveModel(
+      eventYear: 2025,
+      round: 1,
+      createDate: DateTime(2025, 5, 15),
+      taskDate: DateTime(2025, 6, 11, 18),
+      taskEndDate: DateTime(2025, 6, 11, 20),
+      updateDate: null,
+      eventCode: 'E001',
       liveCode: 'L001',
       name: 'BIG 콘서트',
       content: '생생한 무대 실황',
       profileImageUrl: 'assets/images/live.png',
       videoUrl: 'https://example.com/live.mp4',
-      taskDate: DateTime(2025, 6, 11, 18),
-      taskEndDate: DateTime(2025, 6, 11, 20),
-      eventYear: 2025,
       event: dummyEvent,
-      createDate: DateTime(2025, 5, 15),
-      updateDate: null,
     );
 
     _tickets = [

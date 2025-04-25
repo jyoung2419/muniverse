@@ -65,7 +65,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                 WinnerCard(
                   name: sorted[0].artist.name,
                   nameEng: sorted[0].artist.content,
-                  imageUrl: sorted[0].artist.profileUrl,
+                  imageUrl: sorted[0].artist.profileUrl?? 'assets/images/default_profile.png',
                   percent: ((sorted[0].voteCount / totalVoteCount) * 100).round(),
                 ),
 
@@ -85,7 +85,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                           index: i + 1,
                           name: artist.artist.name,
                           nameEng: artist.artist.content,
-                          imageUrl: artist.artist.profileUrl,
+                          imageUrl: artist.artist.profileUrl?? 'assets/images/default_profile.png',
                           percent: ((artist.voteCount / totalVoteCount) * 100).round(),
                           icon: Icons.emoji_events,
                           iconColor: i == 0 ? Colors.grey : i == 1 ? const Color(0xFFCE9505) : Colors.white24,
@@ -116,7 +116,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
-                          voteArtist.artist.profileUrl,
+                          voteArtist.artist.profileUrl ?? 'assets/images/default_profile.png',
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,

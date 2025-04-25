@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/event/event_main_provider.dart';
 import '../../providers/vote/vote_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
@@ -9,8 +10,23 @@ import 'home_banner_section.dart';
 import 'home_event_profile_list.dart';
 import 'home_vote.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      print('🔍 Fetching main events...');
+      context.read<EventMainProvider>().fetchMainEvents();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

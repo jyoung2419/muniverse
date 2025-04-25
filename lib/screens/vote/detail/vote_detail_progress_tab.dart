@@ -50,7 +50,7 @@ class VoteDetailProgressTab extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
-                        voteArtist.artist.profileUrl,
+                        voteArtist.artist.profileUrl ?? 'assets/images/default_profile.png',
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,

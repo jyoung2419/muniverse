@@ -33,6 +33,10 @@ class VODTicketProvider with ChangeNotifier {
       status: 'ACTIVE',
       bannerUrl: 'assets/images/mokpo_banner.png',
       profileUrl: 'assets/images/event_description_bof.png',
+      cardUrl: 'assets/images/mokpo_card.png',
+      introContent: '국내외 아티스트와 함께하는 목포 최대 뮤직 축제!',
+      manager: 'admin01',
+      shortName: '목뮤플',
       preOpenDateTime: DateTime(2025, 7, 1),
       openDateTime: DateTime(2025, 7, 15),
       endDateTime: DateTime(2025, 7, 18),
@@ -53,14 +57,17 @@ class VODTicketProvider with ChangeNotifier {
       videoUrl: 'https://example.com/vod/video1.mp4',
       event: dummyEvent,
       eventYear: 2025,
+      round: 1,
       openDate: DateTime(2025, 7, 15),
+      endDate: DateTime(2025, 7, 31),
       createDate: DateTime(2025, 6, 10),
       updateDate: null,
+      eventCode: 'E001',
     );
 
     _tickets = [
       VODTicket(
-        vodPinNumber: 'vod-001',
+        vodPinNumber: 'vod-pin-001',
         startTime: DateTime(2025, 7, 15, 20, 0),
         endTime: DateTime(2025, 7, 15, 22, 0),
         expiredDate: 7,
