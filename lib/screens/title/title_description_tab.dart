@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '../../models/event/event_model.dart';
 
 class TitleDescriptionTab extends StatelessWidget {
@@ -10,13 +11,13 @@ class TitleDescriptionTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const ClampingScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Image.asset(
-          event.profileUrl,
-          fit: BoxFit.cover,
-          width: double.infinity,
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Html(
+        data: event.content,
+        style: {
+          "body": Style(color: Colors.white),
+          "p": Style(fontSize: FontSize(14)),
+        },
       ),
     );
   }

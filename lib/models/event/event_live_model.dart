@@ -46,7 +46,6 @@ class EventLiveModel {
       content: json['content'],
       profileImageUrl: json['profileImageUrl'],
       videoUrl: json['videoUrl'],
-      event: json['event'] != null ? EventModel.fromJson(json['event']) : null,
     );
   }
 
@@ -64,7 +63,6 @@ class EventLiveModel {
       'content': content,
       'profileImageUrl': profileImageUrl,
       'videoUrl': videoUrl,
-      'event': event?.toJson(),
     };
   }
 }

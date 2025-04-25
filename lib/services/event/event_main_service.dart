@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class EventService {
+class EventMainService {
   final Dio _dio = Dio();
 
-  EventService() {
+  EventMainService() {
     final baseUrl = dotenv.env['BASE_URL']!;
     final port = dotenv.env['PORT'];
     final fullUrl = port != null ? '$baseUrl:$port' : baseUrl;

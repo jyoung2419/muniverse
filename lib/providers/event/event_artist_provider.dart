@@ -20,32 +20,12 @@ class EventArtistProvider with ChangeNotifier {
     _eventArtists.addAll([
       EventArtistModel(
         seq: 1,
-        event: mokpo,
         artist: artists.firstWhere((a) => a.artistCode == 'A001'), // 르세라핌
         createDate: DateTime(2025, 7, 1),
       ),
       EventArtistModel(
         seq: 2,
-        event: bof,
         artist: artists.firstWhere((a) => a.artistCode == 'A002'), // 더킹덤
-        createDate: DateTime(2025, 8, 20),
-      ),
-      EventArtistModel(
-        seq: 3,
-        event: bof,
-        artist: artists.firstWhere((a) => a.artistCode == 'A003'), // 캣츠아이
-        createDate: DateTime(2025, 8, 20),
-      ),
-      EventArtistModel(
-        seq: 4,
-        event: mokpo,
-        artist: artists.firstWhere((a) => a.artistCode == 'A004'), // 베이비몬스터
-        createDate: DateTime(2025, 7, 1),
-      ),
-      EventArtistModel(
-        seq: 5,
-        event: bof,
-        artist: artists.firstWhere((a) => a.artistCode == 'A005'), // QWER
         createDate: DateTime(2025, 8, 20),
       ),
     ]);
@@ -53,14 +33,4 @@ class EventArtistProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<EventArtistModel> getArtistsByEventCode(String eventCode) {
-    return _eventArtists.where((ea) => ea.event.eventCode == eventCode).toList();
-  }
-
-  List<EventModel> getEventsByArtistCode(String artistCode) {
-    return _eventArtists
-        .where((ea) => ea.artist.artistCode == artistCode)
-        .map((ea) => ea.event)
-        .toList();
-  }
 }

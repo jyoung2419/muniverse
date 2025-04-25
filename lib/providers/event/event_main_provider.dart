@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../models/event/event_main_model.dart';
-import '../../services/event/event_service.dart';
+import '../../services/event/event_main_service.dart';
 
 class EventMainProvider with ChangeNotifier {
   final List<EventMainModel> _events = [];
-  final EventService _eventService = EventService();
+  final EventMainService _eventService = EventMainService();
 
   List<EventMainModel> get events => _events;
 

@@ -81,20 +81,13 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
         alignment: Alignment.center,
         children: [
           GestureDetector(
-            onTap: isBeforePreOpen
-                ? null
-                : () {
-              print('👉 카드 클릭됨: ${event.eventCode}');
-              final fullEvent = Provider.of<EventProvider>(context, listen: false)
-                  .getEventByCode(event.eventCode);
-              if (fullEvent != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TitleHomeScreen(event: fullEvent),
-                  ),
-                );
-              }
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TitleHomeScreen(eventCode: event.eventCode),
+                ),
+              );
             },
             child: Image.network(
               event.cardUrl,

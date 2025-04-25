@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'titel_related_video_tab.dart';
+import 'package:provider/provider.dart';
+import '../../providers/event/event_provider.dart';
+import 'title_related_video_tab.dart';
 import 'title_live_tab.dart';
 import '../../models/event/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
@@ -13,15 +14,51 @@ import 'title_ticket_tab.dart';
 import 'title_vod_tab.dart';
 import 'title_vote_tab.dart';
 
-class TitleHomeScreen extends StatelessWidget {
-  final EventModel event;
+class TitleHomeScreen extends StatefulWidget {
+  final String eventCode;
 
-  const TitleHomeScreen({super.key, required this.event});
+  const TitleHomeScreen({super.key, required this.eventCode});
+
+  @override
+  State<TitleHomeScreen> createState() => _TitleHomeScreenState();
+}
+
+class _TitleHomeScreenState extends State<TitleHomeScreen> {
+  EventModel? event;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEvent();
+  }
+
+  Future<void> _fetchEvent() async {
+    try {
+      await context.read<EventProvider>().fetchAndAddEvent(widget.eventCode);
+      final fetched = context.read<EventProvider>().getEventByCode(widget.eventCode);
+      if (fetched != null) {
+        setState(() {
+          event = fetched;
+          isLoading = false;
+        });
+      }
+    } catch (_) {
+      print('❌ 이벤트 불러오기 실패');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading || event == null) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final now = DateTime.now();
-    final showLiveTab = now.isAfter(event.openDateTime);
+    final showLiveTab = now.isAfter(event!.performanceStartTime);
 
     final tabList = [
       const Tab(text: '상세정보'),
@@ -33,12 +70,12 @@ class TitleHomeScreen extends StatelessWidget {
     ];
 
     final tabViews = [
-      TitleDescriptionTab(event: event),
+      TitleDescriptionTab(event: event!),
       TitleTicketTab(),
-      TitleVoteTab(event: event),
+      TitleVoteTab(event: event!),
       if (showLiveTab) TitleLiveTab(),
       TitleVodTab(),
-      TitleRelatedVideoTab(event: event),
+      TitleRelatedVideoTab(event: event!),
     ];
 
     return DefaultTabController(
@@ -57,8 +94,8 @@ class TitleHomeScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: kToolbarHeight),
                   BannerSection(
-                    imagePath: event.bannerUrl,
-                    performanceStartTime: event.performanceStartTime,
+                    imagePath: event!.bannerUrl,
+                    performanceStartTime: event!.performanceStartTime,
                   ),
                   const SizedBox(height: 10),
                   Theme(
@@ -132,7 +169,7 @@ class BannerSection extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(imagePath, fit: BoxFit.cover),
+          Image.network(imagePath, fit: BoxFit.cover),
           Container(color: Colors.black.withOpacity(0.7)),
           if (isBeforePerformance || round <= 3)
             Positioned(
