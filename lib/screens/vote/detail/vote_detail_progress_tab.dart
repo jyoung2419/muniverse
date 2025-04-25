@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/vote/vote_model.dart';
 import '../../../providers/vote/vote_artist_provider.dart';
+import '../../../widgets/vote/vote_dialog.dart';
 
 class VoteDetailProgressTab extends StatelessWidget {
   final VoteModel vote;
@@ -31,6 +32,8 @@ class VoteDetailProgressTab extends StatelessWidget {
             ...sortedVoteArtists.asMap().entries.map((entry) {
               final index = entry.key;
               final voteArtist = entry.value;
+              final artist = voteArtist.artist;
+              final totalVotes = vote.freeCountLimit;
               final rate = totalVoteCount == 0 ? 0 : voteArtist.voteCount / totalVoteCount;
               final percentText = (rate * 100).toStringAsFixed(1);
               final isFirst = index == 0;
@@ -97,7 +100,14 @@ class VoteDetailProgressTab extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-
+                            showDialog(
+                              context: context,
+                              builder: (_) => VoteDialog(
+                                totalVotes: vote.freeCountLimit,
+                                artistCode: artist.artistCode,
+                                voteCode: vote.voteCode,
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2EFFAA),

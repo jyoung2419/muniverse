@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/vote/vote_provider.dart';
 
 class FreeVoteDialog extends StatefulWidget {
-  final int totalVotes;
+  final String voteCode;
 
-  const FreeVoteDialog({super.key, required this.totalVotes});
+  const FreeVoteDialog({super.key, required this.voteCode});
 
   @override
   State<FreeVoteDialog> createState() => _FreeVoteDialogState();
@@ -12,8 +15,8 @@ class FreeVoteDialog extends StatefulWidget {
 class _FreeVoteDialogState extends State<FreeVoteDialog> {
   int selectedCount = 1;
 
-  void increase() {
-    if (selectedCount < widget.totalVotes) {
+  void increase(int totalVotes) {
+    if (selectedCount < totalVotes) {
       setState(() => selectedCount++);
     }
   }
@@ -26,6 +29,11 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final vote = context.read<VoteProvider>().getVoteByCode(widget.voteCode);
+    final totalVotes = vote?.freeCountLimit ?? 0;
+
+    if (vote == null) return const SizedBox();
+
     return Dialog(
       backgroundColor: const Color(0xFF1B1B1D),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -35,11 +43,9 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 상단 타이틀 + 닫기
             Row(
               children: [
-                const Text('무료 투표권',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                const Text('무료 투표권', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                 const Spacer(),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
@@ -48,7 +54,6 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
               ],
             ),
             const SizedBox(height: 16),
-
             const Text('사용할 투표권 수 선택', style: TextStyle(color: Colors.white)),
             const SizedBox(height: 4),
             Text.rich(
@@ -57,7 +62,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                 style: const TextStyle(color: Colors.white),
                 children: [
                   TextSpan(
-                    text: '${widget.totalVotes}',
+                    text: '$totalVotes',
                     style: const TextStyle(color: Color(0xFFFFFF00), fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(text: '회 투표 가능합니다.'),
@@ -65,7 +70,6 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
               ),
             ),
             const SizedBox(height: 16),
-
             Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,7 +98,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                         const SizedBox(width: 25),
                         IconButton(
                           icon: const Icon(Icons.arrow_right, color: Colors.white),
-                          onPressed: increase,
+                          onPressed: () => increase(totalVotes),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                         ),
@@ -111,7 +115,6 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // 투표 실행 로직
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
