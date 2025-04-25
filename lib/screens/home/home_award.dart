@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../models/vote/vote_model.dart';
 import '../../providers/artist/artist_provider.dart';
@@ -33,7 +32,7 @@ class _HomeAwardState extends State<HomeAward> {
                   children: [
                     TextSpan(
                       text: 'Weekly ',
-                      style: GoogleFonts.inter(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -51,7 +50,7 @@ class _HomeAwardState extends State<HomeAward> {
                     ),
                     TextSpan(
                       text: '-Pick',
-                      style: GoogleFonts.inter(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

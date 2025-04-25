@@ -65,7 +65,7 @@ class VoteProvider with ChangeNotifier {
       content: '기대되는 3월 컴백 아이돌은 누구인가요?',
       voteImageUrl: 'assets/images/vote/vote1.png',
       freeCountLimit: 5,
-      eventCode: '',
+      eventCode: 'code',
       startTime: DateTime(2025, 4, 11, 0, 0),
       endTime: DateTime(2025, 4, 16, 23, 59),
       resultOpenTime: DateTime(2025, 4, 19, 12, 0),
@@ -103,4 +103,22 @@ class VoteProvider with ChangeNotifier {
       }
     }).toList();
   }
+  List<VoteModel> filterAllVotes(String status) {
+    final now = DateTime.now();
+    return _votes.where((vote) {
+      switch (status) {
+        case '전체':
+          return true;
+        case '진행중':
+          return now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
+        case '진행완료':
+          return now.isAfter(vote.endTime) || now.isAtSameMomentAs(vote.endTime);
+        case '진행예정':
+          return now.isBefore(vote.startTime);
+        default:
+          return false;
+      }
+    }).toList();
+  }
+
 }

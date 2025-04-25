@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'muniverse',
-      theme: ThemeData(fontFamily: "NotoSansKR"),
+      theme: ThemeData(fontFamily: "Pretendard"),
       initialRoute: initialRoute,
 
       routes: {
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
+        '/voteMainScreen': (context) => const VoteMainScreen(),
       },
 
       onGenerateRoute: (settings) {

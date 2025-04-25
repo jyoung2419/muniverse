@@ -36,22 +36,22 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           ).createShader(bounds);
         },
         blendMode: BlendMode.dstIn,
-        child: Container(
-          color: const Color(0xFF0B0C0C),
-        ),
+        child: Container(color: const Color(0xFF0B0C0C)),
       )
           : null,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16),
         child: Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/voteMainScreen');
+            },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: const Size(40, 32),
             ),
             child: const Text(
-              '한국어',
+              '투표',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 13,
@@ -72,6 +72,21 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: showMenu
           ? [
+        TextButton(
+          onPressed: () {},
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(40, 32),
+          ),
+          child: const Text(
+            '한국어',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
         Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),

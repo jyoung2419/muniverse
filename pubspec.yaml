@@ -28,7 +28,6 @@ dependencies:
   provider: ^6.1.2
   flutter_animate: ^4.5.2
   fluttertoast: ^8.2.4
-  google_fonts: ^6.1.0
   dio: ^5.8.0+1
   dio_cookie_manager: ^3.2.0
   cookie_jar: ^4.0.8
@@ -56,38 +55,23 @@ flutter:
     - assets/images/vote/
 
   fonts:
-    - family: NotoSansKR
+    - family: Pretendard
       fonts:
-        - asset: assets/fonts/kor/NotoSansKR-Thin.ttf
+        - asset: assets/fonts/Pretendard-Thin.ttf
           weight: 100
-        - asset: assets/fonts/kor/NotoSansKR-ExtraLight.ttf
+        - asset: assets/fonts/Pretendard-ExtraLight.ttf
           weight: 200
-        - asset: assets/fonts/kor/NotoSansKR-Light.ttf
+        - asset: assets/fonts/Pretendard-Light.ttf
           weight: 300
-        - asset: assets/fonts/kor/NotoSansKR-Regular.ttf
+        - asset: assets/fonts/Pretendard-Regular.ttf
           weight: 400
-        - asset: assets/fonts/kor/NotoSansKR-Medium.ttf
+        - asset: assets/fonts/Pretendard-Medium.ttf
           weight: 500
-        - asset: assets/fonts/kor/NotoSansKR-SemiBold.ttf
+        - asset: assets/fonts/Pretendard-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/kor/NotoSansKR-Bold.ttf
+        - asset: assets/fonts/Pretendard-Bold.ttf
           weight: 700
-        - asset: assets/fonts/kor/NotoSansKR-ExtraBold.ttf
+        - asset: assets/fonts/Pretendard-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/kor/NotoSansKR-Black.ttf
+        - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
-
-    - family: Inter
-      fonts:
-        - asset: assets/fonts/Inter/Inter_28pt-BoldItalic.ttf
-          weight: 800
-          style: italic
-        - asset: assets/fonts/Inter/Inter_28pt-Italic.ttf
-          style: italic
-        - asset: assets/fonts/Inter/Inter_28pt-Regular.ttf
-        - asset: assets/fonts/Inter/Inter_18pt-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Inter/Inter_18pt-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Inter/Inter_28pt-Medium.ttf
-          weight: 500

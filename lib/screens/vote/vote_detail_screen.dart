@@ -70,7 +70,7 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
     final vote = widget.vote;
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
     final event = eventProvider.getEventByCode(vote.eventCode);
-    final eventName = event?.name ?? '이벤트명 없음';
+    final eventName = event?.name ?? 'weekly M-pick';
     final now = DateTime.now();
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);

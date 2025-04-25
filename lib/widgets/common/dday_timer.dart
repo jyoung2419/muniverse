@@ -63,8 +63,7 @@ class _DdayTimerState extends State<DdayTimer> {
               style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 10,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700
               ),
             ),
             const SizedBox(height: 2),
@@ -74,7 +73,6 @@ class _DdayTimerState extends State<DdayTimer> {
                 fontSize: 20,
                 color: Color(0xFF2EFFAA),
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Inter',
               ),
             ),
           ],
