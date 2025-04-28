@@ -57,8 +57,8 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       );
     }
 
-    final now = DateTime.now();
-    final showLiveTab = now.isAfter(event!.performanceStartTime);
+    // final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN'].contains(event!.status);
+    final showLiveTab = event!.status == 'OPEN';
 
     final tabList = [
       const Tab(text: '상세정보'),
