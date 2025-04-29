@@ -12,13 +12,25 @@ class EventTitleService {
     _dio.options.baseUrl = fullUrl;
   }
 
+  // Title 조회
   Future<Map<String, dynamic>> fetchEventTitle(String eventCode) async {
     try {
       final response = await _dio.get('/api/v1/event/title/$eventCode');
-      print('📦 Title Response for $eventCode: ${response.data}');
       return response.data;
     } catch (e) {
       print('❌ Title API 호출 실패: $e');
+      rethrow;
+    }
+  }
+
+  // VOD 리스트 조회
+  Future<List<Map<String, dynamic>>> fetchEventVODList(String eventCode) async {
+    try {
+      final response = await _dio.get('/api/v1/event/detail/vod/$eventCode');
+      final List<dynamic> rawList = response.data;
+      return rawList.cast<Map<String, dynamic>>();
+    } catch (e) {
+      print('❌ VOD 리스트 API 호출 실패: $e');
       rethrow;
     }
   }

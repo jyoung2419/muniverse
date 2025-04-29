@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../providers/event/event_vod_provider.dart';
 
 class TitleVodTab extends StatefulWidget {
-  const TitleVodTab({super.key});
+  final String eventCode;
+  final int eventYear;
+
+  const TitleVodTab({
+    super.key,
+    required this.eventCode,
+    required this.eventYear,
+  });
 
   @override
   State<TitleVodTab> createState() => _TitleVodTabState();
@@ -15,7 +21,8 @@ class _TitleVodTabState extends State<TitleVodTab> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<EventVODProvider>(context, listen: false).fetchDummyVODs();
+      Provider.of<EventVODProvider>(context, listen: false)
+          .fetchVODs(widget.eventCode, widget.eventYear);
     });
   }
 
@@ -26,26 +33,44 @@ class _TitleVodTabState extends State<TitleVodTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 필터 (년도)
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.only(left:20, top:14, right:20, bottom:0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO: FAQ 동작
+                    },
+                    icon: const Icon(Icons.help, color: Colors.white, size: 13),
+                    label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO: 이용안내 동작
+                    },
+                    icon: const Icon(Icons.help, color: Colors.white, size: 13),
+                    label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
+                  ),
+                ],
+              ),
+
+              // 필터 연도
+              Row(
                 children: const [
-                  Icon(Icons.filter_alt, color: Colors.white, size: 12),
+                  Icon(Icons.filter_alt, color: Colors.white, size: 13),
                   SizedBox(width: 4),
                   Text(
                     '2025년',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ],
               ),
             ],
           ),
         ),
-
         // VOD 리스트
         Expanded(
           child: ListView.builder(
@@ -60,6 +85,10 @@ class _TitleVodTabState extends State<TitleVodTab> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF212225),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0x5270737C),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,10 +102,8 @@ class _TitleVodTabState extends State<TitleVodTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
-                            image: AssetImage(
-                              vod.profileImageUrl.isNotEmpty
-                                  ? vod.profileImageUrl
-                                  : 'assets/images/vod.png',
+                            image: NetworkImage(
+                              vod.profileImageUrl,
                             ),
                             fit: BoxFit.cover,
                           ),
@@ -92,13 +119,13 @@ class _TitleVodTabState extends State<TitleVodTab> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              DateFormat('yyyy.MM.dd').format(vod.createDate),
-                              style: const TextStyle(color: Colors.white70, fontSize: 11),
-                            ),
+                            // Text(
+                            //   DateFormat('yyyy.MM.dd').format(vod.createDate),
+                            //   style: const TextStyle(color: Colors.white70, fontSize: 11),
+                            // ),
                             const SizedBox(height: 4),
                             Text(
-                              vod.event?.name ?? '',
+                              vod.name,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -107,7 +134,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              vod.event?.content ?? '',
+                              vod.content,
                               style: const TextStyle(color: Colors.white54, fontSize: 12),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

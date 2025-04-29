@@ -14,28 +14,44 @@ class TitleLiveTab extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 필터 (년도)
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.only(left:20, top:14, right:20, bottom:0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: Row(
-                  children: const [
-                    Icon(Icons.filter_alt, color: Colors.white, size: 12),
-                    SizedBox(width: 4),
-                    Text(
-                      '2025년',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
-                ),
+              Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO: FAQ 동작
+                    },
+                    icon: const Icon(Icons.help, color: Colors.white, size: 13),
+                    label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO: 이용안내 동작
+                    },
+                    icon: const Icon(Icons.help, color: Colors.white, size: 13),
+                    label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
+                  ),
+                ],
+              ),
+
+              // 필터 연도
+              Row(
+                children: const [
+                  Icon(Icons.filter_alt, color: Colors.white, size: 13),
+                  SizedBox(width: 4),
+                  Text(
+                    '2025년',
+                    style: TextStyle(color: Colors.white, fontSize: 13),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-
         // 📺 스트리밍 리스트
         Expanded(
           child: ListView.builder(
@@ -61,6 +77,10 @@ class TitleLiveTab extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xFF212225),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0x5270737C),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +136,7 @@ class TitleLiveTab extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '공연 일시: ${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDate)}(KST) ~ ${DateFormat('HH:mm').format(item.taskEndDate)}(KST)',
+                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDate)} ~ ${DateFormat('HH:mm').format(item.taskEndDate)}(KST)',
                               style: const TextStyle(color: Colors.white70, fontSize: 11),
                             ),
                             const SizedBox(height: 4),

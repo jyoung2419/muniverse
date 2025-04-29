@@ -32,14 +32,6 @@ class VODTicketProvider with ChangeNotifier {
       name: '2025 MOKPO MUSICPLAY VOD',
       content: '목포 뮤직플레이 다시보기',
       profileImageUrl: 'assets/images/vod.png',
-      videoUrl: 'https://example.com/vod/video1.mp4',
-      eventYear: 2025,
-      round: 1,
-      openDate: DateTime(2025, 7, 15),
-      endDate: DateTime(2025, 7, 31),
-      createDate: DateTime(2025, 6, 10),
-      updateDate: null,
-      eventCode: 'E001',
     );
 
     _tickets = [

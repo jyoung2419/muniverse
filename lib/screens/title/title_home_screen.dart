@@ -57,8 +57,8 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       );
     }
 
-    // final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN'].contains(event!.status);
-    final showLiveTab = event!.status == 'OPEN';
+    final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN', 'END'].contains(event!.status);
+    // final showLiveTab = ['OPEN', 'PRE_OPEN'].contains(event!.status);
 
     final tabList = [
       const Tab(text: '상세정보'),
@@ -74,7 +74,10 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       TitleTicketTab(),
       TitleVoteTab(event: event!),
       if (showLiveTab) TitleLiveTab(),
-      TitleVodTab(),
+      TitleVodTab(
+        eventCode: event!.eventCode,
+        eventYear: event!.performanceStartTime.year,
+      ),
       TitleRelatedVideoTab(event: event!),
     ];
 
