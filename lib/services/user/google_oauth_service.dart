@@ -6,12 +6,9 @@ class GoogleOauthService {
 
   Future<Map<String, dynamic>> loginWithGoogle(String idToken) async {
     final response = await _dio.post(
-      '/api/v1/user/oauth/google',
+      '/api/v1/user/app/oauth/google',
       data: {'idToken': idToken},
     );
-
-    // 🔥 Set-Cookie 로그 확인
-    print("🔥 Set-Cookie: ${response.headers['set-cookie']}");
 
     return response.data;
   }
@@ -25,7 +22,7 @@ class GoogleOauthService {
       'userId': userId,
       'nickName': nickName,
     };
-    if (phoneNumber != null) {
+    if (phoneNumber.isNotEmpty) {
       data['phoneNumber'] = phoneNumber;
     }
 

@@ -9,7 +9,7 @@ class GoogleOauthProvider with ChangeNotifier {
 
   Future<void> signIn(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId: dotenv.env['GOOGLE_CLIENT_ID']
+      clientId: dotenv.env['GOOGLE_CLIENT_ID'],
     );
 
     final googleUser = await googleSignIn.signIn();
@@ -22,28 +22,27 @@ class GoogleOauthProvider with ChangeNotifier {
 
     final data = await _googleOauthService.loginWithGoogle(idToken);
 
-    // ✅ userId 저장 (null 체크 포함)
     final userId = data['userId'];
-    if (userId != null) {
-      await SharedPrefsUtil.saveUserId(userId);
-    } else {
-      print("❌ 서버 응답에 userId가 없음: $data");
-      throw Exception("userId가 서버 응답에 없습니다.");
-    }
-
     final status = data['status'];
 
-    if (status == 'REGISTERED') {
-      Navigator.pushReplacementNamed(context, '/home');
-    } else if (status == 'NEEDS_INFO' || status == 'NEW_USER') {
-      Navigator.pushNamed(
-        context,
-        '/google_signup',
-        arguments: {
-          'email': data['email'],
-          'name': data['name'],
-        },
-      );
+    if (userId != null) {
+      await SharedPrefsUtil.saveUserId(userId);
+
+      if (status == 'REGISTERED') {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if (status == 'NEEDS_INFO' || status == 'NEW_USER') {
+        Navigator.pushNamed(
+          context,
+          '/google_signup',
+          arguments: {
+            'email': data['email'],
+            'name': data['name'],
+          },
+        );
+      }
+    } else {
+      print("❌ 서버 응답에 userId 없음: $data");
+      throw Exception("로그인 응답 누락");
     }
   }
 }

@@ -13,6 +13,20 @@ class SharedPrefsUtil {
     return userId;
   }
 
+  static Future<void> saveTokens({required String accessToken, required String refreshToken}) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('accessToken', accessToken);
+    await prefs.setString('refreshToken', refreshToken);
+  }
+
+  static Future<void> loadTokens() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final refreshToken = prefs.getString('refreshToken');
+    print('✅ 저장된 accessToken: $accessToken');
+    print('✅ 저장된 refreshToken: $refreshToken');
+  }
+
   static Future<void> clear() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

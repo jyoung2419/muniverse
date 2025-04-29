@@ -16,7 +16,7 @@ class DioClient {
 
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
-    final cookieJar = PersistCookieJar(
+    _cookieJar = PersistCookieJar(
       storage: FileStorage("${dir.path}/.cookies/"),
     );
 
@@ -33,7 +33,7 @@ class DioClient {
       },
     ));
 
-    dio.interceptors.add(CookieManager(cookieJar));
+    dio.interceptors.add(CookieManager(_cookieJar!));
     dio.interceptors.add(LogInterceptor(responseHeader: true));
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
@@ -57,7 +57,6 @@ class DioClient {
           } catch (e) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.clear();
-
             navigatorKey.currentState?.pushNamedAndRemoveUntil('/login', (route) => false);
             return handler.reject(error);
           }
@@ -69,7 +68,7 @@ class DioClient {
 
   Future<void> loadCookies() async {
     final dir = await getApplicationDocumentsDirectory();
-    _cookieJar = PersistCookieJar(storage: FileStorage("${dir.path}/.cookies/"));
+    _cookieJar ??= PersistCookieJar(storage: FileStorage("${dir.path}/.cookies/"));
     dio.interceptors.add(CookieManager(_cookieJar!));
   }
 }

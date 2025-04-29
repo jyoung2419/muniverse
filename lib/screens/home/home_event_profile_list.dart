@@ -36,6 +36,9 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
     final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
     final filteredEvents = [...opened, ...upcoming];
 
+    if (filteredEvents.isNotEmpty) {
+      filteredEvents.removeAt(0);
+    }
     print('✅ filteredEvents 최종 length: ${filteredEvents.length}');
 
     final isMultiple = filteredEvents.length > 2;

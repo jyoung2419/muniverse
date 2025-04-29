@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/event_main_provider.dart';
 import '../../providers/vote/vote_provider.dart';
+import '../../utils/shared_prefs_util.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/home_related_video_section.dart';
@@ -21,12 +22,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _printCurrentUserId();
+
     Future.microtask(() {
       print('🔍 Fetching main events...');
       context.read<EventMainProvider>().fetchMainEvents();
     });
   }
-
+  Future<void> _printCurrentUserId() async {
+    try {
+      final userId = await SharedPrefsUtil.getUserId();
+      print('🔥 현재 로그인한 유저 ID: $userId');
+    } catch (e) {
+      print('❌ 유저 ID 불러오기 실패: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
