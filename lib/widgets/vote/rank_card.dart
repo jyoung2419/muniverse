@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class RankCard extends StatelessWidget {
   final int index;
   final String name;
-  final String nameEng;
+  final String artistCode;
   final String imageUrl;
-  final int percent;
+  final double votePercent;
   final IconData icon;
   final Color iconColor;
 
@@ -13,9 +13,9 @@ class RankCard extends StatelessWidget {
     super.key,
     required this.index,
     required this.name,
-    required this.nameEng,
+    required this.artistCode,
     required this.imageUrl,
-    required this.percent,
+    required this.votePercent,
     required this.icon,
     required this.iconColor,
   });
@@ -32,7 +32,14 @@ class RankCard extends StatelessWidget {
             children: [
               Icon(icon, color: iconColor, size: 28),
               const SizedBox(width: 4),
-              Text('${index + 1}위', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(
+                '$index위',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -45,17 +52,29 @@ class RankCard extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 width: 130,
                 height: 130,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey,
+                    child: const Icon(Icons.error, color: Colors.white),
+                  );
+                },
               ),
             ),
           ),
           const SizedBox(height: 6),
-          Text(name, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
-          Text(nameEng, style: const TextStyle(color: Color(0xFFC2C4C8E0), fontSize: 13)),
+          Text(
+            name,
+            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+          Text(
+            artistCode, // ✅ 영어명 없어서 artistCode로 대체
+            style: const TextStyle(color: Color(0xFFC2C4C8E0), fontSize: 13),
+          ),
           const SizedBox(height: 6),
           Row(
             children: [
@@ -63,7 +82,7 @@ class RankCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
-                    value: percent / 100,
+                    value: votePercent / 100,
                     color: const Color(0xFF2EFFAA),
                     backgroundColor: Colors.grey.shade800,
                     minHeight: 16,
@@ -71,7 +90,10 @@ class RankCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text('$percent%', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              Text(
+                '${votePercent.toStringAsFixed(1)}%',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         ],

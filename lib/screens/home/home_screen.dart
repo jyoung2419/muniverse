@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/event_main_provider.dart';
-import '../../providers/vote/vote_provider.dart';
+import '../../providers/vote/main_vote_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
@@ -9,7 +9,7 @@ import '../../widgets/home_related_video_section.dart';
 import 'home_award.dart';
 import 'home_banner_section.dart';
 import 'home_event_profile_list.dart';
-import 'home_vote.dart';
+import 'home_award_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,8 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _printCurrentUserId();
 
     Future.microtask(() {
-      print('🔍 Fetching main events...');
       context.read<EventMainProvider>().fetchMainEvents();
+      context.read<MainVoteProvider>().fetchMainVotes();
     });
   }
   Future<void> _printCurrentUserId() async {
@@ -40,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final vote = context.read<VoteProvider>().getVoteByCode('V005');
+    final mainVotes = context.watch<MainVoteProvider>().votes;
+    final mainVote = mainVotes.isNotEmpty ? mainVotes.first : null;
 
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
@@ -65,9 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (vote != null) HomeAward(vote: vote),
+                  if (mainVote != null) HomeAward(vote: mainVote),
                   const SizedBox(height: 24),
-                  if (vote != null) HomeAwardSection(vote: vote),
+                  if (mainVote != null) HomeAwardSection(vote: mainVote),
                   const SizedBox(height: 40),
                   const HomeRelatedVideoSection(),
                   const SizedBox(height: 40),

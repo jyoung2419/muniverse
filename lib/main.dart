@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:muniverse_app/providers/event/event_main_provider.dart';
 import 'package:muniverse_app/providers/event/event_vote_provider.dart';
+import 'package:muniverse_app/providers/vote/main_vote_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
 import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,9 +58,10 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
         ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
-        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 확인필요..
-        ChangeNotifierProvider(create: (_) => VoteProvider()),  // 확인필요....
+        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 수정할거임..
+        ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....
         ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
+        ChangeNotifierProvider(create: (_) => MainVoteProvider()),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),

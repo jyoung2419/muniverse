@@ -22,4 +22,14 @@ class EventMainService {
       rethrow;
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchMainVotes() async {
+    try {
+      final response = await _dio.get('/api/v1/event/main/vote');
+      print('📦 /vote Response: ${response.data}');
+      return List<Map<String, dynamic>>.from(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

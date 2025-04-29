@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import '../../models/event/event_model.dart';
 import '../../models/event/event_vote_model.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../screens/vote/vote_detail_screen.dart';
 
 class VoteCard extends StatelessWidget {

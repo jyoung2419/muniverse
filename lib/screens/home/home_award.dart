@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import '../../models/vote/vote_model.dart';
-import '../../providers/artist/artist_provider.dart';
-import '../../providers/vote/vote_artist_provider.dart';
-import '../../providers/vote/vote_provider.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
+import '../../models/vote/main_vote_model.dart';
 import '../vote/vote_detail_screen.dart';
 
-class HomeAward extends StatefulWidget {
-  final VoteModel vote;
+class HomeAward extends StatelessWidget {
+  final MainVoteModel vote;
 
   const HomeAward({super.key, required this.vote});
 
-  @override
-  State<HomeAward> createState() => _HomeAwardState();
-}
-
-class _HomeAwardState extends State<HomeAward> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -30,7 +20,7 @@ class _HomeAwardState extends State<HomeAward> {
               RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: 'Weekly ',
                       style: TextStyle(
                         color: Colors.white,
@@ -48,7 +38,7 @@ class _HomeAwardState extends State<HomeAward> {
                         ),
                       ),
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: '-Pick',
                       style: TextStyle(
                         color: Colors.white,
@@ -60,9 +50,9 @@ class _HomeAwardState extends State<HomeAward> {
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                '4월 1주차 주간인기상 투표에 참여하세요',
-                style: TextStyle(
+              Text(
+                '${vote.voteName} 투표에 참여하세요',
+                style: const TextStyle(
                   color: Color(0xC2C4C8E0),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
@@ -74,21 +64,15 @@ class _HomeAwardState extends State<HomeAward> {
         // 오른쪽 링크
         TextButton(
           onPressed: () {
-            final votes = context.read<VoteProvider>().votes;
-            final artists = context.read<ArtistProvider>().artists;
-
-            context.read<VoteRewardMediaProvider>().fetchRewardMedia(votes);
-            context.read<VoteArtistProvider>().fetchVoteArtists(
-              votes: votes,
-              artists: artists,
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => VoteDetailScreen(
+                  voteCode: vote.voteCode,
+                  eventName: 'Weekly M-Pick',
+                ),
+              ),
             );
-
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (_) => VoteDetailScreen(voteCode: widget.voteCode),
-            //   ),
-            // );
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,

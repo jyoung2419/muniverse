@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-
 import '../common/tag_box.dart';
 
 class WinnerCard extends StatelessWidget {
   final String name;
-  final String nameEng;
-  final String imageUrl;
-  final int percent;
+  final String artistCode;
+  final String profileUrl;
+  final double votePercent;
 
   const WinnerCard({
     super.key,
     required this.name,
-    required this.nameEng,
-    required this.imageUrl,
-    required this.percent,
+    required this.artistCode,
+    required this.profileUrl,
+    required this.votePercent,
   });
 
   @override
@@ -42,15 +41,18 @@ class WinnerCard extends StatelessWidget {
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              imageUrl,
+            child: Image.network(
+              profileUrl,
               width: 185,
               height: 185,
               fit: BoxFit.cover,
             ),
           ),
           const SizedBox(height: 10),
-          Text('$name $nameEng', style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
+          Text(
+            '$name ($artistCode)', // ✅ name (한글) + artistCode (영어명 대체)
+            style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+          ),
           const SizedBox(height: 6),
           Row(
             children: [
@@ -58,7 +60,7 @@ class WinnerCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
-                    value: percent / 100,
+                    value: votePercent / 100,
                     color: const Color(0xFF2EFFAA),
                     backgroundColor: Colors.grey.shade500,
                     minHeight: 16,
@@ -66,7 +68,7 @@ class WinnerCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text('$percent%', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
+              Text('${votePercent.toStringAsFixed(1)}%', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
             ],
           ),
         ],

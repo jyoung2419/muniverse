@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:muniverse_app/widgets/vote/rank_card.dart';
-import 'package:muniverse_app/widgets/vote/winner_card.dart';
-
-import '../common/tag_box.dart';
+import '../../models/vote/main_vote_artist_model.dart';
+import '../../widgets/vote/rank_card.dart';
+import '../../widgets/vote/winner_card.dart';
 
 class VotingResultList extends StatelessWidget {
-  const VotingResultList({super.key});
+  final List<MainVoteArtistModel> artists;
 
-  final names = const ['태민', '방탄소년단 뷔', '블랙핑크', 'The KingDom', '르세라핌'];
-  final namesEng = const ['TAEMIN', 'BTS V', 'BLACK PINK', 'The KingDom', 'LESSERAFIM'];
-  final percents = const [56, 23, 18, 12, 6];
-  final images = const [
-    'artist/taemin.png',
-    'artist/btsv.png',
-    'artist/blackpink.png',
-    'artist/thekingdom.png',
-    'artist/lesserafim.png',
-  ];
+  const VotingResultList({super.key, required this.artists});
 
   @override
   Widget build(BuildContext context) {
+    if (artists.isEmpty) {
+      return const Center(
+        child: Text('데이터 없음', style: TextStyle(color: Colors.white)),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         WinnerCard(
-          name: names[0],
-          nameEng: namesEng[0],
-          imageUrl: 'assets/images/${images[0]}',
-          percent: percents[0],
+          name: artists[0].name,
+          artistCode: artists[0].name,  // 영어이름으로 추후에 수정 예정
+          profileUrl: artists[0].profileUrl,
+          votePercent: artists[0].votePercent,
         ),
         const SizedBox(height: 20),
         ScrollConfiguration(
@@ -39,19 +35,26 @@ class VotingResultList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
-                children: List.generate(4, (i) => RankCard(
-                  index: i + 1,
-                  name: names[i + 1],
-                  nameEng: namesEng[i + 1],
-                  imageUrl: 'assets/images/${images[i + 1]}',
-                  percent: percents[i + 1],
-                  icon: Icons.emoji_events,
-                  iconColor: i == 0 ? Colors.grey : i == 1 ? Color(0xFFCE9505) : Colors.white24,
-                )),
+                children: List.generate(
+                  artists.length - 1,
+                      (i) => RankCard(
+                    index: i + 2,
+                    name: artists[i + 1].name,
+                    artistCode: artists[i + 1].artistCode,
+                    imageUrl: artists[i + 1].profileUrl,
+                    votePercent: artists[i + 1].votePercent,
+                    icon: Icons.emoji_events,
+                    iconColor: i == 0
+                        ? Colors.grey
+                        : i == 1
+                        ? const Color(0xFFCE9505)
+                        : Colors.white24,
+                  ),
+                ),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

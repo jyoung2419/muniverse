@@ -60,40 +60,44 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
               Text('$totalVoteCount명', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18)),
               const SizedBox(height: 16),
 
-              // ✅ WinnerCard
-              if (sorted.isNotEmpty)
-                WinnerCard(
-                  name: sorted[0].artist.name,
-                  nameEng: sorted[0].artist.content,
-                  imageUrl: sorted[0].artist.profileUrl?? 'assets/images/default_profile.png',
-                  percent: ((sorted[0].voteCount / totalVoteCount) * 100).round(),
-                ),
-
-              const SizedBox(height: 20),
-
-              // ✅ RankCard 리스트 (2~5위)
-              if (sorted.length > 1)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    children: List.generate(
-                      (sorted.length - 1).clamp(0, 4),
-                          (i) {
-                        final artist = sorted[i + 1];
-                        return RankCard(
-                          index: i + 1,
-                          name: artist.artist.name,
-                          nameEng: artist.artist.content,
-                          imageUrl: artist.artist.profileUrl?? 'assets/images/default_profile.png',
-                          percent: ((artist.voteCount / totalVoteCount) * 100).round(),
-                          icon: Icons.emoji_events,
-                          iconColor: i == 0 ? Colors.grey : i == 1 ? const Color(0xFFCE9505) : Colors.white24,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+              // // ✅ WinnerCard
+              // if (sorted.isNotEmpty)
+              //   WinnerCard(
+              //     name: sorted[0].artist.name,
+              //     nameEng: sorted[0].artist.content,
+              //     imageUrl: sorted[0].artist.profileUrl?? 'assets/images/default_profile.png',
+              //     percent: ((sorted[0].voteCount / totalVoteCount) * 100).round(),
+              //   ),
+              //
+              // const SizedBox(height: 20),
+              //
+              // // ✅ RankCard 리스트 (2~5위)
+              // if (sorted.length > 1)
+              //   SingleChildScrollView(
+              //     scrollDirection: Axis.horizontal,
+              //     padding: const EdgeInsets.symmetric(horizontal: 12),
+              //     child: Row(
+              //       children: List.generate(
+              //         (sorted.length - 1).clamp(0, 4),
+              //             (i) {
+              //           final artist = sorted[i + 1];
+              //           // return RankCard(
+              //           //   index: i + 2,
+              //           //   name: artists[i + 1].name,
+              //           //   artistCode: artists[i + 1].artistCode,
+              //           //   imageUrl: artists[i + 1].profileUrl,
+              //           //   votePercent: artists[i + 1].votePercent,
+              //           //   icon: Icons.emoji_events,
+              //           //   iconColor: i == 0
+              //           //       ? Colors.grey
+              //           //       : i == 1
+              //           //       ? const Color(0xFFCE9505)
+              //           //       : Colors.white24,
+              //           // );
+              //         },
+              //       ),
+              //     ),
+              //   ),
 
               const SizedBox(height: 16),
 
