@@ -11,7 +11,8 @@ class EventVODProvider with ChangeNotifier {
 
   Future<void> fetchVODs(String eventCode, int eventYear) async {
     try {
-      final List<Map<String, dynamic>> responseList = await _eventTitleService.fetchEventVODList(eventCode);
+      final List<Map<String, dynamic>> responseList =
+      await _eventTitleService.fetchEventVODList(eventCode, eventYear);
       _vods = responseList.map((json) => EventVODModel.fromJson(json)).toList();
       notifyListeners();
     } catch (e) {

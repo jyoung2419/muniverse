@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/event_vod_provider.dart';
+import '../../widgets/info/vod_faq.dart';
+import '../../widgets/info/vod_notice.dart';
 
 class TitleVodTab extends StatefulWidget {
   final String eventCode;
@@ -17,9 +19,12 @@ class TitleVodTab extends StatefulWidget {
 }
 
 class _TitleVodTabState extends State<TitleVodTab> {
+  late int _selectedYear;
+
   @override
   void initState() {
     super.initState();
+    _selectedYear = widget.eventYear; // 초기값 세팅
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventVODProvider>(context, listen: false)
           .fetchVODs(widget.eventCode, widget.eventYear);
@@ -42,15 +47,31 @@ class _TitleVodTabState extends State<TitleVodTab> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      // TODO: FAQ 동작
+                      showDialog(
+                        context: context,
+                        builder: (context) => const VodFAQ(),
+                      );
                     },
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      splashFactory: NoSplash.splashFactory,
+                    ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
                     label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                   TextButton.icon(
                     onPressed: () {
-                      // TODO: 이용안내 동작
+                      showDialog(
+                        context: context,
+                        builder: (context) => const VodNotice(),
+                      );
                     },
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      splashFactory: NoSplash.splashFactory,
+                    ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
                     label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
                   ),
@@ -59,12 +80,31 @@ class _TitleVodTabState extends State<TitleVodTab> {
 
               // 필터 연도
               Row(
-                children: const [
-                  Icon(Icons.filter_alt, color: Colors.white, size: 13),
-                  SizedBox(width: 4),
-                  Text(
-                    '2025년',
-                    style: TextStyle(color: Colors.white, fontSize: 13),
+                children: [
+                  const Icon(Icons.filter_alt, color: Colors.white, size: 13),
+                  const SizedBox(width: 4),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: _selectedYear,
+                      dropdownColor: const Color(0xFF212225),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      icon: const SizedBox.shrink(),
+                      onChanged: (int? newValue) {
+                        if (newValue != null) {
+                          Provider.of<EventVODProvider>(context, listen: false)
+                              .fetchVODs(widget.eventCode, newValue);
+                          setState(() {
+                            _selectedYear = newValue;
+                          });
+                        }
+                      },
+                      items: [2025, 2024, 2023].map((year) {
+                        return DropdownMenuItem<int>(
+                          value: year,
+                          child: Text('$year년'),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),
