@@ -75,7 +75,11 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       TitleVoteTab(
         event: event!,
       ),
-      if (showLiveTab) TitleLiveTab(),
+      if (showLiveTab)
+        TitleLiveTab(
+          eventCode: event!.eventCode,
+          eventYear: event!.performanceStartTime.year,
+        ),
       TitleVodTab(
         eventCode: event!.eventCode,
         eventYear: event!.performanceStartTime.year,

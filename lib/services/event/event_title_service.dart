@@ -34,6 +34,22 @@ class EventTitleService {
     return List<Map<String, dynamic>>.from(response.data);
   }
 
+  // Live 리스트 조회
+  Future<List<Map<String, dynamic>>> fetchEventLiveList(String eventCode, int eventYear) async {
+    try {
+      final response = await _dio.get(
+        '/api/v1/event/detail/live/$eventCode',
+        queryParameters: {
+          'eventYear': eventYear,
+        },
+      );
+      return List<Map<String, dynamic>>.from(response.data);
+    } catch (e) {
+      print('❌ Live 리스트 API 호출 실패: $e');
+      rethrow;
+    }
+  }
+
   // Vote 리스트 조회
   Future<List<Map<String, dynamic>>> fetchEventVoteList(String eventCode, String status) async {
     try {

@@ -56,7 +56,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
         ChangeNotifierProvider(create: (_) => VODTicketProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
-        ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
+        // ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
         ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 수정할거임..
         ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....

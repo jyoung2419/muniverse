@@ -2,20 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/event_live_provider.dart';
+import '../../widgets/info/live_faq.dart';
+import '../../widgets/info/live_notice.dart';
 
-class TitleLiveTab extends StatelessWidget {
-  const TitleLiveTab({super.key});
+class TitleLiveTab extends StatefulWidget {
+  final String eventCode;
+  final int eventYear;
+
+  const TitleLiveTab({
+    super.key,
+    required this.eventCode,
+    required this.eventYear,
+  });
+
+  @override
+  State<TitleLiveTab> createState() => _TitleLiveTabState();
+}
+
+class _TitleLiveTabState extends State<TitleLiveTab> {
+  late int _selectedYear;
+  @override
+  void initState() {
+    super.initState();
+    _selectedYear = widget.eventYear;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<EventLiveProvider>(context, listen: false)
+          .fetchLives(widget.eventCode, widget.eventYear);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final streamings = context.watch<EventLiveProvider>().streamings;
+    final lives = context.watch<EventLiveProvider>().lives;
     final now = DateTime.now();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left:20, top:14, right:20, bottom:0),
+          padding: const EdgeInsets.only(left: 20, top: 14, right: 20, bottom: 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -23,49 +49,81 @@ class TitleLiveTab extends StatelessWidget {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      // TODO: FAQ 동작
+                      showDialog(
+                        context: context,
+                        builder: (context) => const LiveFAQ(),
+                      );
                     },
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      splashFactory: NoSplash.splashFactory,
+                    ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
                     label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                   TextButton.icon(
                     onPressed: () {
-                      // TODO: 이용안내 동작
+                      showDialog(
+                        context: context,
+                        builder: (context) => const LiveNotice(),
+                      );
                     },
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      splashFactory: NoSplash.splashFactory,
+                    ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
                     label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                 ],
               ),
-
-              // 필터 연도
               Row(
-                children: const [
-                  Icon(Icons.filter_alt, color: Colors.white, size: 13),
-                  SizedBox(width: 4),
-                  Text(
-                    '2025년',
-                    style: TextStyle(color: Colors.white, fontSize: 13),
+                children: [
+                  const Icon(Icons.filter_alt, color: Colors.white, size: 13),
+                  const SizedBox(width: 4),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: _selectedYear,
+                      dropdownColor: const Color(0xFF212225),
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      icon: const SizedBox.shrink(),
+                      onChanged: (int? newValue) {
+                        if (newValue != null) {
+                          Provider.of<EventLiveProvider>(context, listen: false)
+                              .fetchLives(widget.eventCode, newValue);
+                          setState(() {
+                            _selectedYear = newValue;
+                          });
+                        }
+                      },
+                      items: [2025, 2024, 2023].map((year) {
+                        return DropdownMenuItem<int>(
+                          value: year,
+                          child: Text('$year년'),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),
             ],
           ),
         ),
-        // 📺 스트리밍 리스트
         Expanded(
           child: ListView.builder(
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-            itemCount: streamings.length,
+            itemCount: lives.length,
             itemBuilder: (context, index) {
-              final item = streamings[index];
+              final item = lives[index];
 
               // 상태 계산
               String status;
-              if (now.isBefore(item.taskDate)) {
+              if (now.isBefore(item.taskDateTime)) {
                 status = '진행예정';
-              } else if (now.isAfter(item.taskEndDate)) {
+              } else if (now.isAfter(item.taskEndDateTime)) {
                 status = '종료';
               } else {
                 status = '진행중';
@@ -95,13 +153,12 @@ class TitleLiveTab extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               image: DecorationImage(
-                                image: AssetImage(item.profileImageUrl),
+                                image: NetworkImage(item.profileImageURL),
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
-                        // 상태 뱃지
                         Positioned(
                           top: 8,
                           left: 8,
@@ -115,9 +172,7 @@ class TitleLiveTab extends StatelessWidget {
                             child: Text(
                               status,
                               style: TextStyle(
-                                color: status == '종료'
-                                    ? const Color(0xFF2EFFAA)
-                                    : Colors.black,
+                                color: status == '종료' ? const Color(0xFF2EFFAA) : Colors.black,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -126,8 +181,6 @@ class TitleLiveTab extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    // 오른쪽 영역
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
@@ -136,25 +189,18 @@ class TitleLiveTab extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDate)} ~ ${DateFormat('HH:mm').format(item.taskEndDate)}(KST)',
+                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDateTime)} ~ ${DateFormat('HH:mm').format(item.taskEndDateTime)}(KST)',
                               style: const TextStyle(color: Colors.white70, fontSize: 11),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               item.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 6),
                             Text(
                               item.content,
-                              style: const TextStyle(
-                                color: Colors.white54,
-                                fontSize: 12,
-                              ),
+                              style: const TextStyle(color: Colors.white54, fontSize: 12),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -164,7 +210,7 @@ class TitleLiveTab extends StatelessWidget {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    // TODO: 시청하기 버튼 처리
+                                    // TODO: 시청하기 동작
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF2EFFAA),

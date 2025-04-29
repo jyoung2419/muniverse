@@ -1,68 +1,31 @@
-import 'event_model.dart';
-
 class EventLiveModel {
-  final int eventYear;
-  final int round;
-  final DateTime createDate;
-  final DateTime taskDate;
-  final DateTime taskEndDate;
-  final DateTime? updateDate;
-  final String eventCode;
   final String liveCode;
+  final String profileImageURL;
   final String name;
   final String content;
-  final String profileImageUrl;
-  final String videoUrl;
-
-  final EventModel? event; // 🔄 Optional: 연관된 이벤트 객체 (선택)
+  final String status;
+  final DateTime taskDateTime;
+  final DateTime taskEndDateTime;
 
   EventLiveModel({
-    required this.eventYear,
-    required this.round,
-    required this.createDate,
-    required this.taskDate,
-    required this.taskEndDate,
-    this.updateDate,
-    required this.eventCode,
     required this.liveCode,
+    required this.profileImageURL,
     required this.name,
     required this.content,
-    required this.profileImageUrl,
-    required this.videoUrl,
-    this.event,
+    required this.status,
+    required this.taskDateTime,
+    required this.taskEndDateTime,
   });
 
   factory EventLiveModel.fromJson(Map<String, dynamic> json) {
     return EventLiveModel(
-      eventYear: json['eventYear'],
-      round: json['round'],
-      createDate: DateTime.parse(json['createDate']),
-      taskDate: DateTime.parse(json['taskDate']),
-      taskEndDate: DateTime.parse(json['taskEndDate']),
-      updateDate: json['updateDate'] != null ? DateTime.parse(json['updateDate']) : null,
-      eventCode: json['eventCode'],
       liveCode: json['liveCode'],
+      profileImageURL: json['profileImageURL'],
       name: json['name'],
       content: json['content'],
-      profileImageUrl: json['profileImageUrl'],
-      videoUrl: json['videoUrl'],
+      status: json['status'],
+      taskDateTime: DateTime.parse(json['taskDateTime']),
+      taskEndDateTime: DateTime.parse(json['taskEndDateTime']),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'eventYear': eventYear,
-      'round': round,
-      'createDate': createDate.toIso8601String(),
-      'taskDate': taskDate.toIso8601String(),
-      'taskEndDate': taskEndDate.toIso8601String(),
-      'updateDate': updateDate?.toIso8601String(),
-      'eventCode': eventCode,
-      'liveCode': liveCode,
-      'name': name,
-      'content': content,
-      'profileImageUrl': profileImageUrl,
-      'videoUrl': videoUrl,
-    };
   }
 }
