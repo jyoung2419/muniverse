@@ -4,13 +4,13 @@ import '../../../providers/vote/vote_reward_media_provider.dart';
 import 'package:provider/provider.dart';
 
 class VoteDetailRewardTab extends StatelessWidget {
-  final VoteModel vote;
-  const VoteDetailRewardTab({super.key, required this.vote});
+  final String voteCode;
+  const VoteDetailRewardTab({super.key, required this.voteCode});
 
   @override
   Widget build(BuildContext context) {
     final rewardMediaList = Provider.of<VoteRewardMediaProvider>(context)
-        .getMediaByVoteCode(vote.voteCode);
+        .getMediaByVoteCode(voteCode);
 
     return Padding(
       padding: const EdgeInsets.all(16),

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../models/vote/vote_model.dart';
-import '../../providers/event/event_provider.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
+import '../../providers/vote/vote_detail_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
@@ -14,39 +12,48 @@ import '../vote/detail/vote_detail_result_tab.dart';
 import '../vote/detail/vote_detail_reward_tab.dart';
 
 class VoteDetailScreen extends StatefulWidget {
-  final VoteModel vote;
-  const VoteDetailScreen({super.key, required this.vote});
+  final String voteCode;
+  final String eventName;
+  const VoteDetailScreen({super.key, required this.voteCode, required this.eventName});
 
   @override
-  State<VoteDetailScreen> createState() => _VoteDetailScreen();
+  State<VoteDetailScreen> createState() => _VoteDetailScreenState();
 }
 
-class _VoteDetailScreen extends State<VoteDetailScreen>
-    with TickerProviderStateMixin {
+class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  late int _currentTabIndex;
+  int _currentTabIndex = 1;
   final ScrollController _scrollController = ScrollController();
   bool _showTopButton = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    final showRewardTab = now.isAfter(widget.vote.resultOpenTime);
-
-    _tabController = TabController(
-      length: showRewardTab ? 3 : 2,
-      vsync: this,
-      initialIndex: 1,
-    );
-    _currentTabIndex = 1;
-
+    _fetchVoteDetail();
     _scrollController.addListener(() {
       if (_scrollController.offset > 300 && !_showTopButton) {
         setState(() => _showTopButton = true);
       } else if (_scrollController.offset <= 300 && _showTopButton) {
         setState(() => _showTopButton = false);
       }
+    });
+  }
+
+  Future<void> _fetchVoteDetail() async {
+    await context.read<VoteDetailProvider>().fetchVoteDetail(widget.voteCode);
+    final voteDetail = context.read<VoteDetailProvider>().voteDetail;
+    final now = DateTime.now();
+    final showRewardTab = now.isAfter(voteDetail!.detailContent.endTime);
+
+    _tabController = TabController(
+      length: showRewardTab ? 3 : 2,
+      vsync: this,
+      initialIndex: 1,
+    );
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -67,17 +74,37 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final vote = widget.vote;
-    final eventProvider = Provider.of<EventProvider>(context, listen: false);
-    final event = eventProvider.getEventByCode(vote.eventCode);
-    final eventName = event?.name ?? 'weekly M-pick';
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF0B0C0C),
+        appBar: const Header(),
+        endDrawer: const AppDrawer(),
+        floatingActionButton: const BackFAB(),
+        body: const Center(
+          child: CircularProgressIndicator(color: Color(0xFF2EFFAA)),
+        ),
+      );
+    }
+
+    final voteDetail = context.watch<VoteDetailProvider>().voteDetail;
+
+    if (voteDetail == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF0B0C0C),
+        appBar: const Header(),
+        endDrawer: const AppDrawer(),
+        floatingActionButton: const BackFAB(),
+        body: const Center(
+          child: Text('데이터를 불러올 수 없습니다.', style: TextStyle(color: Colors.white)),
+        ),
+      );
+    }
+
+    final vote = voteDetail.detailContent;
     final now = DateTime.now();
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);
     final isEnded = now.isAfter(vote.endTime);
-    final remainingDays = vote.endTime.difference(now).inDays;
-    final rewardMediaList = context.watch<VoteRewardMediaProvider>().getMediaByVoteCode(vote.voteCode);
-    final rewardText = rewardMediaList.isNotEmpty ? rewardMediaList.first.rewardContent : '리워드 정보 없음';
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -128,8 +155,9 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
                                     image: DecorationImage(
-                                      image: AssetImage(vote.voteImageUrl),
-                                      fit: BoxFit.cover,
+                                      image: (vote.voteImageUrl.isNotEmpty)
+                                          ? NetworkImage(vote.voteImageUrl)
+                                          : const AssetImage('assets/images/default_vote_image.png') as ImageProvider,                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
@@ -151,7 +179,7 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                                             const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
                                             const SizedBox(width: 3),
                                             Text(
-                                              '남은 투표기간 $remainingDays일',
+                                              '남은 투표기간 ${vote.voteRestDay}일',
                                               style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
                                             ),
                                           ],
@@ -176,7 +204,7 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        eventName,
+                                        widget.eventName,
                                         style: const TextStyle(fontSize: 12, color: Colors.white70),
                                       ),
                                       const SizedBox(height: 4),
@@ -188,17 +216,10 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '기간: ${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}',
+                                    '기간: ${DateFormat('yyyy.MM.dd').format(vote.startTime)} ~ ${DateFormat('yyyy.MM.dd').format(vote.endTime)}(KST)',
                                     style: const TextStyle(fontSize: 11, color: Colors.white70),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    vote.content,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 11, color: Colors.white),
-                                  ),
-                                  const SizedBox(height: 8),
                                   Container(
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -215,7 +236,12 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                                           ],
                                         ),
                                         const SizedBox(height: 2),
-                                        Text(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                                        Text(
+                                          voteDetail.rewards.isNotEmpty
+                                              ? voteDetail.rewards.join(', ')
+                                              : '리워드 정보 없음',
+                                          style: const TextStyle(color: Colors.white, fontSize: 11),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -249,13 +275,13 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                     ),
                   ),
                   const SizedBox(height: 12),
-                  if (_currentTabIndex == 0) VoteDetailInfoTab(vote: vote),
+                  if (_currentTabIndex == 0) VoteDetailInfoTab(voteCode: widget.voteCode),
                   if (_currentTabIndex == 1)
                         () {
                       final now = DateTime.now();
                       if (now.isAfter(vote.startTime) && now.isBefore(vote.endTime)) {
-                        return VoteDetailProgressTab(vote: vote);
-                      } else if (now.isAfter(vote.endTime) && now.isBefore(vote.resultOpenTime)) {
+                        return VoteDetailProgressTab(voteCode: widget.voteCode);
+                      } else if (now.isAfter(vote.endTime)) {
                         return const Padding(
                           padding: EdgeInsets.all(20),
                           child: Center(
@@ -265,12 +291,12 @@ class _VoteDetailScreen extends State<VoteDetailScreen>
                             ),
                           ),
                         );
-                      } else if (now.isAfter(vote.resultOpenTime)) {
-                        return VoteDetailResultTab(vote: vote);
+                      } else {
+                        return VoteDetailResultTab(voteCode: widget.voteCode);
                       }
                       return const SizedBox();
                     }(),
-                  if (_currentTabIndex == 2 && _tabController.length == 3) VoteDetailRewardTab(vote: vote),
+                  if (_currentTabIndex == 2 && _tabController.length == 3) VoteDetailRewardTab(voteCode: widget.voteCode),
                   const SizedBox(height: 80),
                 ],
               ),

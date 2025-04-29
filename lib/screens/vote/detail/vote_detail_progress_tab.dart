@@ -5,12 +5,12 @@ import '../../../providers/vote/vote_artist_provider.dart';
 import '../../../widgets/vote/vote_dialog.dart';
 
 class VoteDetailProgressTab extends StatelessWidget {
-  final VoteModel vote;
-  const VoteDetailProgressTab({super.key, required this.vote});
+  final String voteCode;
+  const VoteDetailProgressTab({super.key, required this.voteCode});
 
   @override
   Widget build(BuildContext context) {
-    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(vote.voteCode);
+    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(voteCode);
     final totalVoteCount = voteArtists.fold(0, (sum, va) => sum + va.voteCount);
 
     final sortedVoteArtists = [...voteArtists];
@@ -33,7 +33,7 @@ class VoteDetailProgressTab extends StatelessWidget {
               final index = entry.key;
               final voteArtist = entry.value;
               final artist = voteArtist.artist;
-              final totalVotes = vote.freeCountLimit;
+              // final totalVotes = voteCode.freeCountLimit;
               final rate = totalVoteCount == 0 ? 0 : voteArtist.voteCount / totalVoteCount;
               final percentText = (rate * 100).toStringAsFixed(1);
               final isFirst = index == 0;
@@ -100,14 +100,14 @@ class VoteDetailProgressTab extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => VoteDialog(
-                                totalVotes: vote.freeCountLimit,
-                                artistCode: artist.artistCode,
-                                voteCode: vote.voteCode,
-                              ),
-                            );
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (_) => VoteDialog(
+                            //     totalVotes: vote.freeCountLimit,
+                            //     artistCode: artist.artistCode,
+                            //     voteCode: vote.voteCode,
+                            //   ),
+                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2EFFAA),

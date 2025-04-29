@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:muniverse_app/providers/event/event_main_provider.dart';
+import 'package:muniverse_app/providers/event/event_vote_provider.dart';
+import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
 import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
-import 'providers/event/event_artist_provider.dart';
 import 'providers/event/event_provider.dart';
 import 'providers/event/event_live_provider.dart';
 import 'providers/event/event_vod_provider.dart';
@@ -48,16 +49,17 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => EventMainProvider()),
-        ChangeNotifierProvider(create: (_) => EventArtistProvider()),
         ChangeNotifierProvider(create: (_) => EventVODProvider()),
         ChangeNotifierProvider(create: (_) => EventLiveProvider()),
+        ChangeNotifierProvider(create: (_) => EventVoteProvider()),
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
         ChangeNotifierProvider(create: (_) => VODTicketProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
         ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
-        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),
-        ChangeNotifierProvider(create: (_) => VoteProvider()),
+        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 확인필요..
+        ChangeNotifierProvider(create: (_) => VoteProvider()),  // 확인필요....
+        ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
-        '/voteMainScreen': (context) => const VoteMainScreen(),
+        // '/voteMainScreen': (context) => const VoteMainScreen(),
       },
 
       onGenerateRoute: (settings) {

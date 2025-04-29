@@ -83,12 +83,12 @@ class _HomeAwardState extends State<HomeAward> {
               artists: artists,
             );
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => VoteDetailScreen(vote: widget.vote),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (_) => VoteDetailScreen(voteCode: widget.voteCode),
+            //   ),
+            // );
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,

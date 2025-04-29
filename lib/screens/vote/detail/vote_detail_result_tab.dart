@@ -7,8 +7,8 @@ import '../../../widgets/vote/winner_card.dart';
 import '../../../widgets/vote/rank_card.dart';
 
 class VoteDetailResultTab extends StatefulWidget {
-  final VoteModel vote;
-  const VoteDetailResultTab({super.key, required this.vote});
+  final String voteCode;
+  const VoteDetailResultTab({super.key, required this.voteCode});
 
   @override
   State<VoteDetailResultTab> createState() => _VoteDetailResultTabState();
@@ -43,7 +43,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
 
   @override
   Widget build(BuildContext context) {
-    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(widget.vote.voteCode);
+    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(widget.voteCode);
     final totalVoteCount = voteArtists.fold(0, (sum, va) => sum + va.voteCount);
     final sorted = [...voteArtists]..sort((a, b) => b.voteCount.compareTo(a.voteCount));
 

@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../models/event/event_model.dart';
-import '../../models/vote/vote_model.dart';
-import '../../providers/artist/artist_provider.dart';
-import '../../providers/vote/vote_artist_provider.dart';
-import '../../providers/vote/vote_provider.dart';
+import '../../providers/event/event_vote_provider.dart';
 import '../../widgets/vote/vote_card.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
-import '../../providers/vote/vote_reward_media_provider.dart';
-import '../vote/vote_detail_screen.dart';
 
 class TitleVoteTab extends StatefulWidget {
   final EventModel event;
 
-  const TitleVoteTab({super.key, required this.event});
+  const TitleVoteTab({
+    super.key,
+    required this.event,
+  });
 
   @override
   State<TitleVoteTab> createState() => _TitleVoteTabState();
@@ -22,28 +19,43 @@ class TitleVoteTab extends StatefulWidget {
 
 class _TitleVoteTabState extends State<TitleVoteTab> {
   String selectedStatus = '전체';
-  VoteModel? selectedVote;
 
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() {
-      final votes = context.read<VoteProvider>().votes;
-      final artists = context.read<ArtistProvider>().artists;
-      context.read<VoteArtistProvider>().fetchVoteArtists(
-        votes: votes,
-        artists: artists,
-      );
-      context.read<VoteRewardMediaProvider>().fetchRewardMedia(votes);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchVotes();
     });
+  }
+
+  Future<void> _fetchVotes() async {
+    final mappedStatus = _mapStatus(selectedStatus);
+    await context.read<EventVoteProvider>().fetchVotes(widget.event.eventCode, mappedStatus);
+  }
+
+  String _mapStatus(String status) {
+    switch (status) {
+      case '진행중':
+        return 'open';
+      case '진행완료':
+        return 'closed';
+      case '진행예정':
+        return 'before';
+      default:
+        return 'all';
+    }
+  }
+
+  void _onFilterChanged(String status) async {
+    setState(() {
+      selectedStatus = status;
+    });
+    await _fetchVotes();
   }
 
   @override
   Widget build(BuildContext context) {
-    final filteredVotes = context
-        .read<VoteProvider>()
-        .filterVotes(selectedStatus, widget.event.eventCode);
+    final votes = context.watch<EventVoteProvider>().votes;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,23 +65,27 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
           child: VoteFilterWidget(
             filters: const ['전체', '진행중', '진행완료', '진행예정'],
             selectedFilter: selectedStatus,
-            onChanged: (status) => setState(() => selectedStatus = status),
+            onChanged: _onFilterChanged,
           ),
         ),
         Expanded(
           child: ListView.builder(
-            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: filteredVotes.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: VoteCard(
-                vote: filteredVotes[index],
-                event: widget.event,
-                selectedStatus: selectedStatus,
-                onPressed: () => setState(() => selectedVote = filteredVotes[index]),
-              ),
-            ),
+            itemCount: votes.length,
+            itemBuilder: (context, index) {
+              final vote = votes[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: VoteCard(
+                  vote: vote,
+                  event: widget.event,
+                  selectedStatus: selectedStatus,
+                  onPressed: () {
+                    print('투표 클릭: ${vote.voteCode}');
+                  },
+                ),
+              );
+            },
           ),
         ),
       ],

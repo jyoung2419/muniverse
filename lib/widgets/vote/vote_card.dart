@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../models/event/event_model.dart';
-import '../../models/vote/vote_model.dart';
+import '../../models/event/event_vote_model.dart';
 import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../screens/vote/vote_detail_screen.dart';
 
 class VoteCard extends StatelessWidget {
-  final VoteModel vote;
+  final EventVoteModel vote;
   final EventModel event;
-  final VoidCallback onPressed;
   final String selectedStatus;
+  final VoidCallback onPressed;
 
   const VoteCard({
     super.key,
     required this.vote,
     required this.event,
-    required this.onPressed,
     required this.selectedStatus,
+    required this.onPressed,
   });
 
   String getDateRange(DateTime start, DateTime end) {
@@ -31,14 +31,7 @@ class VoteCard extends StatelessWidget {
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);
     final isEnded = now.isAfter(vote.endTime);
-    final remainingDays = vote.endTime
-        .difference(now)
-        .inDays;
-    final rewardMediaList = context
-        .watch<VoteRewardMediaProvider>()
-        .getMediaByVoteCode(vote.voteCode);
-    final rewardText = rewardMediaList.isNotEmpty ? rewardMediaList.first
-        .rewardContent : '리워드 정보 없음';
+    final rewardText = vote.rewards.isNotEmpty ? vote.rewards.join(', ') : '리워드 정보 없음';
 
     return IntrinsicHeight(
       child: Container(
@@ -58,7 +51,7 @@ class VoteCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(
-                        image: AssetImage(vote.voteImageUrl),
+                        image: NetworkImage(vote.voteImageUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -101,10 +94,12 @@ class VoteCard extends StatelessWidget {
                                 size: 12),
                             const SizedBox(width: 3),
                             Text(
-                              '남은 투표기간 $remainingDays일',
-                              style: const TextStyle(color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
+                              '남은 투표기간 ${vote.voteRestDay}일',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -163,13 +158,15 @@ class VoteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(event.content, style: const TextStyle(
+                    Text(event.name, style: const TextStyle(
                         color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
                     Text(vote.voteName, style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
-                        fontWeight: FontWeight.w600)),
+                        fontWeight: FontWeight.w600
+                      )
+                    ),
                     const SizedBox(height: 6),
                     Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}',
                         style: const TextStyle(
@@ -194,8 +191,10 @@ class VoteCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(rewardText, style: const TextStyle(
-                              color: Colors.white, fontSize: 11)),
+                          Text(
+                            rewardText,
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                          ),
                         ],
                       ),
                     ),
@@ -208,7 +207,7 @@ class VoteCard extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(vote: vote),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
                             ),
                           );
                         },
@@ -222,22 +221,20 @@ class VoteCard extends StatelessWidget {
                           minimumSize: const Size(60, 30),
                           elevation: 0,
                         ),
-                        child: const Text('투표 하기', style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500)),
+                        child: const Text('투표 하기', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
                       )
                           : OutlinedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(vote: vote),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
                             ),
                           );
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF2EFFAA),
-                          side: const BorderSide(
-                              color: Color(0xFF2EFFAA), width: 1),
+                          side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -246,9 +243,11 @@ class VoteCard extends StatelessWidget {
                         ),
                         child: Text(
                           isUpcoming ? '투표 예정' : '결과 보기',
-                          style: const TextStyle(fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF2EFFAA)),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF2EFFAA),
+                          ),
                         ),
                       ),
                     ),

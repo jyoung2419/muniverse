@@ -34,4 +34,16 @@ class EventTitleService {
       rethrow;
     }
   }
+
+  // Vote 리스트 조회
+  Future<List<Map<String, dynamic>>> fetchEventVoteList(String eventCode, String status) async {
+    try {
+      final response = await _dio.get('/api/v1/event/detail/vote/$eventCode/$status');
+      final List<dynamic> rawList = response.data;
+      return rawList.cast<Map<String, dynamic>>();
+    } catch (e) {
+      print('❌ Vote 리스트 API 호출 실패: $e');
+      rethrow;
+    }
+  }
 }

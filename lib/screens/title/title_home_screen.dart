@@ -72,7 +72,9 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
     final tabViews = [
       TitleDescriptionTab(event: event!),
       TitleTicketTab(),
-      TitleVoteTab(event: event!),
+      TitleVoteTab(
+        event: event!,
+      ),
       if (showLiveTab) TitleLiveTab(),
       TitleVodTab(
         eventCode: event!.eventCode,
