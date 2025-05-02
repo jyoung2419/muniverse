@@ -13,6 +13,7 @@ class VoteRewardModel {
 }
 
 class VoteMainModel {
+  final String eventName;
   final String voteCode;
   final String voteName;
   final String content;
@@ -24,6 +25,7 @@ class VoteMainModel {
   final List<VoteRewardModel> rewards;
 
   VoteMainModel({
+    required this.eventName,
     required this.voteCode,
     required this.voteName,
     required this.content,
@@ -37,6 +39,7 @@ class VoteMainModel {
 
   factory VoteMainModel.fromJson(Map<String, dynamic> json) {
     return VoteMainModel(
+      eventName: json['eventName'] ?? '',
       voteCode: json['voteCode'] ?? '',
       voteName: json['voteName'] ?? '',
       content: json['content'] ?? '',

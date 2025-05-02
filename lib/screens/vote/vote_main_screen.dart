@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/vote/vote_main_model.dart';
 import '../../providers/vote/vote_main_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
+import '../../widgets/vote/vote_card.dart';
 import '../../widgets/vote/vote_card_for_main.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
 import '../vote/vote_detail_screen.dart';
@@ -108,7 +110,7 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
                         MaterialPageRoute(
                           builder: (_) => VoteDetailScreen(
                             voteCode: vote.voteCode,
-                            eventName: vote.voteName,
+                            eventName: vote.eventName,
                           ),
                         ),
                       );

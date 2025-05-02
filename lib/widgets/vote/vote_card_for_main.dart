@@ -11,7 +11,6 @@ class VoteCardForMain extends StatelessWidget {
   const VoteCardForMain({
     super.key,
     required this.vote,
-    // required this.event,
     required this.selectedStatus,
     required this.onPressed,
   });
@@ -156,8 +155,9 @@ class VoteCardForMain extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Text(event.name, style: const TextStyle(
-                    //     color: Colors.white, fontSize: 10)),
+                    Text(vote.eventName, style: const TextStyle(
+                        color: Colors.white, fontSize: 10),
+                    ),
                     const SizedBox(height: 6),
                     Text(vote.voteName, style: const TextStyle(
                         color: Colors.white,
@@ -205,7 +205,10 @@ class VoteCardForMain extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: vote.voteCode ?? ''),  // 수정 필요
+                              builder: (_) => VoteDetailScreen(
+                                voteCode: vote.voteCode,
+                                eventName: vote.eventName,
+                              ),
                             ),
                           );
                         },
@@ -226,7 +229,10 @@ class VoteCardForMain extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: vote.voteCode ?? ''), // 수정 필요
+                              builder: (_) => VoteDetailScreen(
+                                voteCode: vote.voteCode,
+                                eventName: vote.eventName,
+                              ),
                             ),
                           );
                         },
