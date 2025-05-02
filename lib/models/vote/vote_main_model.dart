@@ -1,16 +1,6 @@
+import 'package:muniverse_app/models/vote/vote_reward_model.dart';
+
 enum VoteStatus { BE_OPEN, OPEN, CLOSED, WAITING }
-
-class VoteRewardModel {
-  final String rewardContent;
-
-  VoteRewardModel({required this.rewardContent});
-
-  factory VoteRewardModel.fromJson(Map<String, dynamic> json) {
-    return VoteRewardModel(
-      rewardContent: json['rewardContent'] ?? '',
-    );
-  }
-}
 
 class VoteMainModel {
   final String eventName;

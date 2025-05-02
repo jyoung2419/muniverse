@@ -45,6 +45,7 @@ class VoteCardForMain extends StatelessWidget {
                 children: [
                   Container(
                     width: 170,
+                    height: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(

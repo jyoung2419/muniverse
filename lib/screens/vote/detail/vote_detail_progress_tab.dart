@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/vote/vote_model.dart';
-import '../../../providers/vote/vote_artist_provider.dart';
+import '../../../providers/vote/vote_detail_provider.dart';
 import '../../../widgets/vote/vote_dialog.dart';
 
 class VoteDetailProgressTab extends StatelessWidget {
@@ -10,11 +9,15 @@ class VoteDetailProgressTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(voteCode);
-    final totalVoteCount = voteArtists.fold(0, (sum, va) => sum + va.voteCount);
+    final voteDetail = context.watch<VoteDetailProvider>().voteDetail;
 
-    final sortedVoteArtists = [...voteArtists];
-    sortedVoteArtists.sort((a, b) => b.voteCount.compareTo(a.voteCount));
+    if (voteDetail == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final lineUp = voteDetail.lineUp;
+    final totalPercent = lineUp.fold<double>(0, (sum, e) => sum + e.votePercent);
+    final sortedLineUp = [...lineUp]..sort((a, b) => b.votePercent.compareTo(a.votePercent));
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -22,20 +25,11 @@ class VoteDetailProgressTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('총 참여 인원', style: TextStyle(color: Colors.white70)),
-            const SizedBox(height: 4),
-            Text(
-              '$totalVoteCount명',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
-            ),
             const SizedBox(height: 16),
-            ...sortedVoteArtists.asMap().entries.map((entry) {
+            ...sortedLineUp.asMap().entries.map((entry) {
               final index = entry.key;
-              final voteArtist = entry.value;
-              final artist = voteArtist.artist;
-              // final totalVotes = voteCode.freeCountLimit;
-              final rate = totalVoteCount == 0 ? 0 : voteArtist.voteCount / totalVoteCount;
-              final percentText = (rate * 100).toStringAsFixed(1);
+              final artist = entry.value;
+              final percentText = artist.votePercent.toStringAsFixed(1);
               final isFirst = index == 0;
 
               return Container(
@@ -49,11 +43,12 @@ class VoteDetailProgressTab extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        voteArtist.artist.profileUrl ?? 'assets/images/default_profile.png',
+                      child: Image.network(
+                        artist.artistProfileImageUrl,
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Image.asset('assets/images/default_profile.png', width: 60, height: 60),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -73,7 +68,7 @@ class VoteDetailProgressTab extends StatelessWidget {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                voteArtist.artist.content,
+                                artist.artistName,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
@@ -85,7 +80,7 @@ class VoteDetailProgressTab extends StatelessWidget {
                           const SizedBox(height: 8),
                           ClipRRect(
                             child: LinearProgressIndicator(
-                              value: rate.toDouble(),
+                              value: artist.votePercent / 100,
                               minHeight: 8,
                               backgroundColor: Colors.grey.shade800,
                               valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2EFFAA)),
@@ -100,14 +95,7 @@ class VoteDetailProgressTab extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (_) => VoteDialog(
-                            //     totalVotes: vote.freeCountLimit,
-                            //     artistCode: artist.artistCode,
-                            //     voteCode: vote.voteCode,
-                            //   ),
-                            // );
+                            // 투표 로직 연결 필요시 여기에 추가
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2EFFAA),

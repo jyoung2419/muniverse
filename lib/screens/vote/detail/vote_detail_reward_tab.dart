@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../models/vote/vote_model.dart';
-import '../../../providers/vote/vote_reward_media_provider.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/vote/vote_detail_provider.dart';
+import '../../../models/vote/vote_reward_model.dart';
 
 class VoteDetailRewardTab extends StatelessWidget {
   final String voteCode;
@@ -9,8 +9,8 @@ class VoteDetailRewardTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rewardMediaList = Provider.of<VoteRewardMediaProvider>(context)
-        .getMediaByVoteCode(voteCode);
+    final voteDetail = context.watch<VoteDetailProvider>().voteDetail;
+    final List<VoteRewardModel> rewards = voteDetail?.rewards ?? [];
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -26,22 +26,26 @@ class VoteDetailRewardTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: rewardMediaList.length,
-            itemBuilder: (context, index) => Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: Colors.black,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Image.asset(
-                rewardMediaList[index].voteRewardMediaUrl,
-                fit: BoxFit.contain,
+          if (rewards.isEmpty)
+            const Text('등록된 보상 미디어가 없습니다.',
+                style: TextStyle(color: Colors.white54))
+          else
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: rewards.length,
+              itemBuilder: (context, index) => Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Image.network(
+                  rewards[index].rewardContent,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
