@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../models/vote/main_vote_model.dart';
+import '../../models/event/main/event_main_vote_model.dart';
 import '../../widgets/vote/voting_progress_list.dart';
 import '../../widgets/vote/voting_result_list.dart';
 
 class HomeAwardSection extends StatelessWidget {
-  final MainVoteModel vote;
+  final EventMainVoteModel vote;
 
   const HomeAwardSection({super.key, required this.vote});
 

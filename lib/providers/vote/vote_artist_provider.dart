@@ -1,3 +1,5 @@
+// 필요 x 수정 예정
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_artist_model.dart';

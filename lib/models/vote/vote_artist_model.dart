@@ -1,3 +1,4 @@
+// 사용x
 import '../artist/artist_model.dart';
 import 'vote_model.dart';
 

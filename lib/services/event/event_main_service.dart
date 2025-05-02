@@ -23,7 +23,7 @@ class EventMainService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchMainVotes() async {
+  Future<List<Map<String, dynamic>>> fetchEventMainVotes() async {
     try {
       final response = await _dio.get('/api/v1/event/main/vote');
       print('📦 /vote Response: ${response.data}');

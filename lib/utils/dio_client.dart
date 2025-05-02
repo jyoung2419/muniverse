@@ -36,6 +36,10 @@ class DioClient {
             ? 'MuniverseApp/Android'
             : 'MuniverseApp/iOS';
 
+        // 언어 동적 설정
+        final lang = await SharedPrefsUtil.getAcceptLanguage();
+        options.headers['Accept-Language'] = lang;
+
         if (accessToken != null) {
           options.headers['Authorization'] = 'Bearer $accessToken';
         }

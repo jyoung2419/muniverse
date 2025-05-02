@@ -1,3 +1,4 @@
+// 사용x
 import 'vote_model.dart';
 
 enum VoteRewardMediaType { IMAGE, VIDEO }

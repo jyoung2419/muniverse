@@ -5,8 +5,10 @@ import 'package:muniverse_app/providers/event/detail/event_info_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_provider.dart';
 import 'package:muniverse_app/providers/event/detail/event_vote_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_related_provider.dart';
-import 'package:muniverse_app/providers/vote/main_vote_provider.dart';
+import 'package:muniverse_app/providers/event/main/event_main_vote_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
+import 'package:muniverse_app/providers/vote/vote_main_provider.dart';
+import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
@@ -73,7 +75,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 수정할거임..
         ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....
         ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
-        ChangeNotifierProvider(create: (_) => MainVoteProvider()),
+        ChangeNotifierProvider(create: (_) => VoteMainProvider()),
+        ChangeNotifierProvider(create: (_) => EventMainVoteProvider()),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
@@ -102,7 +105,7 @@ class MyApp extends StatelessWidget {
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
-        // '/voteMainScreen': (context) => const VoteMainScreen(),
+        '/voteMainScreen': (context) => const VoteMainScreen(),
       },
 
       onGenerateRoute: (settings) {

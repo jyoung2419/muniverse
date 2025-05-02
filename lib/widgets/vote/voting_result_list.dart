@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../models/vote/main_vote_artist_model.dart';
+import '../../models/event/main/event_main_vote_artist_model.dart';
 import '../../widgets/vote/rank_card.dart';
 import '../../widgets/vote/winner_card.dart';
 
 class VotingResultList extends StatelessWidget {
-  final List<MainVoteArtistModel> artists;
+  final List<EventMainVoteArtistModel> artists;
 
   const VotingResultList({super.key, required this.artists});
 

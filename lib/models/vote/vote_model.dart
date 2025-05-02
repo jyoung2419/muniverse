@@ -1,3 +1,4 @@
+// 사용x
 class VoteModel {
   final String voteCode;
   final String voteName;

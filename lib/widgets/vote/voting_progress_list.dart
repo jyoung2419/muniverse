@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../models/vote/main_vote_artist_model.dart';
+import '../../models/event/main/event_main_vote_artist_model.dart';
 
 class VotingProgressList extends StatelessWidget {
-  final List<MainVoteArtistModel> artists;
+  final List<EventMainVoteArtistModel> artists;
 
   const VotingProgressList({super.key, required this.artists});
 

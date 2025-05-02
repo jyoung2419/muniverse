@@ -1,11 +1,11 @@
-class MainVoteArtistModel {
+class EventMainVoteArtistModel {
   final String artistCode;
   final String name;
   final String profileUrl;
   final int voteCount;
   final double votePercent;
 
-  MainVoteArtistModel({
+  EventMainVoteArtistModel({
     required this.artistCode,
     required this.name,
     required this.profileUrl,
@@ -13,8 +13,8 @@ class MainVoteArtistModel {
     required this.votePercent,
   });
 
-  factory MainVoteArtistModel.fromJson(Map<String, dynamic> json) {
-    return MainVoteArtistModel(
+  factory EventMainVoteArtistModel.fromJson(Map<String, dynamic> json) {
+    return EventMainVoteArtistModel(
       artistCode: json['artistCode'],
       name: json['name'],
       profileUrl: json['profileUrl'],

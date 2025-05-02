@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../models/event/detail/event_model.dart';
-import '../../models/event/detail/event_vote_model.dart';
+import '../../models/vote/vote_main_model.dart';
 import '../../screens/vote/vote_detail_screen.dart';
 
-class VoteCard extends StatelessWidget {
-  final EventVoteModel vote;
-  final EventModel event;
+class VoteCardForMain extends StatelessWidget {
+  final VoteMainModel vote;
   final String selectedStatus;
   final VoidCallback onPressed;
 
-  const VoteCard({
+  const VoteCardForMain({
     super.key,
     required this.vote,
-    required this.event,
+    // required this.event,
     required this.selectedStatus,
     required this.onPressed,
   });
@@ -29,7 +27,9 @@ class VoteCard extends StatelessWidget {
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);
     final isEnded = now.isAfter(vote.endTime);
-    final rewardText = vote.rewards.isNotEmpty ? vote.rewards.join(', ') : '리워드 정보 없음';
+    final rewardText = vote.rewards.isNotEmpty
+        ? vote.rewards.map((r) => r.rewardContent).join(', ')
+        : '리워드 정보 없음';
 
     return IntrinsicHeight(
       child: Container(
@@ -49,7 +49,7 @@ class VoteCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(
-                        image: NetworkImage(vote.voteImageUrl),
+                        image: NetworkImage(vote.voteImageURL ?? ''),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -156,17 +156,17 @@ class VoteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(event.name, style: const TextStyle(
-                        color: Colors.white, fontSize: 10)),
+                    // Text(event.name, style: const TextStyle(
+                    //     color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
                     Text(vote.voteName, style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w600
-                      )
+                    )
                     ),
                     const SizedBox(height: 6),
-                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}',
+                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)} (KST)',
                         style: const TextStyle(
                             color: Colors.white70, fontSize: 11)),
                     const SizedBox(height: 6),
@@ -205,7 +205,7 @@ class VoteCard extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: vote.voteCode ?? ''),  // 수정 필요
                             ),
                           );
                         },
@@ -226,7 +226,7 @@ class VoteCard extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: vote.voteCode ?? ''), // 수정 필요
                             ),
                           );
                         },
