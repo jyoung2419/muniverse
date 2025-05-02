@@ -36,10 +36,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/env/.env");
   await DioClient().init();
-  await DioClient().loadCookies();
 
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('userId');
+  final status = prefs.getString('userStatus');
+  String initialRoute;
+
+  if (userId == null) {
+    initialRoute = '/login';
+  } else if (status == 'NEEDS_INFO' || status == 'NEW_USER') {
+    initialRoute = '/google_signup';
+  } else {
+    initialRoute = '/home';
+  }
 
   runApp(
     MultiProvider(
@@ -69,7 +78,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
-      child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
+      child: MyApp(initialRoute: initialRoute),
     ),
   );
 }
@@ -98,13 +107,19 @@ class MyApp extends StatelessWidget {
 
       onGenerateRoute: (settings) {
         if (settings.name == '/google_signup') {
-          final args = settings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-            builder: (context) => GoogleSignUpScreen(
-              email: args['email'] ?? '',
-              name: args['name'] ?? '',
-            ),
-          );
+          final args = settings.arguments;
+          if (args is Map<String, dynamic>) {
+            return MaterialPageRoute(
+              builder: (context) => GoogleSignUpScreen(
+                email: args['email'] ?? '',
+                name: args['name'] ?? '',
+              ),
+            );
+          } else {
+            return MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            );
+          }
         }
         return null;
       },

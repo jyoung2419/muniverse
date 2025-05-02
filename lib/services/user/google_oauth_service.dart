@@ -6,8 +6,8 @@ class GoogleOauthService {
   final Dio _dio = DioClient().dio;
 
   Future<Map<String, dynamic>> loginWithGoogle(String idToken) async {
-    final response = await Dio().post(
-      '${dotenv.env['BASE_URL']}:${dotenv.env['PORT']}/api/v1/user/app/oauth/google',
+    final response = await _dio.post(
+      '/api/v1/user/app/oauth/google',
       data: {'idToken': idToken},
       options: Options(
         headers: {'Content-Type': 'application/json'}, // Authorization 없이

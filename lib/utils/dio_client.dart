@@ -1,25 +1,19 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/shared_prefs_util.dart';
 import 'package:flutter/material.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();
   factory DioClient() => _instance;
+
   late final Dio dio;
-  PersistCookieJar? _cookieJar;
 
   DioClient._internal();
 
   Future<void> init() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _cookieJar = PersistCookieJar(
-      storage: FileStorage("${dir.path}/.cookies/"),
-    );
-
     final base = dotenv.env['BASE_URL'] ?? 'http://localhost';
     final port = dotenv.env['PORT'] ?? '8080';
     final fullBaseUrl = "$base:$port";
@@ -33,14 +27,46 @@ class DioClient {
       },
     ));
 
-    dio.interceptors.add(CookieManager(_cookieJar!));
-    dio.interceptors.add(LogInterceptor(responseHeader: true));
+    // 공통 헤더 인터셉터
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        final accessToken = await SharedPrefsUtil.getAccessToken();
+        final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
+        final userAgent = Platform.isAndroid
+            ? 'MuniverseApp/Android'
+            : 'MuniverseApp/iOS';
+
+        if (accessToken != null) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
+        }
+        options.headers['X-Device-Id'] = deviceId;
+        options.headers['User-Agent'] = userAgent;
+
+        return handler.next(options);
+      },
+    ));
+
+    // 토큰 만료 시 자동 재발급 및 재요청
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
         if (error.response?.statusCode == 401 &&
             !error.requestOptions.path.contains('/jwt/refresh')) {
           try {
-            final refreshResponse = await dio.post('/api/v1/jwt/refresh');
+            final refreshToken = await SharedPrefsUtil.getRefreshToken();
+            final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
+            final userAgent = Platform.isAndroid
+                ? 'MuniverseApp/Android'
+                : 'MuniverseApp/iOS';
+
+            final refreshResponse = await dio.post(
+              '/api/v1/jwt/refresh',
+              options: Options(headers: {
+                'Authorization': 'Bearer $refreshToken',
+                'User-Agent': userAgent,
+                'X-Device-Id': deviceId,
+              }),
+            );
+
             if (refreshResponse.statusCode == 200) {
               final retryOptions = error.requestOptions;
               final clonedRequest = await dio.request(
@@ -54,23 +80,20 @@ class DioClient {
               );
               return handler.resolve(clonedRequest);
             }
-          } catch (e) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
+          } catch (_) {
+            final prefs = await SharedPreferences.getInstance();
             await prefs.clear();
             navigatorKey.currentState?.pushNamedAndRemoveUntil('/login', (route) => false);
             return handler.reject(error);
           }
         }
+
         return handler.next(error);
       },
     ));
-  }
 
-  Future<void> loadCookies() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _cookieJar ??= PersistCookieJar(storage: FileStorage("${dir.path}/.cookies/"));
-    dio.interceptors.add(CookieManager(_cookieJar!));
+    dio.interceptors.add(LogInterceptor(responseHeader: true));
   }
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(); // 전역적으로 접근 가능
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

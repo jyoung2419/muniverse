@@ -22,11 +22,14 @@ class GoogleOauthProvider with ChangeNotifier {
 
     final data = await _googleOauthService.loginWithGoogle(idToken);
 
+    print('🔥 서버 응답 data: $data');
     final userId = data['userId'];
     final status = data['status'];
+    print('🔥 서버 응답 status: $status');
 
     if (userId != null) {
       await SharedPrefsUtil.saveUserId(userId);
+      await SharedPrefsUtil.saveUserStatus(status);
 
       if (status == 'REGISTERED') {
         Navigator.pushReplacementNamed(context, '/home');
@@ -39,6 +42,8 @@ class GoogleOauthProvider with ChangeNotifier {
             'name': data['name'],
           },
         );
+      } else {
+        print("⚠️ 처리되지 않은 상태: $status");
       }
     } else {
       print("❌ 서버 응답에 userId 없음: $data");

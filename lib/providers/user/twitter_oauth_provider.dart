@@ -37,6 +37,7 @@ class TwitterOauthProvider with ChangeNotifier {
 
             if (userId != null) {
               await SharedPrefsUtil.saveUserId(userId);
+              await SharedPrefsUtil.saveUserStatus(status);
 
               if (status == 'REGISTERED') {
                 Navigator.pushReplacementNamed(context, '/home');
