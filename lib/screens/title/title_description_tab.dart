@@ -1,23 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/event/event_model.dart';
+import '../../providers/event/event_info_provider.dart';
 
-class TitleDescriptionTab extends StatelessWidget {
+class TitleDescriptionTab extends StatefulWidget {
   final EventModel event;
-
   const TitleDescriptionTab({super.key, required this.event});
 
   @override
+  State<TitleDescriptionTab> createState() => _TitleDescriptionTabState();
+}
+
+class _TitleDescriptionTabState extends State<TitleDescriptionTab> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<EventInfoProvider>().fetchEventInfo(widget.event.eventCode);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = context.watch<EventInfoProvider>();
+
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (provider.error != null) {
+      return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
+    }
+
+    final content = provider.eventInfo?.content ?? '';
+
     return SingleChildScrollView(
       physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Html(
-        data: event.content,
+        data: content,
         style: {
           "body": Style(color: Colors.white),
           "p": Style(fontSize: FontSize(14)),
         },
+        extensions: [
+          TagExtension(
+            tagsToExtend: {"oembed"},
+            builder: (context) {
+              final url = context.element?.attributes['url'];
+              if (url != null && url.contains("youtube.com")) {
+                final videoId = Uri.parse(url).queryParameters['v'];
+                if (videoId != null) {
+                  final thumbnail = 'https://img.youtube.com/vi/$videoId/0.jpg';
+                  return GestureDetector(
+                    onTap: () async {
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(thumbnail),
+                        const SizedBox(height: 8),
+                        const Text("▶ YouTube 영상 보기", style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
     );
   }

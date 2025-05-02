@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:muniverse_app/providers/event/event_info_provider.dart';
 import 'package:muniverse_app/providers/event/event_main_provider.dart';
 import 'package:muniverse_app/providers/event/event_vote_provider.dart';
 import 'package:muniverse_app/providers/vote/main_vote_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
-import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
@@ -50,6 +50,7 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => EventMainProvider()),
+        ChangeNotifierProvider(create: (_) => EventInfoProvider()),
         ChangeNotifierProvider(create: (_) => EventVODProvider()),
         ChangeNotifierProvider(create: (_) => EventLiveProvider()),
         ChangeNotifierProvider(create: (_) => EventVoteProvider()),
@@ -66,7 +67,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
-      child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
+      // child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
+      child: MyApp(initialRoute: '/home' ), // 임시
     ),
   );
 }
@@ -94,15 +96,16 @@ class MyApp extends StatelessWidget {
       },
 
       onGenerateRoute: (settings) {
-        if (settings.name == '/google_signup') {
-          final args = settings.arguments as Map<String, dynamic>; // ✅ 수정
-          return MaterialPageRoute(
-            builder: (context) => GoogleSignUpScreen(
-              email: args['email'] ?? '',
-              name: args['name'] ?? '',
-            ),
-          );
-        }
+        // 임시 주석 처리
+        // if (settings.name == '/home') {
+        //   final args = settings.arguments as Map<String, dynamic>;
+        //   return MaterialPageRoute(
+        //     builder: (context) => GoogleSignUpScreen(
+        //       email: args['email'] ?? '',
+        //       name: args['name'] ?? '',
+        //     ),
+        //   );
+        // }
         return null;
       },
 

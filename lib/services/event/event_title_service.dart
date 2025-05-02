@@ -23,6 +23,17 @@ class EventTitleService {
     }
   }
 
+  // Event 상세 설명 조회
+  Future<String> fetchEventInfoContent(String eventCode) async {
+    try {
+      final response = await _dio.get('/api/v1/event/detail/info/$eventCode');
+      return response.data['content'] as String;
+    } catch (e) {
+      print('❌ Event Info API 호출 실패: $e');
+      rethrow;
+    }
+  }
+
   // VOD 리스트 조회
   Future<List<Map<String, dynamic>>> fetchEventVODList(String eventCode, int eventYear) async {
     final response = await _dio.get(
