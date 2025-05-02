@@ -1,49 +1,50 @@
-import 'package:flutter/material.dart';
-import 'package:twitter_login/twitter_login.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../utils/dio_client.dart';
 
-Future<void> twitterLogin(String oauthToken, String oauthVerifier, BuildContext context) async {
-  final dio = DioClient().dio;
-  final response = await dio.post(
-    '/api/v1/user/oauth/twitter',
-    data: {
-      'oauthToken': oauthToken,
-      'oauthVerifier': oauthVerifier,
-    },
-  );
+class TwitterOauthService {
+  final Dio _dio = DioClient().dio;
 
-  final data = response.data;
-  final status = data['status'];
-  final userId = data['userId'];
-
-  if (status == 'REGISTERED') {
-    Navigator.pushReplacementNamed(context, '/home');
-  } else if (status == 'NEEDS_INFO' || status == 'NEW_USER') {
-    Navigator.pushNamed(context, '/twitter_signup', arguments: userId);
+  Future<String> initiateTwitterLogin() async {
+    final response = await _dio.get(
+      '/api/v1/user/app/oauth/twitter/init',
+    );
+    return response.data['redirectUrl'];
   }
-  // else if (status == 'RECOVERY') {
-  //   Navigator.pushNamed(context, '/recovery', arguments: userId);
-  // }
-}
 
-Future<void> signInWithTwitter(BuildContext context) async {
-  final twitterLoginInstance = TwitterLogin(
-    apiKey: 'YOUR_CONSUMER_KEY',
-    apiSecretKey: 'YOUR_CONSUMER_SECRET',
-    redirectURI: 'twittersdk://',
-  );
+  Future<Map<String, dynamic>> loginWithTwitter({
+    required String oauthToken,
+    required String oauthVerifier,
+  }) async {
+    final response = await _dio.post(
+      '${dotenv.env['BASE_URL']}:${dotenv.env['PORT']}/api/v1/user/app/oauth/twitter',
+      data: {
+        'oauthToken': oauthToken,
+        'oauthVerifier': oauthVerifier,
+      },
+      options: Options(
+        headers: {'Content-Type': 'application/json'},
+      ),
+    );
 
-  final authResult = await twitterLoginInstance.login();
+    return response.data;
+  }
 
-  if (authResult.status == TwitterLoginStatus.loggedIn) {
-    final oauthToken = authResult.authToken;
-    final oauthVerifier = authResult.authTokenSecret;
-
-    if (oauthToken != null && oauthVerifier != null) {
-      await twitterLogin(oauthToken, oauthVerifier, context);
-    }
-  } else {
-    print('❌ Twitter 로그인 실패: ${authResult.errorMessage}');
+  Future<void> completeTwitterUserInfo({
+    required String userId,
+    required String nickName,
+    required String email,
+    required bool isLocalFlag,
+  }) async {
+    await _dio.post(
+      '/api/v1/user/app/oauth/twitter/complete',
+      data: {
+        'userId': userId,
+        'nickName': nickName,
+        'email': email,
+        'localFlag': isLocalFlag,
+      },
+      options: Options(headers: {'Content-Type': 'application/json'}),
+    );
   }
 }
-
