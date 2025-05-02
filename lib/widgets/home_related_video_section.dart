@@ -36,60 +36,60 @@ class HomeRelatedVideoSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        SizedBox(
-          height: 130,
-          child: Builder(
-            builder: (context) {
-              if (provider.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+        Builder(
+          builder: (context) {
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (provider.error != null) {
-                return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
-              }
+            if (provider.error != null) {
+              return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
+            }
 
-              final videos = provider.relatedVideos;
+            final videos = provider.relatedVideos;
 
-              if (videos.isEmpty) {
-                return const Center(child: Text("영상이 없습니다.", style: TextStyle(color: Colors.white70)));
-              }
+            if (videos.isEmpty) {
+              return const Center(child: Text("영상이 없습니다.", style: TextStyle(color: Colors.white70)));
+            }
 
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: videos.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final video = videos[index];
-                  return InkWell(
-                    onTap: () => _launchUrl(video.videoUrl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          child: Image.network(
-                            video.profileImageUrl,
-                            width: 170,
-                            height: 100,
-                            fit: BoxFit.cover,
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: videos.map((video) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: InkWell(
+                      onTap: () => _launchUrl(video.videoUrl),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              video.profileImageUrl,
+                              width: 200,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        SizedBox(
-                          width: 160,
-                          child: Text(
-                            video.name,
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            width: 160,
+                            child: Text(
+                              video.name,
+                              style: const TextStyle(color: Colors.white, fontSize: 13),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
-                },
-              );
-            },
-          ),
+                }).toList(),
+              ),
+            );
+          },
         ),
       ],
     );
