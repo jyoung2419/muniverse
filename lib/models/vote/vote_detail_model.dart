@@ -1,4 +1,4 @@
-import '../event/event_vote_model.dart';
+import '../event/detail/event_vote_model.dart';
 import 'vote_detail_content_model.dart';
 import 'vote_detail_lineup_model.dart';
 

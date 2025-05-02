@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_vod_provider.dart';
+import '../../providers/event/detail/event_vod_provider.dart';
 import '../../widgets/info/vod_faq.dart';
 import '../../widgets/info/vod_notice.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_live_provider.dart';
+import '../../providers/event/detail/event_live_provider.dart';
 import '../../widgets/info/live_faq.dart';
 import '../../widgets/info/live_notice.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/event/event_vod_model.dart';
-import '../../services/event/event_title_service.dart';
+import '../../../models/event/detail/event_vod_model.dart';
+import '../../../services/event/event_title_service.dart';
 
 class EventVODProvider with ChangeNotifier {
   final EventTitleService _eventTitleService = EventTitleService();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/ticket/vod_ticket_model.dart';
 import '../../models/user/user_model.dart';
-import '../../models/event/event_vod_model.dart';
-import '../../models/event/event_model.dart';
+import '../../models/event/detail/event_vod_model.dart';
+import '../../models/event/detail/event_model.dart';
 
 class VODTicketProvider with ChangeNotifier {
   List<VODTicket> _tickets = [];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/event/event_main_model.dart';
-import '../../providers/event/event_main_provider.dart';
-import '../../providers/event/event_provider.dart';
+import '../../models/event/main/event_main_model.dart';
+import '../../providers/event/main/event_main_provider.dart';
+import '../../providers/event/detail/event_provider.dart';
 import '../title/title_home_screen.dart';
 
 class HomeEventProfileList extends StatefulWidget {

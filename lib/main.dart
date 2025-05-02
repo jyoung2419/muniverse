@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:muniverse_app/providers/event/event_info_provider.dart';
-import 'package:muniverse_app/providers/event/event_main_provider.dart';
-import 'package:muniverse_app/providers/event/event_vote_provider.dart';
+import 'package:muniverse_app/providers/event/detail/event_info_provider.dart';
+import 'package:muniverse_app/providers/event/main/event_main_provider.dart';
+import 'package:muniverse_app/providers/event/detail/event_vote_provider.dart';
+import 'package:muniverse_app/providers/event/main/event_main_related_provider.dart';
 import 'package:muniverse_app/providers/vote/main_vote_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
-import 'providers/event/event_provider.dart';
-import 'providers/event/event_live_provider.dart';
-import 'providers/event/event_vod_provider.dart';
+import 'providers/event/detail/event_provider.dart';
+import 'providers/event/detail/event_live_provider.dart';
+import 'providers/event/detail/event_vod_provider.dart';
 import 'providers/notice/notice_provider.dart';
 import 'providers/ticket/user_pass_provider.dart';
 import 'providers/ticket/vote_ticket_provider.dart';
@@ -54,6 +55,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EventVODProvider()),
         ChangeNotifierProvider(create: (_) => EventLiveProvider()),
         ChangeNotifierProvider(create: (_) => EventVoteProvider()),
+        ChangeNotifierProvider(create: (_) => EventMainRelatedProvider()),
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
         ChangeNotifierProvider(create: (_) => VODTicketProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
@@ -67,8 +69,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
-      // child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
-      child: MyApp(initialRoute: '/home' ), // 임시
+      child: MyApp(initialRoute: userId != null ? '/home' : '/login'),
     ),
   );
 }
@@ -96,16 +97,15 @@ class MyApp extends StatelessWidget {
       },
 
       onGenerateRoute: (settings) {
-        // 임시 주석 처리
-        // if (settings.name == '/home') {
-        //   final args = settings.arguments as Map<String, dynamic>;
-        //   return MaterialPageRoute(
-        //     builder: (context) => GoogleSignUpScreen(
-        //       email: args['email'] ?? '',
-        //       name: args['name'] ?? '',
-        //     ),
-        //   );
-        // }
+        if (settings.name == '/google_signup') {
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder: (context) => GoogleSignUpScreen(
+              email: args['email'] ?? '',
+              name: args['name'] ?? '',
+            ),
+          );
+        }
         return null;
       },
 

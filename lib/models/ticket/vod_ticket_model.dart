@@ -1,4 +1,4 @@
-import '../event/event_vod_model.dart';
+import '../event/detail/event_vod_model.dart';
 import '../user/user_model.dart';
 
 class VODTicket {

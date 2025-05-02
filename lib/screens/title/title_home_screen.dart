@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_provider.dart';
+import '../../providers/event/detail/event_provider.dart';
 import 'title_related_video_tab.dart';
 import 'title_live_tab.dart';
-import '../../models/event/event_model.dart';
+import '../../models/event/detail/event_model.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';

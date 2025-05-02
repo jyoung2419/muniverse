@@ -113,7 +113,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("회원가입이 완료되었습니다.")),
       );
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("❌ 회원가입 실패: ${e.toString()}")),

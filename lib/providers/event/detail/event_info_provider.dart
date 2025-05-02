@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:muniverse_app/models/event/event_info_model.dart';
-import '../../services/event/event_title_service.dart';
+import 'package:muniverse_app/models/event/detail/event_info_model.dart';
+import '../../../services/event/event_title_service.dart';
 
 class EventInfoProvider with ChangeNotifier {
   final EventTitleService _eventInfoService = EventTitleService();

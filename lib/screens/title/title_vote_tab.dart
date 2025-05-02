@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/event/event_model.dart';
-import '../../providers/event/event_vote_provider.dart';
+import '../../models/event/detail/event_model.dart';
+import '../../providers/event/detail/event_vote_provider.dart';
 import '../../widgets/vote/vote_card.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
 

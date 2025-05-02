@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../providers/event/main/event_main_related_provider.dart';
 
 class HomeRelatedVideoSection extends StatelessWidget {
   const HomeRelatedVideoSection({super.key});
@@ -15,23 +17,12 @@ class HomeRelatedVideoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> videos = [
-      {
-        'thumbnail': 'assets/images/video2.png',
-        'title': '부산원아시아 페스티벌(BOF2025) K-POP...',
-        'url': 'https://www.youtube.com/watch?v=q_sDeIGSbf0',
-      },
-      {
-        'thumbnail': 'assets/images/video2.png',
-        'title': '[2024 MBC 가요대제전] Lee Eunj...',
-        'url': 'https://www.youtube.com/watch?v=q_sDeIGSbf0',
-      },
-      {
-        'thumbnail': 'assets/images/video2.png',
-        'title': '[2024 MBC 가요대제전] Lee Eunj...',
-        'url': 'https://www.youtube.com/watch?v=q_sDeIGSbf0',
-      },
-    ];
+    final provider = context.watch<EventMainRelatedProvider>();
+
+    // 최초 로드
+    if (provider.relatedVideos.isEmpty && !provider.isLoading && provider.error == null) {
+      Future.microtask(() => context.read<EventMainRelatedProvider>().fetchRelatedVideos());
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,37 +38,55 @@ class HomeRelatedVideoSection extends StatelessWidget {
         const SizedBox(height: 12),
         SizedBox(
           height: 130,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: videos.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (context, index) {
-              final video = videos[index];
-              return InkWell(
-                onTap: () => _launchUrl(video['url']!),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      child: Image.asset(
-                        video['thumbnail']!,
-                        width: 170,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+          child: Builder(
+            builder: (context) {
+              if (provider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (provider.error != null) {
+                return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
+              }
+
+              final videos = provider.relatedVideos;
+
+              if (videos.isEmpty) {
+                return const Center(child: Text("영상이 없습니다.", style: TextStyle(color: Colors.white70)));
+              }
+
+              return ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: videos.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final video = videos[index];
+                  return InkWell(
+                    onTap: () => _launchUrl(video.videoUrl),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          child: Image.network(
+                            video.profileImageUrl,
+                            width: 170,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        SizedBox(
+                          width: 160,
+                          child: Text(
+                            video.name,
+                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    SizedBox(
-                      width: 160,
-                      child: Text(
-                        video['title']!,
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               );
             },
           ),

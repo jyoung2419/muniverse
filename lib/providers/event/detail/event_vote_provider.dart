@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/event/event_vote_model.dart';
-import '../../services/event/event_title_service.dart';
+import '../../../models/event/detail/event_vote_model.dart';
+import '../../../services/event/event_title_service.dart';
 
 class EventVoteProvider with ChangeNotifier {
   final List<EventVoteModel> _votes = [];

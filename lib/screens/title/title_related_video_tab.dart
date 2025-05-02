@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/event/event_model.dart';
+import '../../models/event/detail/event_model.dart';
 
 class TitleRelatedVideoTab extends StatelessWidget {
   final EventModel event;

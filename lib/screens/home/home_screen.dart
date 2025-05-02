@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/event/event_main_provider.dart';
+import '../../providers/event/main/event_main_provider.dart';
 import '../../providers/vote/main_vote_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../../widgets/common/app_drawer.dart';

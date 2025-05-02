@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../models/event/event_model.dart';
-import '../../providers/event/event_info_provider.dart';
+import '../../models/event/detail/event_model.dart';
+import '../../providers/event/detail/event_info_provider.dart';
 
 class TitleDescriptionTab extends StatefulWidget {
   final EventModel event;
