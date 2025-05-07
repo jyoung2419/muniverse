@@ -13,10 +13,10 @@ class EventVODModel {
 
   factory EventVODModel.fromJson(Map<String, dynamic> json) {
     return EventVODModel(
-      vodCode: json['vodCode'],
-      name: json['name'],
-      content: json['content'],
-      profileImageUrl: json['profileImageUrl'],
+      vodCode: json['vodCode']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      content: json['content']?.toString() ?? '',
+      profileImageUrl: json['profileImageUrl']?.toString() ?? '',
     );
   }
 

@@ -5,7 +5,7 @@ class EventInfoModel {
 
   factory EventInfoModel.fromJson(Map<String, dynamic> json) {
     return EventInfoModel(
-      content: json['content'] ?? '',
+      content: json['content']?.toString() ?? '',
     );
   }
 }

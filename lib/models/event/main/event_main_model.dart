@@ -11,7 +11,7 @@ class EventMainModel {
 
   factory EventMainModel.fromJson(Map<String, dynamic> json) {
     return EventMainModel(
-      eventCode: json['eventCode'] ?? '',
+      eventCode: json['eventCode']?.toString() ?? '',
       cardUrl: json['cardImageURL'] ?? '',
       status: json['eventStatus'] ?? '',
     );

@@ -35,9 +35,9 @@ class EventModel {
       content: json['content'] ?? '',
       bannerUrl: json['bannerImageURL'] ?? '',
       profileUrl: json['profileImageURL'] ?? '',
-      round: json['round'],
-      liveCode: json['liveCode'],
-      status: json['status'] ?? '',
+      round: json['round']?.toString() ?? '',
+      liveCode: json['liveCode']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
       performanceStartTime: DateTime.parse(json['performanceStartTime']),
       performanceEndTime: DateTime.parse(json['performanceEndTime']),
       restNextPerformanceStartTime: json['restNextPerformanceStartTime'] != null

@@ -19,13 +19,14 @@ class EventLiveModel {
 
   factory EventLiveModel.fromJson(Map<String, dynamic> json) {
     return EventLiveModel(
-      liveCode: json['liveCode'],
-      profileImageURL: json['profileImageURL'],
-      name: json['name'],
-      content: json['content'],
-      status: json['status'],
+      liveCode: json['liveCode']?.toString() ?? '',
+      profileImageURL: json['profileImageURL']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      content: json['content']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
       taskDateTime: DateTime.parse(json['taskDateTime']),
       taskEndDateTime: DateTime.parse(json['taskEndDateTime']),
     );
   }
+
 }

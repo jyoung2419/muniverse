@@ -21,18 +21,19 @@ class EventVoteModel {
 
   factory EventVoteModel.fromJson(Map<String, dynamic> json) {
     return EventVoteModel(
-      voteCode: json['voteCode'],
-      voteName: json['voteName'],
-      voteImageUrl: json['voteImageURL'],
-      voteStatus: json['voteStatus'], // enum이 아니라 문자열로 온다고 가정
-      voteRestDay: json['voteRestDay'],
+      voteCode: json['voteCode']?.toString() ?? '',
+      voteName: json['voteName']?.toString() ?? '',
+      voteImageUrl: json['voteImageURL']?.toString() ?? '',
+      voteStatus: json['voteStatus']?.toString() ?? '',
+      voteRestDay: json['voteRestDay'] ?? 0,
       startTime: DateTime.parse(json['startTime']),
       endTime: DateTime.parse(json['endTime']),
       rewards: (json['rewards'] as List<dynamic>)
-          .map((reward) => reward['rewardContent'] as String)
+          .map((reward) => reward['rewardContent']?.toString() ?? '')
           .toList(),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
