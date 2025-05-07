@@ -39,6 +39,8 @@ class SharedPrefsUtil {
 
   static Future<String?> getAccessToken() async {
     final prefs = await SharedPreferences.getInstance();
+    print('🔍 모든 SharedPreferences keys: ${prefs.getKeys()}');
+    print('🔍 accessToken 값: ${prefs.getString('accessToken')}');
     return prefs.getString('accessToken');
   }
 

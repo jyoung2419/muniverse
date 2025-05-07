@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/main/event_main_provider.dart';
 import '../../providers/event/main/event_main_vote_provider.dart';
+import '../../providers/user/user_me_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() {
       context.read<EventMainProvider>().fetchMainEvents();
       context.read<EventMainVoteProvider>().fetchEventMainVotes();
+      context.read<UserMeProvider>().fetchUserMe();
     });
   }
   Future<void> _printCurrentUserId() async {

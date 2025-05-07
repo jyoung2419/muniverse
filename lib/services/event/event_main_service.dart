@@ -15,7 +15,6 @@ class EventMainService {
   Future<List<Map<String, dynamic>>> fetchMainEvents() async {
     try {
       final response = await _dio.get('/api/v1/event/main');
-      print('📦 Response: ${response.data}');
       final List<dynamic> raw = response.data['eventMainActive'];
       return raw.cast<Map<String, dynamic>>();
     } catch (e) {
@@ -26,7 +25,6 @@ class EventMainService {
   Future<List<Map<String, dynamic>>> fetchEventMainVotes() async {
     try {
       final response = await _dio.get('/api/v1/event/main/vote');
-      print('📦 /vote Response: ${response.data}');
       return List<Map<String, dynamic>>.from(response.data);
     } catch (e) {
       rethrow;

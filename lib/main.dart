@@ -6,6 +6,7 @@ import 'package:muniverse_app/providers/event/main/event_main_provider.dart';
 import 'package:muniverse_app/providers/event/detail/event_vote_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_related_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_vote_provider.dart';
+import 'package:muniverse_app/providers/user/user_me_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_main_provider.dart';
 import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
@@ -77,6 +78,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VoteMainProvider()),
         ChangeNotifierProvider(create: (_) => EventMainVoteProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
       child: MyApp(initialRoute: initialRoute),
@@ -99,7 +101,7 @@ class MyApp extends StatelessWidget {
 
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/twitter_signup': (context) => const TwitterSignUpScreen(),
+        // '/twitter_signup': (context) => const TwitterSignUpScreen(),
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),

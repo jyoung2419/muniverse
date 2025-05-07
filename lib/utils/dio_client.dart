@@ -35,6 +35,7 @@ class DioClient {
         final userAgent = Platform.isAndroid
             ? 'MuniverseApp/Android'
             : 'MuniverseApp/iOS';
+        print('🔥 DioClient onRequest - accessToken: $accessToken');
 
         // 언어 동적 설정
         final lang = await SharedPrefsUtil.getAcceptLanguage();

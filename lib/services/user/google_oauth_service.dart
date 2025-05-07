@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../utils/dio_client.dart';
+import '../../utils/shared_prefs_util.dart';
 
 class GoogleOauthService {
   final Dio _dio = DioClient().dio;
@@ -13,6 +13,12 @@ class GoogleOauthService {
         headers: {'Content-Type': 'application/json'}, // Authorization 없이
       ),
     );
+
+    // ✅ accessToken 저장 + print 추가
+    final accessToken = response.data['accessToken'];
+    final refreshToken = response.data['refreshToken'];
+    await SharedPrefsUtil.saveTokens(accessToken: accessToken, refreshToken: refreshToken);
+    print('✅ 로그인 시 저장된 accessToken: $accessToken');
 
     return response.data;
   }

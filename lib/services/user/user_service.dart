@@ -7,11 +7,6 @@ import '../../utils/shared_prefs_util.dart';
 class UserService {
   final Dio _dio = DioClient().dio;
 
-  Future<UserModel> fetchCurrentUser() async {
-    final response = await _dio.get('/api/v1/user/me');
-    return UserModel.fromJson(response.data);
-  }
-
   Future<void> logout() async {
     try {
       final accessToken = await SharedPrefsUtil.getAccessToken();

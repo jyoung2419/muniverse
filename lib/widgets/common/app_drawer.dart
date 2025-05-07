@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/user/user_me_provider.dart';
 import '../../providers/user/user_provider.dart';
 import '../../screens/mypage/my_profile_screen.dart';
 import '../../screens/mypage/ticket_management_screen.dart';
@@ -30,8 +31,8 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
-    final user = context.read<UserProvider>().currentUser;
-
+    final userMeProvider = context.watch<UserMeProvider>();
+    final userNickName = userMeProvider.userMe?.userNickName ?? '사용자';
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
@@ -56,21 +57,27 @@ class AppDrawer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 22,
-                      backgroundImage: user?.profileUrl != null
-                          ? AssetImage(user!.profileUrl!)
-                          : const AssetImage('assets/images/user_profile.png'),
+                      backgroundImage: const AssetImage('assets/images/user_profile.png'),
                       backgroundColor: Colors.grey,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        '안녕하세요, ${user?.nickName ?? '사용자'}님!',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      child: Consumer<UserMeProvider>(
+                        builder: (context, userMeProvider, _) {
+                          if (userMeProvider.isLoading) {
+                            return const CircularProgressIndicator();
+                          }
+                          final nickname = userMeProvider.userMe?.userNickName ?? '사용자';
+                          return Text(
+                            '안녕하세요, $nickname님!',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        },
                       ),
                     ),
                   ],

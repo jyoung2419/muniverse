@@ -28,10 +28,7 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
     if (allEvents.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    print('🛠 build() 호출됨');
-    print('📋 allEvents length: ${allEvents.length}');
-
+    
     final opened = allEvents.where((e) => e.status != 'PRE_OPEN').toList();
     final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
     final filteredEvents = [...opened, ...upcoming];
@@ -39,7 +36,6 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
     if (filteredEvents.isNotEmpty) {
       filteredEvents.removeAt(0);
     }
-    print('✅ filteredEvents 최종 length: ${filteredEvents.length}');
 
     final isMultiple = filteredEvents.length > 2;
     final baseIndex = filteredEvents.indexWhere((e) => e.status != 'PRE_OPEN');
