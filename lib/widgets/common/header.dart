@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../muniverse_logo.dart';
 
-class Header extends StatelessWidget implements PreferredSizeWidget {
+class Header extends StatefulWidget implements PreferredSizeWidget {
   final double height;
   final bool showMenu;
   final bool isHome;
@@ -14,15 +14,25 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
+  State<Header> createState() => _HeaderState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+}
+
+class _HeaderState extends State<Header> {
+  String selectedLanguage = '한국어';
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       leadingWidth: 120,
-      backgroundColor: isHome ? Colors.transparent : const Color(0xFF0B0C0C),
+      backgroundColor: widget.isHome ? Colors.transparent : const Color(0xFF0B0C0C),
       elevation: 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
-      flexibleSpace: isHome
+      flexibleSpace: widget.isHome
           ? ShaderMask(
         shaderCallback: (Rect bounds) {
           return const LinearGradient(
@@ -91,22 +101,47 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         },
         child: const MuniverseLogo(),
       ),
-      actions: showMenu
+      actions: widget.showMenu
           ? [
-        TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: const Size(40, 32),
-          ),
-          child: const Text(
-            '한국어',
-            style: TextStyle(
+        PopupMenuButton<String>(
+          onSelected: (value) {
+            setState(() {
+              selectedLanguage = value;
+            });
+            print('선택된 언어: $value');
+            // TODO: 선택된 언어값 → Provider or Global 변수에 저장 가능
+          },
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: '한국어',
+              child: Text('한국어', style: TextStyle(color: Colors.white)),
+            ),
+            const PopupMenuItem(
+              value: 'English',
+              child: Text('English', style: TextStyle(color: Colors.white)),
+            ),
+            const PopupMenuItem(
+              value: '日本語',
+              child: Text('日本語', style: TextStyle(color: Colors.white)),
+            ),
+            const PopupMenuItem(
+              value: '简体中文',
+              child: Text('简体中文', style: TextStyle(color: Colors.white)),
+            ),
+            const PopupMenuItem(
+              value: '繁體中文',
+              child: Text('繁體中文', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+          child: Text(
+            selectedLanguage,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
+          color: const Color(0xFF212225),
         ),
         Builder(
           builder: (context) => IconButton(
@@ -118,7 +153,4 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           : null,
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
 }
