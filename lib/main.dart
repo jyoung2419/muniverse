@@ -13,6 +13,7 @@ import 'providers/language_provider.dart';
 import 'providers/user/user_me_provider.dart';
 import 'providers/vote/vote_detail_provider.dart';
 import 'providers/vote/vote_main_provider.dart';
+import 'providers/vote/vote_reward_media_provider.dart';
 import 'screens/store/store_main_screen.dart';
 import 'screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,6 +84,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....
         ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
         ChangeNotifierProvider(create: (_) => VoteMainProvider()),
+        ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
         ChangeNotifierProvider(create: (_) => EventMainVoteProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),

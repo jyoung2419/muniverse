@@ -1,5 +1,3 @@
-import 'package:muniverse_app/models/vote/vote_reward_model.dart';
-
 import '../event/detail/event_vote_model.dart';
 import 'vote_detail_content_model.dart';
 import 'vote_detail_lineup_model.dart';
@@ -9,7 +7,7 @@ class VoteDetailModel {
   final bool voteActive;
   final VoteDetailContentModel detailContent;
   final List<VoteDetailLineUpModel> lineUp;
-  final List<VoteRewardModel> rewards;
+  final List<VoteReward> rewards;
 
   VoteDetailModel({
     required this.totalArtistCount,
@@ -27,9 +25,15 @@ class VoteDetailModel {
       lineUp: (json['lineUp'] as List)
           .map((e) => VoteDetailLineUpModel.fromJson(e))
           .toList(),
-      rewards: (json['rewards'] as List<dynamic>?)
-          ?.map((e) => VoteRewardModel(rewardContent: e.toString()))
+      rewards: (json['rewardNames'] as List<dynamic>?)
+          ?.map((e) => VoteReward(rewardContent: e.toString()))
           .toList() ?? [],
     );
   }
+}
+
+class VoteReward {
+  final String rewardContent;
+
+  VoteReward({required this.rewardContent});
 }

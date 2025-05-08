@@ -46,4 +46,20 @@ class VoteService {
       rethrow;
     }
   }
+
+  Future<List<Map<String, dynamic>>> getVoteRewardMedia(String voteCode) async {
+    try {
+      final lang = await SharedPrefsUtil.getAcceptLanguage();
+      final response = await _dio.get(
+        '/api/v1/vote/main/media/$voteCode',
+        options: Options(headers: {
+          'Accept-Language': lang,
+        }),
+      );
+      return List<Map<String, dynamic>>.from(response.data);
+    } catch (e) {
+      print('❌ Vote Reward Media API 호출 실패: $e');
+      rethrow;
+    }
+  }
 }

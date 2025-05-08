@@ -1,3 +1,5 @@
+enum VoteStatus { BE_OPEN, OPEN, CLOSED, WAITING }
+
 class VoteDetailContentModel {
   final String voteImageUrl;
   final String voteStatus;
@@ -28,4 +30,9 @@ class VoteDetailContentModel {
       content: json['content'],
     );
   }
+
+  VoteStatus get voteStatusEnum => VoteStatus.values.firstWhere(
+        (e) => e.name == voteStatus,
+    orElse: () => VoteStatus.WAITING,
+  );
 }

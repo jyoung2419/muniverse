@@ -74,7 +74,17 @@ class DioClient {
             );
 
             if (refreshResponse.statusCode == 200) {
+              final newAccessToken = refreshResponse.data['accessToken'];
+              final newRefreshToken = refreshResponse.data['refreshToken'];
+
+              await SharedPrefsUtil.saveTokens(
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken ?? await SharedPrefsUtil.getRefreshToken(),
+              );
+
               final retryOptions = error.requestOptions;
+              retryOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+
               final clonedRequest = await dio.request(
                 retryOptions.path,
                 options: Options(
@@ -84,6 +94,7 @@ class DioClient {
                 data: retryOptions.data,
                 queryParameters: retryOptions.queryParameters,
               );
+
               return handler.resolve(clonedRequest);
             }
           } catch (_) {

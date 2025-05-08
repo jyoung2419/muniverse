@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../../models/vote/vote_model.dart';
-import '../../../providers/vote/vote_artist_provider.dart';
+import '../../../providers/vote/vote_detail_provider.dart';
 import '../../../widgets/vote/winner_card.dart';
 import '../../../widgets/vote/rank_card.dart';
 
@@ -43,9 +42,14 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
 
   @override
   Widget build(BuildContext context) {
-    final voteArtists = context.watch<VoteArtistProvider>().getVoteArtistsByVoteCode(widget.voteCode);
-    final totalVoteCount = voteArtists.fold(0, (sum, va) => sum + va.voteCount);
-    final sorted = [...voteArtists]..sort((a, b) => b.voteCount.compareTo(a.voteCount));
+    final voteDetail = context.watch<VoteDetailProvider>().voteDetail;
+
+    if (voteDetail == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final lineUp = voteDetail.lineUp;
+    final sorted = [...lineUp]..sort((a, b) => b.votePercent.compareTo(a.votePercent));
 
     return Stack(
       children: [
@@ -55,58 +59,47 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('총 참여 인원', style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 4),
-              Text('$totalVoteCount명', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18)),
+              if (sorted.isNotEmpty)
+                WinnerCard(
+                  name: sorted[0].artistName,
+                  profileUrl: sorted[0].artistProfileImageUrl ?? 'assets/images/default_profile.png',
+                  votePercent: sorted[0].votePercent,
+                ),
+              const SizedBox(height: 20),
+              if (sorted.length > 1)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    children: List.generate(
+                      (sorted.length - 1).clamp(0, 4),
+                          (i) {
+                        final artist = sorted[i + 1];
+                        final percent = artist.votePercent;
+                        return RankCard(
+                          index: i + 2,
+                          name: artist.artistName,
+                          artistCode: '',
+                          imageUrl: artist.artistProfileImageUrl ?? 'assets/images/default_profile.png',
+                          votePercent: percent,
+                          icon: Icons.emoji_events,
+                          iconColor: i == 0
+                              ? Colors.grey
+                              : i == 1
+                              ? const Color(0xFFCE9505)
+                              : Colors.white24,
+                        );
+                      },
+                    ),
+                  ),
+                ),
               const SizedBox(height: 16),
-
-              // // ✅ WinnerCard
-              // if (sorted.isNotEmpty)
-              //   WinnerCard(
-              //     name: sorted[0].artist.name,
-              //     nameEng: sorted[0].artist.content,
-              //     imageUrl: sorted[0].artist.profileUrl?? 'assets/images/default_profile.png',
-              //     percent: ((sorted[0].voteCount / totalVoteCount) * 100).round(),
-              //   ),
-              //
-              // const SizedBox(height: 20),
-              //
-              // // ✅ RankCard 리스트 (2~5위)
-              // if (sorted.length > 1)
-              //   SingleChildScrollView(
-              //     scrollDirection: Axis.horizontal,
-              //     padding: const EdgeInsets.symmetric(horizontal: 12),
-              //     child: Row(
-              //       children: List.generate(
-              //         (sorted.length - 1).clamp(0, 4),
-              //             (i) {
-              //           final artist = sorted[i + 1];
-              //           // return RankCard(
-              //           //   index: i + 2,
-              //           //   name: artists[i + 1].name,
-              //           //   artistCode: artists[i + 1].artistCode,
-              //           //   imageUrl: artists[i + 1].profileUrl,
-              //           //   votePercent: artists[i + 1].votePercent,
-              //           //   icon: Icons.emoji_events,
-              //           //   iconColor: i == 0
-              //           //       ? Colors.grey
-              //           //       : i == 1
-              //           //       ? const Color(0xFFCE9505)
-              //           //       : Colors.white24,
-              //           // );
-              //         },
-              //       ),
-              //     ),
-              //   ),
-
-              const SizedBox(height: 16),
-
               // ✅ 6위 이하
               ...sorted.asMap().entries.skip(5).map((entry) {
                 final index = entry.key;
-                final voteArtist = entry.value;
-                final rate = totalVoteCount == 0 ? 0 : voteArtist.voteCount / totalVoteCount;
-                final percentText = (rate * 100).toStringAsFixed(1);
+                final artist = entry.value;
+                final rate = artist.votePercent / 100;
+                final percentText = artist.votePercent.toStringAsFixed(1);
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
@@ -119,8 +112,8 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          voteArtist.artist.profileUrl ?? 'assets/images/default_profile.png',
+                        child: Image.network(
+                          artist.artistProfileImageUrl ?? 'assets/images/default_profile.png',
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -141,7 +134,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                                     )),
                                 const SizedBox(width: 10),
                                 Text(
-                                  voteArtist.artist.content,
+                                  artist.artistName,
                                   style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
                               ],
@@ -149,7 +142,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                             const SizedBox(height: 8),
                             ClipRRect(
                               child: LinearProgressIndicator(
-                                value: rate.toDouble(),
+                                value: rate,
                                 minHeight: 8,
                                 backgroundColor: Colors.grey.shade800,
                                 valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2EFFAA)),

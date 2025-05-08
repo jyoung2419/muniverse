@@ -3,14 +3,12 @@ import '../common/tag_box.dart';
 
 class WinnerCard extends StatelessWidget {
   final String name;
-  final String artistCode;
   final String profileUrl;
   final double votePercent;
 
   const WinnerCard({
     super.key,
     required this.name,
-    required this.artistCode,
     required this.profileUrl,
     required this.votePercent,
   });
@@ -46,11 +44,12 @@ class WinnerCard extends StatelessWidget {
               width: 185,
               height: 185,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Image.asset('assets/images/default_profile.png', width: 185, height: 185),
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            '$name ($artistCode)', // ✅ name (한글) + artistCode (영어명 대체)
+            name, // ✅ artistName만 표시
             style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 6),

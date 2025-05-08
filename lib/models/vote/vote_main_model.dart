@@ -1,5 +1,3 @@
-import 'package:muniverse_app/models/vote/vote_reward_model.dart';
-
 enum VoteStatus { BE_OPEN, OPEN, CLOSED, WAITING }
 
 class VoteMainModel {
@@ -12,7 +10,7 @@ class VoteMainModel {
   final VoteStatus voteStatus;
   final int voteRestDay;
   final String? voteImageURL;
-  final List<VoteRewardModel> rewards;
+  final List<VoteReward> rewards;
 
   VoteMainModel({
     required this.eventName,
@@ -41,7 +39,15 @@ class VoteMainModel {
       ),
       voteRestDay: json['voteRestDay'] ?? 0,
       voteImageURL: json['voteImageURL'],
-      rewards: (json['rewards'] as List<dynamic>?)?.map((e) => VoteRewardModel.fromJson(e)).toList() ?? [],
+      rewards: (json['rewardNames'] as List<dynamic>?)
+          ?.map((e) => VoteReward(rewardContent: e.toString()))
+          .toList() ?? [],
     );
   }
+}
+
+class VoteReward {
+  final String rewardContent;
+
+  VoteReward({required this.rewardContent});
 }

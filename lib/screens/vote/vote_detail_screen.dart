@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../models/vote/vote_detail_content_model.dart';
 import '../../providers/vote/vote_detail_provider.dart';
+import '../../providers/vote/vote_reward_media_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
@@ -42,12 +44,10 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
 
   Future<void> _fetchVoteDetail() async {
     await context.read<VoteDetailProvider>().fetchVoteDetail(widget.voteCode);
-    final voteDetail = context.read<VoteDetailProvider>().voteDetail;
-    final now = DateTime.now();
-    final showRewardTab = now.isAfter(voteDetail!.detailContent.endTime);
+    await context.read<VoteRewardMediaProvider>().fetchVoteRewardMedia(widget.voteCode);
 
     _tabController = TabController(
-      length: showRewardTab ? 3 : 2,
+      length: 3,
       vsync: this,
       initialIndex: 1,
     );
@@ -238,7 +238,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                                         const SizedBox(height: 2),
                                         Text(
                                           voteDetail.rewards.isNotEmpty
-                                              ? voteDetail.rewards.join(', ')
+                                              ? voteDetail.rewards.map((reward) => reward.rewardContent).join(', ')
                                               : '리워드 정보 없음',
                                           style: const TextStyle(color: Colors.white, fontSize: 11),
                                         ),
@@ -262,15 +262,10 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                       labelColor: const Color(0xFF2EFFAA),
                       unselectedLabelColor: Colors.white60,
                       indicatorColor: const Color(0xFF2EFFAA),
-                      tabs: _tabController.length == 3
-                          ? const [
+                      tabs: const [
                         Tab(text: '상세정보'),
                         Tab(text: '후보'),
                         Tab(text: '리워드'),
-                      ]
-                          : const [
-                        Tab(text: '상세정보'),
-                        Tab(text: '후보'),
                       ],
                     ),
                   ),
@@ -278,25 +273,14 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                   if (_currentTabIndex == 0) VoteDetailInfoTab(voteCode: widget.voteCode),
                   if (_currentTabIndex == 1)
                         () {
-                      final now = DateTime.now();
-                      if (now.isAfter(vote.startTime) && now.isBefore(vote.endTime)) {
-                        return VoteDetailProgressTab(voteCode: widget.voteCode);
-                      } else if (now.isAfter(vote.endTime)) {
-                        return const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Center(
-                            child: Text(
-                              '결과 집계중입니다!',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return VoteDetailResultTab(voteCode: widget.voteCode);
-                      }
+                          if (vote.voteStatusEnum == VoteStatus.OPEN) {
+                            return VoteDetailProgressTab(voteCode: widget.voteCode);
+                          } else if (vote.voteStatusEnum == VoteStatus.CLOSED) {
+                            return VoteDetailResultTab(voteCode: widget.voteCode);
+                          }
                       return const SizedBox();
                     }(),
-                  if (_currentTabIndex == 2 && _tabController.length == 3) VoteDetailRewardTab(voteCode: widget.voteCode),
+                  if (_currentTabIndex == 2) VoteDetailRewardTab(voteCode: widget.voteCode),
                   const SizedBox(height: 80),
                 ],
               ),
