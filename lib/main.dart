@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:muniverse_app/providers/event/detail/event_info_provider.dart';
-import 'package:muniverse_app/providers/event/detail/event_related_provider.dart';
-import 'package:muniverse_app/providers/event/main/event_main_provider.dart';
-import 'package:muniverse_app/providers/event/detail/event_vote_provider.dart';
-import 'package:muniverse_app/providers/event/main/event_main_related_provider.dart';
-import 'package:muniverse_app/providers/event/main/event_main_vote_provider.dart';
-import 'package:muniverse_app/providers/user/user_me_provider.dart';
-import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
-import 'package:muniverse_app/providers/vote/vote_main_provider.dart';
-import 'package:muniverse_app/screens/store/store_main_screen.dart';
-import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
+import 'package:muniverse_app/providers/product/product_kr_provider.dart';
+import 'package:muniverse_app/providers/product/product_usd_provider.dart';
+import 'providers/event/detail/event_info_provider.dart';
+import 'providers/event/detail/event_related_provider.dart';
+import 'providers/event/main/event_main_provider.dart';
+import 'providers/event/detail/event_vote_provider.dart';
+import 'providers/event/main/event_main_related_provider.dart';
+import 'providers/event/main/event_main_vote_provider.dart';
+import 'providers/language_provider.dart';
+import 'providers/user/user_me_provider.dart';
+import 'providers/vote/vote_detail_provider.dart';
+import 'providers/vote/vote_main_provider.dart';
+import 'screens/store/store_main_screen.dart';
+import 'screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
 import 'providers/artist/artist_provider.dart';
@@ -26,8 +29,6 @@ import 'providers/user/user_provider.dart';
 import 'providers/vote/vote_artist_provider.dart';
 import 'providers/vote/vote_provider.dart';
 import 'package:provider/provider.dart';
-import 'providers/ticket/live_ticket_provider.dart';
-import 'providers/ticket/vod_ticket_provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
 import 'screens/user/twitter_signup_screen.dart';
@@ -40,6 +41,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: "assets/env/.env");
   await DioClient().init();
+
+  final languageProvider = LanguageProvider();
+  await languageProvider.init();
 
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('userId');
@@ -71,9 +75,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EventMainRelatedProvider()),
         ChangeNotifierProvider(create: (_) => EventRelatedProvider()),
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
-        // ChangeNotifierProvider(create: (_) => VODTicketProvider()),
+        ChangeNotifierProvider(create: (_) => ProductKRProvider()),
+        ChangeNotifierProvider(create: (_) => ProductUSDProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
-        // ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
         ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 수정할거임..
         ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....
@@ -83,6 +87,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
+        ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),

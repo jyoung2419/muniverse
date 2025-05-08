@@ -31,6 +31,7 @@ class DioClient {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         final accessToken = await SharedPrefsUtil.getAccessToken();
+        print('🔥 accessToken: $accessToken');
         final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
         final userAgent = Platform.isAndroid
             ? 'MuniverseApp/Android'

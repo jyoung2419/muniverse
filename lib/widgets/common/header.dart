@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
+import '../../utils/shared_prefs_util.dart';
 import '../muniverse_logo.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -21,10 +24,10 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _HeaderState extends State<Header> {
-  String selectedLanguage = '한국어';
-
   @override
   Widget build(BuildContext context) {
+    final languageProvider = context.watch<LanguageProvider>();
+
     return AppBar(
       leadingWidth: 120,
       backgroundColor: widget.isHome ? Colors.transparent : const Color(0xFF0B0C0C),
@@ -101,40 +104,82 @@ class _HeaderState extends State<Header> {
         },
         child: const MuniverseLogo(),
       ),
-      actions: widget.showMenu
-          ? [
+      actions: widget.showMenu ? [
         PopupMenuButton<String>(
-          onSelected: (value) {
-            setState(() {
-              selectedLanguage = value;
-            });
+          onSelected: (value) async {
+            String langCode;
+            switch (value) {
+              case '한국어': langCode = 'kr'; break;
+              case 'English': langCode = 'en'; break;
+              case '日本語': langCode = 'jp'; break;
+              case '简体中文': langCode = 'cn'; break;
+              case '繁體中文': langCode = 'tw'; break;
+              default: langCode = 'kr';
+            }
+
+            context.read<LanguageProvider>().setLanguage(langCode);
+            await SharedPrefsUtil.setAcceptLanguage(langCode);
             print('선택된 언어: $value');
-            // TODO: 선택된 언어값 → Provider or Global 변수에 저장 가능
           },
           itemBuilder: (context) => [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: '한국어',
-              child: Text('한국어', style: TextStyle(color: Colors.white)),
+              child: Text(
+                '한국어',
+                style: TextStyle(
+                    color: languageProvider.selectedLanguageCode == 'kr'
+                        ? Color(0xFF2EFFAA)
+                        : Colors.white
+                ),
+              ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: 'English',
-              child: Text('English', style: TextStyle(color: Colors.white)),
+              child: Text(
+                'English',
+                style: TextStyle(
+                    color: languageProvider.selectedLanguageCode == 'en'
+                        ? Color(0xFF2EFFAA)
+                        : Colors.white
+                ),
+              ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: '日本語',
-              child: Text('日本語', style: TextStyle(color: Colors.white)),
+              child: Text(
+                '日本語',
+                style: TextStyle(
+                    color: languageProvider.selectedLanguageCode == 'jp'
+                        ? Color(0xFF2EFFAA)
+                        : Colors.white
+                ),
+              ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: '简体中文',
-              child: Text('简体中文', style: TextStyle(color: Colors.white)),
+              child: Text(
+                '简体中文',
+                style: TextStyle(
+                    color: languageProvider.selectedLanguageCode == 'cn'
+                        ? Color(0xFF2EFFAA)
+                        : Colors.white
+                ),
+              ),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: '繁體中文',
-              child: Text('繁體中文', style: TextStyle(color: Colors.white)),
+              child: Text(
+                '繁體中文',
+                style: TextStyle(
+                    color: languageProvider.selectedLanguageCode == 'tw'
+                        ? Color(0xFF2EFFAA)
+                        : Colors.white
+                ),
+              ),
             ),
           ],
           child: Text(
-            selectedLanguage,
+            languageProvider.languageText,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
@@ -148,9 +193,8 @@ class _HeaderState extends State<Header> {
             icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () => Scaffold.of(context).openEndDrawer(),
           ),
-        ),
-      ]
-          : null,
+        )
+      ] : null,
     );
   }
 }

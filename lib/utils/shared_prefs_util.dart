@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 class SharedPrefsUtil {
   static const _deviceIdKey = 'x-device-id';
   static const _userStatusKey = 'userStatus';
-  static const _languageKey = 'accept-language';
+  static const _acceptLanguageKey = 'acceptLanguage';
 
   static Future<void> saveUserId(String userId) async {
     final prefs = await SharedPreferences.getInstance();
@@ -69,14 +69,16 @@ class SharedPrefsUtil {
   }
 
   // 언어
-  static Future<void> saveAcceptLanguage(String lang) async {
+  static Future<void> setAcceptLanguage(String lang) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_languageKey, lang);
+    await prefs.setString(_acceptLanguageKey, lang);
   }
 
   static Future<String> getAcceptLanguage() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_languageKey) ?? 'KR'; // 기본값 KR
-  }
+    final lang = prefs.getString(_acceptLanguageKey) ?? 'kr';
 
+    if (lang == 'kr') return 'kr';
+    return 'en';
+  }
 }

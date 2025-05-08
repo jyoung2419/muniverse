@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../../utils/shared_prefs_util.dart';
+
 class EventTitleService {
   final Dio _dio = Dio();
 
@@ -26,9 +28,10 @@ class EventTitleService {
   // Event 상세 설명 조회
   Future<String> fetchEventInfoContent(String eventCode) async {
     try {
+      final lang = await SharedPrefsUtil.getAcceptLanguage();
       final response = await _dio.get(
         '/api/v1/event/detail/info/$eventCode',
-        // options: Options(headers: {'Accept-Language': selectedLanguage}),
+        options: Options(headers: {'Accept-Language': lang}),
       );
       return response.data['content'] as String;
     } catch (e) {
