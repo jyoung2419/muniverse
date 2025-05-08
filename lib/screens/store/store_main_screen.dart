@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import '../../providers/product/product_usd_provider.dart';
 import 'ticket_tab.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 
-class StoreMainScreen extends StatelessWidget {
+class StoreMainScreen extends StatefulWidget {
   const StoreMainScreen({super.key});
+
+  @override
+  State<StoreMainScreen> createState() => _StoreMainScreenState();
+}
+
+class _StoreMainScreenState extends State<StoreMainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<ProductUSDProvider>().fetchProducts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +55,7 @@ class StoreMainScreen extends StatelessWidget {
                       const TextSpan(
                         text: '- STORE',
                         style: TextStyle(
-                          color: Color(0xFF2EFFAA), // 초록
+                          color: Color(0xFF2EFFAA),
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),

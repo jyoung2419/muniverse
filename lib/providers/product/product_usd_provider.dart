@@ -28,7 +28,12 @@ class ProductUSDProvider with ChangeNotifier {
       final langHeader = await SharedPrefsUtil.getAcceptLanguage();
       final data = await _productService.fetchUSDProducts(langHeader: langHeader);
       final eventModel = ProductEventUSDModel.fromJson(data);
-
+      print('✅ fetchUSDProducts data: $data');
+      print('✅ API 응답: $data');
+      print('✅ json[vods]: ${data['vods']}');
+      print('✅ json[lives]: ${data['lives']}');
+      print('✅ 파싱된 vods: ${eventModel.vods.length}');
+      print('✅ 파싱된 lives: ${eventModel.lives.length}');
       _vods = eventModel.vods;
       _lives = eventModel.lives;
     } catch (e) {

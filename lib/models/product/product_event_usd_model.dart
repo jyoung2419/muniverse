@@ -1,3 +1,4 @@
+// ProductUSDProvider 안에서 API 응답 파싱용.. 실제 UI 구현에는 사용x!!
 import 'product_live_usd_model.dart';
 import 'product_vod_usd_model.dart';
 

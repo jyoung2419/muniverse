@@ -1,12 +1,24 @@
-class ProductLiveUSDModel {
+import 'product_usd_item.dart';
+
+class ProductLiveUSDModel implements ProductUSDItem {
+  @override
   final String productCode;
+  @override
   final String name;
+  @override
   final String note;
+  @override
+  final String productImageUrl;
+  @override
+  final double totalPrice;
+
+  @override
+  bool get isVod => false;
+
+  // 기존 필드 유지
   final double priceDollar;
   final double chargeDollar;
   final int? discountRate;
-  final double totalPrice;
-  final String productImageUrl;
   final bool isPackage;
   final List<String> categories;
 
