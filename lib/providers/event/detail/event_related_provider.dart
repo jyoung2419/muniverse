@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../models/event/event_related_model.dart';
-import '../../../services/event/event_main_service.dart';
+import '../../../services/event/event_title_service.dart';
 
-class EventMainRelatedProvider with ChangeNotifier {
-  final EventMainService _eventMainService = EventMainService();
+class EventRelatedProvider with ChangeNotifier {
+  final EventTitleService _eventTitleService = EventTitleService();
 
   List<EventRelatedModel> _relatedVideos = [];
   bool _isLoading = false;
@@ -13,13 +13,14 @@ class EventMainRelatedProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> fetchRelatedVideos() async {
+  /// 특정 이벤트 코드 기반 관련영상 가져오기 (event detail 용)
+  Future<void> fetchRelatedVideosByEventCode(String eventCode, {int? eventYear}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final data = await _eventMainService.fetchMainRelatedVideos();
+      final data = await _eventTitleService.fetchEventRelatedVideos(eventCode, eventYear: eventYear);
       _relatedVideos = data.map((e) => EventRelatedModel.fromJson(e)).toList();
     } catch (e) {
       _error = '❌ 관련 영상을 불러오는 데 실패했습니다.';

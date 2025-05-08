@@ -16,6 +16,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leadingWidth: 120,
       backgroundColor: isHome ? Colors.transparent : const Color(0xFF0B0C0C),
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -41,24 +42,44 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           : null,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16),
-        child: Center(
-          child: TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/voteMainScreen');
-            },
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(40, 32),
-            ),
-            child: const Text(
-              '투표',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/voteMainScreen');
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(40, 32),
+              ),
+              child: const Text(
+                '투표',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/storeMainScreen');
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(40, 32),
+              ),
+              child: const Text(
+                '스토어',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       title: GestureDetector(

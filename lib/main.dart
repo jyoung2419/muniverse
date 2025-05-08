@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:muniverse_app/providers/event/detail/event_info_provider.dart';
+import 'package:muniverse_app/providers/event/detail/event_related_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_provider.dart';
 import 'package:muniverse_app/providers/event/detail/event_vote_provider.dart';
 import 'package:muniverse_app/providers/event/main/event_main_related_provider.dart';
@@ -9,6 +10,7 @@ import 'package:muniverse_app/providers/event/main/event_main_vote_provider.dart
 import 'package:muniverse_app/providers/user/user_me_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_detail_provider.dart';
 import 'package:muniverse_app/providers/vote/vote_main_provider.dart';
+import 'package:muniverse_app/screens/store/store_main_screen.dart';
 import 'package:muniverse_app/screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/artist/artist_group_provider.dart';
@@ -67,8 +69,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EventLiveProvider()),
         ChangeNotifierProvider(create: (_) => EventVoteProvider()),
         ChangeNotifierProvider(create: (_) => EventMainRelatedProvider()),
+        ChangeNotifierProvider(create: (_) => EventRelatedProvider()),
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
-        ChangeNotifierProvider(create: (_) => VODTicketProvider()),
+        // ChangeNotifierProvider(create: (_) => VODTicketProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
         // ChangeNotifierProvider(create: (_) => LiveTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
@@ -106,6 +109,7 @@ class MyApp extends StatelessWidget {
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
         '/voteMainScreen': (context) => const VoteMainScreen(),
+        '/storeMainScreen': (context) => const StoreMainScreen(),
       },
 
       onGenerateRoute: (settings) {

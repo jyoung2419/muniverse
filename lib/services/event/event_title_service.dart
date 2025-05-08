@@ -72,4 +72,18 @@ class EventTitleService {
       rethrow;
     }
   }
+
+  // 관련영상 리스트 조회
+  Future<List<Map<String, dynamic>>> fetchEventRelatedVideos(String eventCode, {int? eventYear}) async {
+    try {
+      final response = await _dio.get(
+        '/api/v1/event/detail/relate/$eventCode',
+        queryParameters: eventYear != null ? {'eventYear': eventYear} : null,
+      );
+      return List<Map<String, dynamic>>.from(response.data);
+    } catch (e) {
+      print('❌ Related Video API 호출 실패: $e');
+      rethrow;
+    }
+  }
 }

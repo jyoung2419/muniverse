@@ -84,7 +84,10 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
         eventCode: event!.eventCode,
         eventYear: event!.performanceStartTime.year,
       ),
-      TitleRelatedVideoTab(event: event!),
+      TitleRelatedVideoTab(
+        eventCode: event!.eventCode,
+        eventYear: event!.performanceStartTime.year,
+      ),
     ];
 
     return DefaultTabController(
