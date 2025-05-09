@@ -17,8 +17,15 @@ class _NoticeScreenState extends State<NoticeScreen> {
   int? _expandedIndex;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<NoticeProvider>().fetchNotices());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final notices = context.watch<NoticeProvider>().notices;
+    final provider = context.watch<NoticeProvider>();
+    final notices = provider.notices;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -34,7 +41,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
               child: Text(
                 '공지사항',
                 style: TextStyle(
-                  color:  Color(0xFF2EFFAA),
+                  color: Color(0xFF2EFFAA),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -42,19 +49,32 @@ class _NoticeScreenState extends State<NoticeScreen> {
             ),
             const SizedBox(height: 30),
             Expanded(
-              child: ListView.builder(
-                itemCount: notices.length,
-                itemBuilder: (context, index) {
-                  final notice = notices[index];
-                  return NoticeItem(
-                    title: notice.title,
-                    createDate: notice.createDate,
-                    content: notice.content,
-                    isExpanded: _expandedIndex == index,
-                    onTap: () {
-                      setState(() {
-                        _expandedIndex = _expandedIndex == index ? null : index;
-                      });
+              child: Builder(
+                builder: (context) {
+                  if (provider.notices.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        '공지사항이 없습니다.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: notices.length,
+                    itemBuilder: (context, index) {
+                      final notice = notices[index];
+                      return NoticeItem(
+                        title: notice.title,
+                        createDate: notice.createDate,
+                        content: notice.content,
+                        isExpanded: _expandedIndex == index,
+                        onTap: () {
+                          setState(() {
+                            _expandedIndex = _expandedIndex == index ? null : index;
+                          });
+                        },
+                      );
                     },
                   );
                 },

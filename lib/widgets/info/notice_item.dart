@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class NoticeItem extends StatefulWidget {
   final String title;
-  final DateTime createDate;
+  final DateTime? createDate;
   final String content;
   final bool isExpanded;
   final VoidCallback onTap;
@@ -23,7 +24,9 @@ class NoticeItem extends StatefulWidget {
 
 class _NoticeItemState extends State<NoticeItem> {
   String get formattedDate =>
-      DateFormat('yyyy / MM / dd').format(widget.createDate);
+      widget.createDate != null
+          ? DateFormat('yyyy / MM / dd').format(widget.createDate!)
+          : '-';
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class _NoticeItemState extends State<NoticeItem> {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              '$formattedDate',
+              formattedDate,
               style: const TextStyle(
                 color: Colors.white60,
                 fontSize: 12,
@@ -84,9 +87,14 @@ class _NoticeItemState extends State<NoticeItem> {
                 color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text(
-                widget.content,
-                style: const TextStyle(color: Colors.white70, fontSize: 13),
+              child: Html(
+                data: widget.content,
+                style: {
+                  "body": Style(
+                    color: Colors.white70,
+                    fontSize: FontSize(13),
+                  ),
+                },
               ),
             ),
           ),

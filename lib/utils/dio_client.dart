@@ -30,21 +30,27 @@ class DioClient {
 
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final accessToken = await SharedPrefsUtil.getAccessToken();
-        print('🔥 accessToken: $accessToken');
         final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
-        final userAgent = Platform.isAndroid
-            ? 'MuniverseApp/Android'
-            : 'MuniverseApp/iOS';
+        final userAgent = Platform.isAndroid ? 'MuniverseApp/Android' : 'MuniverseApp/iOS';
         final lang = await SharedPrefsUtil.getAcceptLanguage();
+
         options.headers['Accept-Language'] = lang;
-        if (accessToken != null) {
-          options.headers['Authorization'] = 'Bearer $accessToken';
-        }
         options.headers['X-Device-Id'] = deviceId;
         options.headers['User-Agent'] = userAgent;
 
-        print('🚀 최종 Authorization: ${options.headers['Authorization']}');
+        if (options.path.contains('/api/v1/jwt/refresh')) {
+          final refreshToken = await SharedPrefsUtil.getRefreshToken();
+          if (refreshToken != null) {
+            options.headers['Authorization'] = 'Bearer $refreshToken';
+          }
+          print('🚀 refresh 요청 Authorization: ${options.headers['Authorization']}');
+        } else {
+          final accessToken = await SharedPrefsUtil.getAccessToken();
+          if (accessToken != null) {
+            options.headers['Authorization'] = 'Bearer $accessToken';
+          }
+          print('🚀 일반 요청 Authorization: ${options.headers['Authorization']}');
+        }
 
         return handler.next(options);
       },
@@ -53,22 +59,9 @@ class DioClient {
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
         if ((error.response?.statusCode == 401 || error.response?.statusCode == 403) &&
-            !error.requestOptions.path.contains('/jwt/refresh')) {
+            !error.requestOptions.path.contains('api/v1/jwt/refresh')) {
           try {
-            final refreshToken = await SharedPrefsUtil.getRefreshToken();
-            final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
-            final userAgent = Platform.isAndroid
-                ? 'MuniverseApp/Android'
-                : 'MuniverseApp/iOS';
-
-            final refreshResponse = await dio.post(
-              '/api/v1/jwt/refresh',
-              options: Options(headers: {
-                'Authorization': 'Bearer $refreshToken',
-                'User-Agent': userAgent,
-                'X-Device-Id': deviceId,
-              }),
-            );
+            final refreshResponse = await dio.post('/api/v1/jwt/refresh');
 
             if (refreshResponse.statusCode == 200) {
               final newAccessToken = refreshResponse.data['accessToken'];
