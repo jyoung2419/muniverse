@@ -26,8 +26,8 @@ class DioClient {
         'Content-Type': 'application/json',
       },
     ));
+    dio.interceptors.clear();
 
-    // 공통 헤더 인터셉터
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         final accessToken = await SharedPrefsUtil.getAccessToken();
@@ -36,26 +36,23 @@ class DioClient {
         final userAgent = Platform.isAndroid
             ? 'MuniverseApp/Android'
             : 'MuniverseApp/iOS';
-        print('🔥 DioClient onRequest - accessToken: $accessToken');
-
-        // 언어 동적 설정
         final lang = await SharedPrefsUtil.getAcceptLanguage();
         options.headers['Accept-Language'] = lang;
-
         if (accessToken != null) {
           options.headers['Authorization'] = 'Bearer $accessToken';
         }
         options.headers['X-Device-Id'] = deviceId;
         options.headers['User-Agent'] = userAgent;
 
+        print('🚀 최종 Authorization: ${options.headers['Authorization']}');
+
         return handler.next(options);
       },
     ));
 
-    // 토큰 만료 시 자동 재발급 및 재요청
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException error, ErrorInterceptorHandler handler) async {
-        if (error.response?.statusCode == 401 &&
+        if ((error.response?.statusCode == 401 || error.response?.statusCode == 403) &&
             !error.requestOptions.path.contains('/jwt/refresh')) {
           try {
             final refreshToken = await SharedPrefsUtil.getRefreshToken();
@@ -85,17 +82,7 @@ class DioClient {
               final retryOptions = error.requestOptions;
               retryOptions.headers['Authorization'] = 'Bearer $newAccessToken';
 
-              final clonedRequest = await dio.request(
-                retryOptions.path,
-                options: Options(
-                  method: retryOptions.method,
-                  headers: retryOptions.headers,
-                ),
-                data: retryOptions.data,
-                queryParameters: retryOptions.queryParameters,
-              );
-
-              return handler.resolve(clonedRequest);
+              return handler.resolve(await dio.fetch(retryOptions));
             }
           } catch (_) {
             final prefs = await SharedPreferences.getInstance();
