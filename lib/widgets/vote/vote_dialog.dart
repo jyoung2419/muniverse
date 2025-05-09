@@ -95,7 +95,10 @@ class _VoteDialogState extends State<VoteDialog> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (_) => FreeVoteDialog(voteCode: widget.voteCode),
+                        builder: (_) => FreeVoteDialog(
+                          voteCode: widget.voteCode,
+                          voteArtistSeq: widget.voteArtistSeq,
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(

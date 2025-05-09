@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/vote/vote_availability_provider.dart';
+import '../../providers/vote/vote_detail_provider.dart';
+import '../../services/vote/vote_submit_service.dart';
+import '../../utils/dio_client.dart';
 
 class FreeVoteDialog extends StatefulWidget {
   final String voteCode;
+  final String? voteArtistSeq;
 
-  const FreeVoteDialog({super.key, required this.voteCode});
+  const FreeVoteDialog({super.key, required this.voteCode, required this.voteArtistSeq});
 
   @override
   State<FreeVoteDialog> createState() => _FreeVoteDialogState();
@@ -64,7 +69,10 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                         fontSize: 16)),
                 const Spacer(),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
                   child: const Icon(Icons.close, color: Colors.white),
                 ),
               ],
@@ -135,8 +143,55 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  if (widget.voteArtistSeq == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('❌ artistSeq 없음')),
+                    );
+                    return;
+                  }
+                  try {
+                    final dio = DioClient().dio;
+                    final result = await VoteSubmitService(dio).submitVote(
+                      voteArtistSeq: widget.voteArtistSeq!,
+                      voteRequestCount: selectedCount,
+                    );
+                    if (result.success) {
+                      showDialog(
+                        context: context,
+                        builder: (_) => Dialog(
+                          backgroundColor: const Color(0xFF1B1B1D),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.check_circle, color: Color(0xFF2EFFAA), size: 30),
+                                const SizedBox(height: 12),
+                                const Text(
+                                  '투표 완료!',
+                                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        context.read<VoteDetailProvider>().fetchVoteDetail(widget.voteCode);
+                      });
+                    }
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('❌ 투표 중 오류 발생')),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2EFFAA),
