@@ -28,7 +28,7 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
     if (allEvents.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     final opened = allEvents.where((e) => e.status != 'PRE_OPEN').toList();
     final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
     final filteredEvents = [...opened, ...upcoming];
@@ -41,7 +41,6 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
     final baseIndex = filteredEvents.indexWhere((e) => e.status != 'PRE_OPEN');
     final initialOffset = ((5 ~/ 2) * filteredEvents.length) + (baseIndex < 0 ? 0 : baseIndex);
 
-    // ✅ build 이후 프레임에서 safe하게 호출
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (controller.hasClients) {
         controller.jumpToPage(initialOffset);

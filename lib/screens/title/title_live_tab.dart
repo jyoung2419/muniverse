@@ -208,25 +208,42 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // TODO: 시청하기 동작
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2EFFAA),
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                if (status == '종료')
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF353C49),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                      elevation: 0,
                                     ),
-                                    minimumSize: const Size(60, 30),
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    elevation: 0,
+                                    child: const Text(
+                                      '시청종료',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF171719),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      // TODO: 시청하기 동작
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF2EFFAA),
+                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                    ),
+                                    child: const Text(
+                                      '시청하기',
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                    ),
                                   ),
-                                  child: const Text(
-                                    '시청하기',
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                                  ),
-                                ),
                               ],
                             )
                           ],
