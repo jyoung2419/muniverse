@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/event/main/event_main_related_provider.dart';
 
 class HomeRelatedVideoSection extends StatelessWidget {
   const HomeRelatedVideoSection({super.key});
 
-  String _extractVideoId(String url) {
+  Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
-    if (uri.queryParameters.containsKey('v')) {
-      return uri.queryParameters['v']!;
-    } else if (uri.pathSegments.isNotEmpty) {
-      return uri.pathSegments.last;
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('❌ Could not launch $url');
     }
-    return '';
   }
 
   @override
@@ -57,34 +56,50 @@ class HomeRelatedVideoSection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: videos.map((video) {
-                  final videoId = _extractVideoId(video.videoUrl);
-                  final controller = WebViewController()
-                    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                    ..loadRequest(Uri.parse('https://www.youtube.com/embed/$videoId'));
-
                   return Padding(
                     padding: const EdgeInsets.only(right: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          child: SizedBox(
-                            width: 350,
-                            height: 350 * 290 / 510,
-                            child: WebViewWidget(controller: controller),
+                    child: InkWell(
+                      onTap: () => _launchUrl(video.videoUrl),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              width: 350,
+                              child: AspectRatio(
+                                aspectRatio: 510 / 290,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Image.network(
+                                      video.profileImageUrl,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
+                                    const Icon(
+                                      Icons.play_circle_fill,
+                                      color: Colors.white70,
+                                      size: 60,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        SizedBox(
-                          width: 160,
-                          child: Text(
-                            video.name,
-                            style: const TextStyle(color: Colors.white, fontSize: 13),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            width: 160,
+                            child: Text(
+                              video.name,
+                              style: const TextStyle(color: Colors.white, fontSize: 13),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
