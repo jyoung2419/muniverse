@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/artist/artist_provider.dart';
+import '../../providers/vote/vote_availability_provider.dart';
 import 'free_vote_dialog.dart';
 
 class VoteDialog extends StatefulWidget {
-  final int totalVotes;
-  final String artistCode;
+  final String artistName;
   final String voteCode;
+  final String? voteArtistSeq;
 
   const VoteDialog({
     super.key,
-    required this.totalVotes,
-    required this.artistCode,
+    required this.artistName,
     required this.voteCode,
+    required this.voteArtistSeq,
   });
 
   @override
@@ -20,23 +20,19 @@ class VoteDialog extends StatefulWidget {
 }
 
 class _VoteDialogState extends State<VoteDialog> {
-  int selectedCount = 1;
 
-  void increase() {
-    if (selectedCount < widget.totalVotes) {
-      setState(() => selectedCount++);
-    }
-  }
-
-  void decrease() {
-    if (selectedCount > 1) {
-      setState(() => selectedCount--);
-    }
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<VoteAvailabilityProvider>().fetchVoteAvailability(widget.voteCode);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final artist = context.read<ArtistProvider>().getArtistByCode(widget.artistCode);
+    final availabilityProvider = context.watch<VoteAvailabilityProvider>();
+    final remainingCount = availabilityProvider.availability?.remainingCount;
 
     return Dialog(
       backgroundColor: const Color(0xFF1B1B1D),
@@ -47,7 +43,6 @@ class _VoteDialogState extends State<VoteDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 상단 타이틀 + 닫기
             Row(
               children: [
                 const Text('투표권',
@@ -60,23 +55,38 @@ class _VoteDialogState extends State<VoteDialog> {
               ],
             ),
             const SizedBox(height: 20),
-
-            if (artist != null)
-              Column(
-                children: [
-                  Text(
-                    '${artist.name} (${artist.content})',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+            Column(
+              children: [
+                Text(
+                  '${widget.artistName}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 4),
-                  const Text('투표를 진행하시겠습니까?',
-                      style: TextStyle(color: Colors.white, fontSize: 14)),
-                ],
-              ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                const Text('투표를 진행하시겠습니까?',
+                    style: TextStyle(color: Colors.white, fontSize: 14)
+                ),
+                const SizedBox(height: 8),
+                if (availabilityProvider.isLoading)
+                  const CircularProgressIndicator()
+                else if (availabilityProvider.error != null)
+                  Text(
+                    availabilityProvider.error!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  )
+                else if (remainingCount != null)
+                    Text(
+                      '남은 무료 투표권: $remainingCount',
+                      style: const TextStyle(
+                        color: Color(0xFFFFFF00),
+                        fontSize: 14,
+                      ),
+                    ),
+              ],
+            ),
             const SizedBox(height: 24),
             Row(
               children: [
@@ -92,27 +102,27 @@ class _VoteDialogState extends State<VoteDialog> {
                       backgroundColor: const Color(0xFF2EFFAA),
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: const Text('무료 투표권 선택', style: TextStyle(fontSize: 13)),
                   ),
                 ),
-                const SizedBox(width: 6), // 버튼 사이 간격
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // 유료 투표 실행
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2EFFAA),
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text('유료 투표권 선택',style: TextStyle(fontSize: 13)),
-                  ),
-                ),
+                // const SizedBox(width: 6),
+                // Expanded(
+                //   child: ElevatedButton(
+                //     onPressed: () {
+                //       // 유료 투표 실행 - 1차 진행 x
+                //       Navigator.of(context).pop();
+                //     },
+                //     style: ElevatedButton.styleFrom(
+                //       backgroundColor: const Color(0xFF2EFFAA),
+                //       foregroundColor: Colors.black,
+                //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                //     ),
+                //     child: const Text('유료 투표권 선택',style: TextStyle(fontSize: 13)),
+                //   ),
+                // ),
               ],
             ),
           ],

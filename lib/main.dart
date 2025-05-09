@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:muniverse_app/providers/product/product_kr_provider.dart';
-import 'package:muniverse_app/providers/product/product_usd_provider.dart';
+import 'providers/product/product_kr_provider.dart';
+import 'providers/product/product_usd_provider.dart';
+import 'providers/vote/vote_availability_provider.dart';
 import 'providers/event/detail/event_info_provider.dart';
 import 'providers/event/detail/event_related_provider.dart';
 import 'providers/event/main/event_main_provider.dart';
@@ -17,8 +18,6 @@ import 'providers/vote/vote_reward_media_provider.dart';
 import 'screens/store/store_main_screen.dart';
 import 'screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'providers/artist/artist_group_provider.dart';
-import 'providers/artist/artist_provider.dart';
 import 'providers/event/detail/event_provider.dart';
 import 'providers/event/detail/event_live_provider.dart';
 import 'providers/event/detail/event_vod_provider.dart';
@@ -27,12 +26,9 @@ import 'providers/ticket/user_pass_provider.dart';
 import 'providers/ticket/vote_ticket_provider.dart';
 import 'providers/user/google_oauth_provider.dart';
 import 'providers/user/user_provider.dart';
-import 'providers/vote/vote_artist_provider.dart';
-import 'providers/vote/vote_provider.dart';
 import 'package:provider/provider.dart';
 import 'screens/user/login_screen.dart';
 import 'screens/user/google_signup_screen.dart';
-import 'screens/user/twitter_signup_screen.dart';
 import 'screens/info/notice_screen.dart';
 import 'screens/info/faq_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -62,11 +58,6 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ArtistProvider()),
-        ChangeNotifierProvider(create: (context) => ArtistGroupProvider(
-          Provider.of<ArtistProvider>(context, listen: false),
-          ),
-        ),
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => EventMainProvider()),
         ChangeNotifierProvider(create: (_) => EventInfoProvider()),
@@ -80,11 +71,11 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ProductUSDProvider()),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
         ChangeNotifierProvider(create: (_) => UserPassProvider()),
-        ChangeNotifierProvider(create: (_) => VoteArtistProvider()),  // 수정할거임..
-        ChangeNotifierProvider(create: (_) => VoteProvider()),  // 이것도ㅠㅠ....
         ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
         ChangeNotifierProvider(create: (_) => VoteMainProvider()),
+        ChangeNotifierProvider(create: (_) => VoteAvailabilityProvider()),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
+        ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
         ChangeNotifierProvider(create: (_) => EventMainVoteProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
@@ -111,7 +102,6 @@ class MyApp extends StatelessWidget {
 
       routes: {
         '/login': (context) => const LoginScreen(),
-        // '/twitter_signup': (context) => const TwitterSignUpScreen(),
         '/notice': (context) => const NoticeScreen(),
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),

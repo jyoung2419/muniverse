@@ -16,7 +16,6 @@ class VoteDetailProgressTab extends StatelessWidget {
     }
 
     final lineUp = voteDetail.lineUp;
-    final totalPercent = lineUp.fold<double>(0, (sum, e) => sum + e.votePercent);
     final sortedLineUp = [...lineUp]..sort((a, b) => b.votePercent.compareTo(a.votePercent));
 
     return Padding(
@@ -95,7 +94,14 @@ class VoteDetailProgressTab extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // 투표 로직 연결 필요시 여기에 추가
+                            showDialog(
+                              context: context,
+                              builder: (_) => VoteDialog(
+                                artistName: artist.artistName,
+                                voteCode: voteCode,
+                                voteArtistSeq: artist.voteArtistSeq,
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2EFFAA),

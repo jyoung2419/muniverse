@@ -62,4 +62,23 @@ class VoteService {
       rethrow;
     }
   }
+
+  Future<Map<String, dynamic>> getVoteAvailability(String voteCode) async {
+    try {
+      final token = await SharedPrefsUtil.getAccessToken();
+      if (token == null) throw Exception('❌ accessToken 없음');
+
+      final response = await _dio.get(
+        '/api/v1/vote/main/detail/freeCount/$voteCode',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      return response.data;
+    } catch (e) {
+      print('❌ Vote Availability API 호출 실패: $e');
+      rethrow;
+    }
+  }
 }
