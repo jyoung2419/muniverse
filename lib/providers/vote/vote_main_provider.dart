@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_main_model.dart';
 import '../../services/vote/vote_service.dart';
 
 class VoteMainProvider with ChangeNotifier {
-  final VoteService _voteService = VoteService();
+  final VoteService _voteService;
+  VoteMainProvider(Dio dio) : _voteService = VoteService(dio);
 
   List<VoteMainModel> _votes = [];
   List<VoteMainModel> get votes => _votes;

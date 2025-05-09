@@ -4,15 +4,7 @@ import '../../utils/shared_prefs_util.dart';
 
 class VoteService {
   final Dio _dio;
-
-  VoteService()
-      : _dio = Dio(BaseOptions(
-    baseUrl: dotenv.env['PORT'] != null
-        ? '${dotenv.env['BASE_URL']}:${dotenv.env['PORT']}'
-        : dotenv.env['BASE_URL']!,
-    headers: {'Content-Type': 'application/json'},
-  ));
-
+  VoteService(this._dio);
   // 상태별 투표 목록 조회
   Future<List<Map<String, dynamic>>> getVotesByStatus(String status) async {
     try {

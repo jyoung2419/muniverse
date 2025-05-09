@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../../models/event/detail/event_vote_model.dart';
 import '../../../services/event/event_title_service.dart';
@@ -6,7 +7,8 @@ class EventVoteProvider with ChangeNotifier {
   final List<EventVoteModel> _votes = [];
   List<EventVoteModel> get votes => _votes;
 
-  final EventTitleService _service = EventTitleService();
+  final EventTitleService _service;
+  EventVoteProvider(Dio dio) : _service = EventTitleService(dio);
 
   Future<void> fetchVotes(String eventCode, String status) async {
     try {

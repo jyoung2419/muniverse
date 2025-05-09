@@ -4,15 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../utils/shared_prefs_util.dart';
 
 class EventTitleService {
-  final Dio _dio = Dio();
-
-  EventTitleService() {
-    final baseUrl = dotenv.env['BASE_URL']!;
-    final port = dotenv.env['PORT'];
-    final fullUrl = port != null ? '$baseUrl:$port' : baseUrl;
-
-    _dio.options.baseUrl = fullUrl;
-  }
+  final Dio _dio;
+  EventTitleService(this._dio);
 
   // Title 조회
   Future<Map<String, dynamic>> fetchEventTitle(String eventCode) async {

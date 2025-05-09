@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/product/product_event_kr_model.dart';
-import '../../services/user/product_service.dart';
+import '../../services/product/product_service.dart';
 
 class ProductKRProvider with ChangeNotifier {
-  final ProductService _productService = ProductService();
+  final ProductService _productService;
+  ProductKRProvider(Dio dio) : _productService = ProductService(dio);
 
   ProductEventKRModel? _productData;
   bool _isLoading = false;

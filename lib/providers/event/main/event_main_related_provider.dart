@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../../models/event/event_related_model.dart';
 import '../../../services/event/event_main_service.dart';
 
 class EventMainRelatedProvider with ChangeNotifier {
-  final EventMainService _eventMainService = EventMainService();
+  final EventMainService _eventMainService;
+  EventMainRelatedProvider(Dio dio) : _eventMainService = EventMainService(dio);
 
   List<EventRelatedModel> _relatedVideos = [];
   bool _isLoading = false;

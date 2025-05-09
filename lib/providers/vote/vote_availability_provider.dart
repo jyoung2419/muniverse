@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_availability_model.dart';
 import '../../services/vote/vote_service.dart';
 
 class VoteAvailabilityProvider with ChangeNotifier {
-  final VoteService _voteService = VoteService();
+  final VoteService _voteService;
+  VoteAvailabilityProvider(Dio dio) : _voteService = VoteService(dio);
 
   VoteAvailabilityModel? _availability;
   VoteAvailabilityModel? get availability => _availability;

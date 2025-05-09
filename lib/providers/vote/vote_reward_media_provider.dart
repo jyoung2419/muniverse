@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_reward_media_model.dart';
 import '../../services/vote/vote_service.dart';
@@ -7,7 +8,8 @@ class VoteRewardMediaProvider with ChangeNotifier {
 
   List<VoteRewardMediaModel> get mediaList => _mediaList;
 
-  final VoteService _voteService = VoteService();
+  final VoteService _voteService;
+  VoteRewardMediaProvider(Dio dio) : _voteService = VoteService(dio);
 
   Future<void> fetchVoteRewardMedia(String voteCode) async {
     try {

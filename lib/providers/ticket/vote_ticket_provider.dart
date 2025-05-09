@@ -1,3 +1,4 @@
+//수정 예정
 import 'package:flutter/material.dart';
 import '../../models/ticket/vote_ticket_model.dart';
 import '../../models/user/user_model.dart';

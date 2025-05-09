@@ -1,17 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:muniverse_app/utils/shared_prefs_util.dart';
 
 class NoticeService {
-  final Dio _dio = Dio();
-
-  NoticeService() {
-    final baseUrl = dotenv.env['BASE_URL']!;
-    final port = dotenv.env['PORT'];
-    final fullUrl = port != null ? '$baseUrl:$port' : baseUrl;
-
-    _dio.options.baseUrl = fullUrl;
-  }
+  final Dio _dio;
+  NoticeService(this._dio);
 
   Future<List<Map<String, dynamic>>> fetchNotices() async {
     try {

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_detail_model.dart';
 import '../../services/vote/vote_service.dart';
@@ -7,7 +8,8 @@ class VoteDetailProvider with ChangeNotifier {
 
   VoteDetailModel? get voteDetail => _voteDetail;
 
-  final VoteService _voteService = VoteService();
+  final VoteService _voteService;
+  VoteDetailProvider(Dio dio) : _voteService = VoteService(dio);
 
   Future<void> fetchVoteDetail(String voteCode) async {
     final response = await _voteService.getVoteDetail(voteCode);

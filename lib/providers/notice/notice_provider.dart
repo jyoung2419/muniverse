@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/notice/notice_model.dart';
 import '../../services/notice/notice_service.dart';
@@ -7,7 +8,8 @@ class NoticeProvider with ChangeNotifier {
 
   List<NoticeModel> get notices => _notices;
 
-  final NoticeService _noticeService = NoticeService();
+  final NoticeService _noticeService;
+  NoticeProvider(Dio dio) : _noticeService = NoticeService(dio);
 
   Future<void> fetchNotices() async {
     try {

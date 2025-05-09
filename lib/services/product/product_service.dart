@@ -1,15 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ProductService {
-  final Dio _dio = Dio();
-
-  ProductService() {
-    final baseUrl = dotenv.env['BASE_URL']!;
-    final port = dotenv.env['PORT'];
-    final fullUrl = port != null ? '$baseUrl:$port' : baseUrl;
-    _dio.options.baseUrl = fullUrl;
-  }
+  final Dio _dio;
+  ProductService(this._dio);
 
   /// KR 상품 조회
   Future<Map<String, dynamic>> fetchKRProducts() async {

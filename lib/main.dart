@@ -54,29 +54,30 @@ Future<void> main() async {
   } else {
     initialRoute = '/home';
   }
+  final dio = DioClient().dio;
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => EventProvider()),
-        ChangeNotifierProvider(create: (_) => EventMainProvider()),
-        ChangeNotifierProvider(create: (_) => EventInfoProvider()),
-        ChangeNotifierProvider(create: (_) => EventVODProvider()),
-        ChangeNotifierProvider(create: (_) => EventLiveProvider()),
-        ChangeNotifierProvider(create: (_) => EventVoteProvider()),
-        ChangeNotifierProvider(create: (_) => EventMainRelatedProvider()),
-        ChangeNotifierProvider(create: (_) => EventRelatedProvider()),
-        ChangeNotifierProvider(create: (_) => NoticeProvider()),
-        ChangeNotifierProvider(create: (_) => ProductKRProvider()),
-        ChangeNotifierProvider(create: (_) => ProductUSDProvider()),
-        ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
-        ChangeNotifierProvider(create: (_) => UserPassProvider()),
-        ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
-        ChangeNotifierProvider(create: (_) => VoteMainProvider()),
-        ChangeNotifierProvider(create: (_) => VoteAvailabilityProvider()),
-        ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider()),
-        ChangeNotifierProvider(create: (_) => VoteDetailProvider()),
-        ChangeNotifierProvider(create: (_) => EventMainVoteProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventMainProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventInfoProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventVODProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventLiveProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventVoteProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventMainRelatedProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventRelatedProvider(dio)),
+        ChangeNotifierProvider(create: (_) => NoticeProvider(dio)),
+        ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
+        ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
+        ChangeNotifierProvider(create: (_) => VoteTicketProvider()),  // 수정 예정
+        ChangeNotifierProvider(create: (_) => UserPassProvider()),  // 수정 예정
+        ChangeNotifierProvider(create: (_) => VoteDetailProvider(dio)),
+        ChangeNotifierProvider(create: (_) => VoteMainProvider(dio)),
+        ChangeNotifierProvider(create: (_) => VoteAvailabilityProvider(dio)),
+        ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider(dio)),
+        ChangeNotifierProvider(create: (_) => VoteDetailProvider(dio)),
+        ChangeNotifierProvider(create: (_) => EventMainVoteProvider(dio)),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),

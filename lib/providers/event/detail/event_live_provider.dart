@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../../models/event/detail/event_live_model.dart';
 import '../../../services/event/event_title_service.dart';
 
 class EventLiveProvider with ChangeNotifier {
-  final EventTitleService _eventTitleService = EventTitleService();
+  final EventTitleService _eventTitleService;
+  EventLiveProvider(Dio dio) : _eventTitleService = EventTitleService(dio);
 
   List<EventLiveModel> _lives = [];
   List<EventLiveModel> get lives => _lives;

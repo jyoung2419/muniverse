@@ -2,15 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EventMainService {
-  final Dio _dio = Dio();
-
-  EventMainService() {
-    final baseUrl = dotenv.env['BASE_URL']!;
-    final port = dotenv.env['PORT'];
-    final fullUrl = port != null ? '$baseUrl:$port' : baseUrl;
-
-    _dio.options.baseUrl = fullUrl;
-  }
+  final Dio _dio;
+  EventMainService(this._dio);
 
   Future<List<Map<String, dynamic>>> fetchMainEvents() async {
     try {
