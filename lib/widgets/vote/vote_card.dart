@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../models/event/detail/event_model.dart';
 import '../../models/event/detail/event_vote_model.dart';
 import '../../screens/vote/vote_detail_screen.dart';
+import '../../utils/vote_text_util.dart';
 
 class VoteCard extends StatelessWidget {
   final EventVoteModel vote;
@@ -18,18 +18,24 @@ class VoteCard extends StatelessWidget {
     required this.onPressed,
   });
 
-  String getDateRange(DateTime start, DateTime end) {
-    final formatter = DateFormat('yyyy.MM.dd');
-    return '${formatter.format(start)} ~ ${formatter.format(end)}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+    final status = selectedStatus.toLowerCase();
+
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);
     final isEnded = now.isAfter(vote.endTime);
-    final rewardText = vote.rewards.isNotEmpty ? vote.rewards.join(', ') : '리워드 정보 없음';
+
+    final shouldShow = status == 'all' ||
+        (status == 'open' && isRunning) ||
+        (status == 'before' && isUpcoming) ||
+        (status == 'closed' && isEnded);
+
+    if (!shouldShow) return const SizedBox.shrink();
+
+    final labels = VoteTextUtil.getLabelsForEventVote(context, vote);
+
 
     return IntrinsicHeight(
       child: Container(
@@ -54,99 +60,77 @@ class VoteCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (isRunning && selectedStatus != '진행완료') ...[
+                  if (isRunning && status != 'closed') ...[
                     Positioned(
                       top: 8,
                       left: 8,
                       child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2EFFAA),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Text(
-                          '진행중',
-                          style: TextStyle(color: Colors.black,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 8,
-                      left: 52,
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
+                        constraints: const BoxConstraints(maxWidth: 160),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                                Icons.access_time_filled, color: Colors.white,
-                                size: 12),
-                            const SizedBox(width: 3),
-                            Text(
-                              '남은 투표기간 ${vote.voteRestDay}일',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF2EFFAA),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                labels['vote_ongoing']!,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    labels['vote_remaining']!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ] else
-                    if (isUpcoming && selectedStatus != '진행완료' &&
-                        selectedStatus != '진행중') ...[
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2EFFAA),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            '투표 예정',
-                            style: TextStyle(color: Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500),
-                          ),
+                  ] else if (isEnded && status != 'open') ...[
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          labels['vote_closed']!,
+                          style: const TextStyle(color: Color(0xFF2EFFAA), fontSize: 10, fontWeight: FontWeight.w500),
                         ),
                       ),
-                    ] else
-                      if (isEnded && selectedStatus != '진행중') ...[
-                        Positioned(
-                          top: 8,
-                          left: 8,
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: const Text(
-                              '종료',
-                              style: TextStyle(color: Color(0xFF2EFFAA),
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -156,43 +140,29 @@ class VoteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(event.name, style: const TextStyle(
-                        color: Colors.white, fontSize: 10)),
+                    Text(event.name, style: const TextStyle(color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
-                    Text(vote.voteName, style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600
-                      )
-                    ),
+                    Text(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
-                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)}',
-                        style: const TextStyle(
-                            color: Colors.white70, fontSize: 11)),
+                    Text(labels['vote_period']!, style: const TextStyle(color: Colors.white70, fontSize: 11)),
                     const SizedBox(height: 6),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: const BoxDecoration(color: Color(0xFF121212)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.card_giftcard, size: 14,
-                                  color: Colors.white),
-                              SizedBox(width: 4),
-                              Text('리워드', style: TextStyle(
-                                  color: Colors.white, fontSize: 11)),
+                            children: [
+                              const Icon(Icons.card_giftcard, size: 14, color: Colors.white),
+                              const SizedBox(width: 4),
+                              Text(labels['vote_reward']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(
-                            rewardText,
-                            style: const TextStyle(color: Colors.white, fontSize: 11),
-                          ),
+                          Text(vote.rewards.isNotEmpty ? vote.rewards.join(', ') : labels['vote_reward_empty']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
                         ],
                       ),
                     ),
@@ -205,47 +175,39 @@ class VoteCard extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2EFFAA),
                           foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           minimumSize: const Size(60, 30),
                           elevation: 0,
                         ),
-                        child: const Text('투표 하기', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                        child: Text(labels['vote_vote']!, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
                       )
                           : OutlinedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name,),
+                              builder: (_) => VoteDetailScreen(voteCode: vote.voteCode, eventName: event.name),
                             ),
                           );
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF2EFFAA),
                           side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           minimumSize: const Size(60, 30),
                         ),
                         child: Text(
-                          isUpcoming ? '투표 예정' : '결과 보기',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF2EFFAA),
-                          ),
+                          isUpcoming ? labels['vote_upcoming']! : labels['vote_result']!,
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF2EFFAA)),
                         ),
                       ),
                     ),

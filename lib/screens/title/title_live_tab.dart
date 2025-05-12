@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_live_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/live_faq.dart';
 import '../../widgets/info/live_notice.dart';
 
@@ -21,12 +23,13 @@ class TitleLiveTab extends StatefulWidget {
 
 class _TitleLiveTabState extends State<TitleLiveTab> {
   late int _selectedYear;
+
   @override
   void initState() {
     super.initState();
     _selectedYear = widget.eventYear;
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventLiveProvider>(context, listen: false)
           .fetchLives(widget.eventCode, widget.eventYear);
     });
@@ -36,6 +39,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
   Widget build(BuildContext context) {
     final lives = context.watch<EventLiveProvider>().lives;
     final now = DateTime.now();
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +79,10 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
-                    label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
+                    label: Text(
+                      lang == 'kr' ? '이용안내' : 'INFORMATION',
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                    ),
                   ),
                 ],
               ),
@@ -83,28 +90,16 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                 children: [
                   const Icon(Icons.filter_alt, color: Colors.white, size: 13),
                   const SizedBox(width: 4),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                      value: _selectedYear,
-                      dropdownColor: const Color(0xFF212225),
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      icon: const SizedBox.shrink(),
-                      onChanged: (int? newValue) {
-                        if (newValue != null) {
-                          Provider.of<EventLiveProvider>(context, listen: false)
-                              .fetchLives(widget.eventCode, newValue);
-                          setState(() {
-                            _selectedYear = newValue;
-                          });
-                        }
-                      },
-                      items: [2025, 2024, 2023].map((year) {
-                        return DropdownMenuItem<int>(
-                          value: year,
-                          child: Text('$year년'),
-                        );
-                      }).toList(),
-                    ),
+                  YearFilterDropdown(
+                    selectedYear: _selectedYear,
+                    years: [2025, 2024, 2023],
+                    onChanged: (newYear) {
+                      Provider.of<EventLiveProvider>(context, listen: false)
+                          .fetchLives(widget.eventCode, newYear);
+                      setState(() {
+                        _selectedYear = newYear;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -118,15 +113,22 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
             itemCount: lives.length,
             itemBuilder: (context, index) {
               final item = lives[index];
+              late String status;
+              late String buttonLabel;
+              late bool isEnded;
 
-              // 상태 계산
-              String status;
               if (now.isBefore(item.taskDateTime)) {
-                status = '진행예정';
+                status = lang == 'kr' ? '진행예정' : 'UPCOMING';
+                buttonLabel = lang == 'kr' ? '시청하기' : 'Watch';
+                isEnded = false;
               } else if (now.isAfter(item.taskEndDateTime)) {
-                status = '종료';
+                status = lang == 'kr' ? '종료' : 'CLOSED';
+                buttonLabel = lang == 'kr' ? '시청종료' : 'Ended';
+                isEnded = true;
               } else {
-                status = '진행중';
+                status = lang == 'kr' ? '진행중' : 'ONGOING';
+                buttonLabel = lang == 'kr' ? '시청하기' : 'Watch';
+                isEnded = false;
               }
 
               return Container(
@@ -166,13 +168,13 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: status == '종료' ? Colors.black : const Color(0xFF2EFFAA),
+                              color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               status,
                               style: TextStyle(
-                                color: status == '종료' ? const Color(0xFF2EFFAA) : Colors.black,
+                                color: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -208,7 +210,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                if (status == '종료')
+                                if (isEnded)
                                   ElevatedButton(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
@@ -218,9 +220,9 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                                       minimumSize: const Size(60, 30),
                                       elevation: 0,
                                     ),
-                                    child: const Text(
-                                      '시청종료',
-                                      style: TextStyle(
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
                                         color: Color(0xFF171719),
@@ -229,9 +231,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                                   )
                                 else
                                   OutlinedButton(
-                                    onPressed: () {
-                                      // TODO: 시청하기 동작
-                                    },
+                                    onPressed: () {},
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: const Color(0xFF2EFFAA),
                                       side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
@@ -239,9 +239,9 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       minimumSize: const Size(60, 30),
                                     ),
-                                    child: const Text(
-                                      '시청하기',
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                                     ),
                                   ),
                               ],

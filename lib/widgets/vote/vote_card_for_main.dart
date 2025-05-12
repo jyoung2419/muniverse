@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../models/vote/vote_main_model.dart';
+import '../../providers/language_provider.dart';
 import '../../screens/vote/vote_detail_screen.dart';
 
 class VoteCardForMain extends StatelessWidget {
@@ -22,9 +24,30 @@ class VoteCardForMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final statusKey = selectedStatus.toLowerCase();
+
+    final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
+    final isUpcoming = now.isBefore(vote.startTime);
+    final isEnded = now.isAfter(vote.endTime);
+
+    final shouldShow = statusKey == 'all' ||
+        (statusKey == 'open' && isRunning) ||
+        (statusKey == 'before' && isUpcoming) ||
+        (statusKey == 'closed' && isEnded);
+
+    if (!shouldShow) return const SizedBox.shrink();
+
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+    final upcomingText = lang == 'kr' ? '투표 예정' : 'UPCOMING';
+    final closedText = lang == 'kr' ? '종료' : 'CLOSED';
+    final ongoingText = lang == 'kr' ? '진행중' : 'ONGOING';
+    final rewardLabel = lang == 'kr' ? '리워드' : 'REWARD';
+    final ddayText = lang == 'kr' ? '남은 투표기간 ${vote.voteRestDay}일' : 'D-${vote.voteRestDay}';
+    final periodText = lang == 'kr' ? '기간 : ${getDateRange(vote.startTime, vote.endTime)} (KST)' : 'Period : ${getDateRange(vote.startTime, vote.endTime)} (KST)';
     final rewardText = vote.rewards.isNotEmpty
         ? vote.rewards.map((r) => r.rewardContent).join(', ')
-        : '리워드 정보 없음';
+        : (lang == 'kr' ? '리워드 정보 없음' : 'No reward info');
 
     return IntrinsicHeight(
       child: Container(
@@ -54,47 +77,59 @@ class VoteCardForMain extends StatelessWidget {
                     Positioned(
                       top: 8,
                       left: 8,
-                      child: _buildBadge('진행중', color: const Color(0xFF2EFFAA), textColor: Colors.black),
-                    ),
-                    Positioned(
-                      top: 8,
-                      left: 52,
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
-                            const SizedBox(width: 3),
-                            Text(
-                              '남은 투표기간 ${vote.voteRestDay}일',
-                              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2EFFAA),
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                          ],
-                        ),
+                            child: Text(
+                              ongoingText,
+                              style: const TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
+                                const SizedBox(width: 3),
+                                Text(
+                                  ddayText,
+                                  style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ] else if (vote.voteStatus == VoteStatus.BE_OPEN) ...[
                     Positioned(
                       top: 8,
                       left: 8,
-                      child: _buildBadge('투표 예정', color: const Color(0xFF2EFFAA), textColor: Colors.black),
+                      child: _buildBadge(upcomingText, color: const Color(0xFF2EFFAA), textColor: Colors.black),
                     ),
                   ] else if (vote.voteStatus == VoteStatus.WAITING) ...[
                     Positioned(
                       top: 8,
                       left: 8,
-                      child: _buildBadge('종료', color: Colors.black, textColor: const Color(0xFF2EFFAA)),
+                      child: _buildBadge(closedText, color: Colors.black, textColor: const Color(0xFF2EFFAA)),
                     ),
                   ] else if (vote.voteStatus == VoteStatus.CLOSED) ...[
                     Positioned(
                       top: 8,
                       left: 8,
-                      child: _buildBadge('종료', color: Colors.black, textColor: const Color(0xFF2EFFAA)),
+                      child: _buildBadge(closedText, color: Colors.black, textColor: const Color(0xFF2EFFAA)),
                     ),
                   ],
                 ],
@@ -110,7 +145,7 @@ class VoteCardForMain extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
-                    Text('기간 : ${getDateRange(vote.startTime, vote.endTime)} (KST)',
+                    Text(periodText,
                         style: const TextStyle(color: Colors.white70, fontSize: 11)),
                     const SizedBox(height: 6),
                     Container(
@@ -122,10 +157,10 @@ class VoteCardForMain extends StatelessWidget {
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
+                            children: [
                               Icon(Icons.card_giftcard, size: 14, color: Colors.white),
                               SizedBox(width: 4),
-                              Text('리워드', style: TextStyle(color: Colors.white, fontSize: 11)),
+                              Text(rewardLabel, style: const TextStyle(color: Colors.white, fontSize: 11)),
                             ],
                           ),
                           const SizedBox(height: 2),
@@ -164,6 +199,11 @@ class VoteCardForMain extends StatelessWidget {
   }
 
   Widget _buildActionButton(BuildContext context) {
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
+    final voteText = lang == 'kr' ? '투표하기' : 'VOTE';
+    final resultText = lang == 'kr' ? '결과보기' : 'RESULT';
+    final closedText = lang == 'kr' ? '투표 종료' : 'CLOSED';
+    final upcomingText = lang == 'kr' ? '투표 예정' : 'UPCOMING';
     if (vote.voteStatus == VoteStatus.OPEN) {
       return ElevatedButton(
         onPressed: () {
@@ -185,7 +225,7 @@ class VoteCardForMain extends StatelessWidget {
           minimumSize: const Size(60, 30),
           elevation: 0,
         ),
-        child: const Text('투표 하기', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+        child: Text(voteText, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
       );
     } else if (vote.voteStatus == VoteStatus.WAITING) {
       return OutlinedButton(
@@ -197,8 +237,8 @@ class VoteCardForMain extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           minimumSize: const Size(60, 30),
         ),
-        child: const Text(
-          '투표 종료',
+        child: Text(
+          closedText,
           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF2EFFAA)),
         ),
       );
@@ -212,8 +252,8 @@ class VoteCardForMain extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           minimumSize: const Size(60, 30),
         ),
-        child: const Text(
-          '투표 예정',
+        child: Text(
+          upcomingText,
           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF2EFFAA)),
         ),
       );
@@ -238,8 +278,8 @@ class VoteCardForMain extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           minimumSize: const Size(60, 30),
         ),
-        child: const Text(
-          '결과 보기',
+        child: Text(
+          resultText,
           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF2EFFAA)),
         ),
       );

@@ -2,11 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:muniverse_app/models/event/detail/event_info_model.dart';
 import '../../../services/event/event_title_service.dart';
+import '../../../providers/language_provider.dart';
 
 class EventInfoProvider with ChangeNotifier {
   final EventTitleService _eventInfoService;
-  EventInfoProvider(Dio dio) : _eventInfoService = EventTitleService(dio);
+  final LanguageProvider _languageProvider;
 
+  String? _eventCode;
   EventInfoModel? _eventInfo;
   bool _isLoading = false;
   String? _error;
@@ -15,7 +17,18 @@ class EventInfoProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  EventInfoProvider(Dio dio, this._languageProvider)
+      : _eventInfoService = EventTitleService(dio) {
+    // ✅ 언어 변경 리스너 등록
+    _languageProvider.addListener(() {
+      if (_eventCode != null) {
+        fetchEventInfo(_eventCode!); // 언어 바뀌면 자동으로 재요청
+      }
+    });
+  }
+
   Future<void> fetchEventInfo(String eventCode) async {
+    _eventCode = eventCode;
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -35,6 +48,7 @@ class EventInfoProvider with ChangeNotifier {
     _eventInfo = null;
     _error = null;
     _isLoading = false;
+    _eventCode = null;
     notifyListeners();
   }
 }

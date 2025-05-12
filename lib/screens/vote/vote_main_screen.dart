@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/vote/vote_main_model.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/vote/vote_main_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
@@ -24,13 +25,44 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => context.read<VoteMainProvider>().fetchVotesByStatus('all'));
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
+    selectedStatus = lang == 'kr' ? '전체' : 'all';
+
+    Future.microtask(() {
+      context.read<VoteMainProvider>().fetchVotesByStatus(_mapStatus(selectedStatus));
+    });
+  }
+
+  String _mapStatus(String status) {
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
+    final statusMap = lang == 'kr'
+        ? {
+      '전체': 'all',
+      '진행중': 'open',
+      '진행완료': 'closed',
+      '진행예정': 'before',
+    }
+        : {
+      'all': 'all',
+      'ongoing': 'open',
+      'closed': 'closed',
+      'upcoming': 'before',
+    };
+    return statusMap[status] ?? 'all';
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<VoteMainProvider>();
+    final statusKey = _mapStatus(selectedStatus.toLowerCase());
     final votes = provider.votes;
+
+    final filteredVotes = votes.where((vote) {
+      return statusKey == 'all' ||
+          (statusKey == 'open' && vote.voteStatus == VoteStatus.OPEN) ||
+          (statusKey == 'before' && vote.voteStatus == VoteStatus.BE_OPEN) ||
+          (statusKey == 'closed' && (vote.voteStatus == VoteStatus.CLOSED || vote.voteStatus == VoteStatus.WAITING));
+    }).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -72,19 +104,14 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
           ),
           const SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: VoteFilterWidget(
-              filters: const ['전체', '진행중', '진행완료', '진행예정'],
               selectedFilter: selectedStatus,
               onChanged: (status) {
-                setState(() => selectedStatus = status);
-                final statusMap = {
-                  '전체': 'all',
-                  '진행중': 'open',
-                  '진행완료': 'closed',
-                  '진행예정': 'before',
-                };
-                context.read<VoteMainProvider>().fetchVotesByStatus(statusMap[status] ?? 'all');
+                setState(() {
+                  selectedStatus = status;
+                  context.read<VoteMainProvider>().fetchVotesByStatus(_mapStatus(status));
+                });
               },
             ),
           ),
@@ -96,14 +123,14 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
                 : ListView.builder(
               physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              itemCount: votes.length,
+              itemCount: filteredVotes.length,
               itemBuilder: (context, index) {
-                final vote = votes[index];
+                final vote = filteredVotes[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: VoteCardForMain(
                     vote: vote,
-                    selectedStatus: selectedStatus,
+                    selectedStatus: statusKey,
                     onPressed: () {
                       Navigator.push(
                         context,

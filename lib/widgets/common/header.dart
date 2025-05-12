@@ -66,9 +66,9 @@ class _HeaderState extends State<Header> {
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(40, 32),
               ),
-              child: const Text(
-                '투표',
-                style: TextStyle(
+              child: Text(
+                languageProvider.selectedLanguageCode == 'kr' ? '투표' : 'VOTE',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -83,9 +83,9 @@ class _HeaderState extends State<Header> {
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(40, 32),
               ),
-              child: const Text(
-                '스토어',
-                style: TextStyle(
+              child: Text(
+                languageProvider.selectedLanguageCode == 'kr' ? '스토어' : 'STORE',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

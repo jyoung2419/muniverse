@@ -21,13 +21,13 @@ class VoteDetailContentModel {
 
   factory VoteDetailContentModel.fromJson(Map<String, dynamic> json) {
     return VoteDetailContentModel(
-      voteImageUrl: json['voteImageURL'],
-      voteStatus: json['voteStatus'],
-      voteRestDay: json['voteRestDay'],
-      voteName: json['voteName'],
+      voteImageUrl: json['voteImageURL'] ?? '',
+      voteStatus: json['voteStatus'] ?? 'WAITING',
+      voteRestDay: json['voteRestDay'] ?? 0,
+      voteName: json['voteName'] ?? '',
       startTime: DateTime.parse(json['startTime']),
       endTime: DateTime.parse(json['endTime']),
-      content: json['content'],
+      content: json['content'] ?? '',
     );
   }
 

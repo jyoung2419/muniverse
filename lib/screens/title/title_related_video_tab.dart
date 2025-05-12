@@ -4,6 +4,8 @@ import '../../providers/event/detail/event_related_provider.dart';
 import '../../models/event/event_related_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../widgets/common/year_filter_drop_down.dart';
+
 class TitleRelatedVideoTab extends StatefulWidget {
   final String eventCode;
   final int eventYear;
@@ -52,28 +54,16 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
             children: [
               const Icon(Icons.filter_alt, color: Colors.white, size: 13),
               const SizedBox(width: 4),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<int>(
-                  value: _selectedYear,
-                  dropdownColor: const Color(0xFF212225),
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                  icon: const SizedBox.shrink(),
-                  onChanged: (int? newValue) {
-                    if (newValue != null) {
-                      Provider.of<EventRelatedProvider>(context, listen: false)
-                          .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: newValue);
-                      setState(() {
-                        _selectedYear = newValue;
-                      });
-                    }
-                  },
-                  items: [2025, 2024, 2023].map((year) {
-                    return DropdownMenuItem<int>(
-                      value: year,
-                      child: Text('$year년'),
-                    );
-                  }).toList(),
-                ),
+              YearFilterDropdown(
+                selectedYear: _selectedYear,
+                years: [2025, 2024, 2023],
+                onChanged: (newYear) {
+                  Provider.of<EventRelatedProvider>(context, listen: false)
+                      .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: newYear);
+                  setState(() {
+                    _selectedYear = newYear;
+                  });
+                },
               ),
             ],
           ),

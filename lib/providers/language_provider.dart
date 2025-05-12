@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-
 import '../utils/shared_prefs_util.dart';
 
 class LanguageProvider with ChangeNotifier {
   String _selectedLanguage = '한국어';
+
   String get selectedLanguage => _selectedLanguage;
+
+  /// 서버 API에 보낼 언어 코드 (예: Accept-Language: kr)
   String get selectedLanguageCode {
     switch (_selectedLanguage) {
       case '한국어': return 'kr';
@@ -13,6 +15,18 @@ class LanguageProvider with ChangeNotifier {
       case '简体中文': return 'cn';
       case '繁體中文': return 'tw';
       default: return 'kr';
+    }
+  }
+
+  /// Google 번역 API용 타겟 언어 코드
+  String get googleTargetLangCode {
+    switch (_selectedLanguage) {
+      case '한국어': return 'ko';
+      case 'English': return 'en';
+      case '日本語': return 'ja';
+      case '简体中文': return 'zh-CN';
+      case '繁體中文': return 'zh-TW';
+      default: return 'ko';
     }
   }
 
@@ -31,7 +45,7 @@ class LanguageProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setLanguage(String langCode) {
+  Future<void> setLanguage(String langCode) async {
     switch (langCode) {
       case 'kr': _selectedLanguage = '한국어'; break;
       case 'en': _selectedLanguage = 'English'; break;
@@ -40,6 +54,8 @@ class LanguageProvider with ChangeNotifier {
       case 'tw': _selectedLanguage = '繁體中文'; break;
       default: _selectedLanguage = '한국어';
     }
+
+    await SharedPrefsUtil.setAcceptLanguage(langCode);
     notifyListeners();
   }
 }

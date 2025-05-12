@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_provider.dart';
+import '../../providers/language_provider.dart';
 import 'title_related_video_tab.dart';
 import 'title_live_tab.dart';
 import '../../models/event/detail/event_model.dart';
@@ -59,13 +60,15 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
 
     final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN', 'END'].contains(event!.status);
 
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+
     final tabList = [
-      const Tab(text: '상세정보'),
-      const Tab(text: '상품'),
-      const Tab(text: '투표'),
-      if (showLiveTab) const Tab(text: '라이브'),
-      const Tab(text: 'VOD'),
-      const Tab(text: '관련 영상'),
+      Tab(text: lang == 'kr' ? '상세정보' : 'DETAILS'),
+      Tab(text: lang == 'kr' ? '상품' : 'TICKETS'),
+      Tab(text: lang == 'kr' ? '투표' : 'VOTE'),
+      if (showLiveTab) Tab(text: lang == 'kr' ? '라이브' : 'LIVE'),
+      Tab(text: lang == 'kr' ? 'VOD' : 'VOD'),
+      Tab(text: lang == 'kr' ? '관련 영상' : 'RELATED VIDEO'),
     ];
 
     final tabViews = [
@@ -221,8 +224,8 @@ class BannerSection extends StatelessWidget {
                         radius: 16,
                       ),
                       const SizedBox(width: 8),
-                      const Text(
-                        '부산 원아시아',
+                      Text(
+                        title,
                         style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14),
                       ),
                     ],

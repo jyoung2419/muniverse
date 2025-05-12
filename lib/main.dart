@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:muniverse_app/providers/translation_provider.dart';
 import 'providers/product/product_kr_provider.dart';
 import 'providers/product/product_usd_provider.dart';
 import 'providers/vote/vote_availability_provider.dart';
@@ -59,29 +60,29 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => EventProvider(dio)),
+        ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
+        ChangeNotifierProvider(create: (_) => TranslationProvider()),
         ChangeNotifierProvider(create: (_) => EventMainProvider(dio)),
-        ChangeNotifierProvider(create: (_) => EventInfoProvider(dio)),
+        ChangeNotifierProvider(create: (context) => EventProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (context) => EventInfoProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (context) => EventVoteProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => EventVODProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventLiveProvider(dio)),
-        ChangeNotifierProvider(create: (_) => EventVoteProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventMainRelatedProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventRelatedProvider(dio)),
-        ChangeNotifierProvider(create: (_) => NoticeProvider(dio)),
+        ChangeNotifierProvider(create: (context) => NoticeProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
         ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),  // 수정 예정
         ChangeNotifierProvider(create: (_) => UserPassProvider()),  // 수정 예정
-        ChangeNotifierProvider(create: (_) => VoteDetailProvider(dio)),
-        ChangeNotifierProvider(create: (_) => VoteMainProvider(dio)),
+        ChangeNotifierProvider(create: (context) => VoteMainProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (context) => VoteDetailProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => VoteAvailabilityProvider(dio)),
         ChangeNotifierProvider(create: (_) => VoteRewardMediaProvider(dio)),
-        ChangeNotifierProvider(create: (_) => VoteDetailProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventMainVoteProvider(dio)),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
-        ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),

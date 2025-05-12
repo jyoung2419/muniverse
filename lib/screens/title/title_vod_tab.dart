@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_vod_provider.dart';
+import '../../providers/language_provider.dart';
+import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/vod_faq.dart';
 import '../../widgets/info/vod_notice.dart';
 
@@ -24,7 +26,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
   @override
   void initState() {
     super.initState();
-    _selectedYear = widget.eventYear; // 초기값 세팅
+    _selectedYear = widget.eventYear;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventVODProvider>(context, listen: false)
           .fetchVODs(widget.eventCode, widget.eventYear);
@@ -34,12 +36,17 @@ class _TitleVodTabState extends State<TitleVodTab> {
   @override
   Widget build(BuildContext context) {
     final vodList = context.watch<EventVODProvider>().vods;
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+
+    final faqText = 'FAQ';
+    final infoText = lang == 'kr' ? '이용안내' : 'INFORMATION';
+    final buyText = lang == 'kr' ? '구매하기' : 'BUY';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left:20, top:14, right:20, bottom:0),
+          padding: const EdgeInsets.only(left: 20, top: 14, right: 20, bottom: 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -58,7 +65,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
-                    label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
+                    label: Text(faqText, style: const TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                   TextButton.icon(
                     onPressed: () {
@@ -73,45 +80,30 @@ class _TitleVodTabState extends State<TitleVodTab> {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
-                    label: const Text('이용안내', style: TextStyle(color: Colors.white, fontSize: 13)),
+                    label: Text(infoText, style: const TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                 ],
               ),
-
-              // 필터 연도
               Row(
                 children: [
                   const Icon(Icons.filter_alt, color: Colors.white, size: 13),
                   const SizedBox(width: 4),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                      value: _selectedYear,
-                      dropdownColor: const Color(0xFF212225),
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      icon: const SizedBox.shrink(),
-                      onChanged: (int? newValue) {
-                        if (newValue != null) {
-                          Provider.of<EventVODProvider>(context, listen: false)
-                              .fetchVODs(widget.eventCode, newValue);
-                          setState(() {
-                            _selectedYear = newValue;
-                          });
-                        }
-                      },
-                      items: [2025, 2024, 2023].map((year) {
-                        return DropdownMenuItem<int>(
-                          value: year,
-                          child: Text('$year년'),
-                        );
-                      }).toList(),
-                    ),
+                  YearFilterDropdown(
+                    selectedYear: _selectedYear,
+                    years: [2025, 2024, 2023],
+                    onChanged: (newYear) {
+                      Provider.of<EventVODProvider>(context, listen: false)
+                          .fetchVODs(widget.eventCode, newYear);
+                      setState(() {
+                        _selectedYear = newYear;
+                      });
+                    },
                   ),
                 ],
               ),
             ],
           ),
         ),
-        // VOD 리스트
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
@@ -133,7 +125,6 @@ class _TitleVodTabState extends State<TitleVodTab> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 썸네일
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: Container(
@@ -142,16 +133,12 @@ class _TitleVodTabState extends State<TitleVodTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
-                            image: NetworkImage(
-                              vod.profileImageUrl,
-                            ),
+                            image: NetworkImage(vod.profileImageUrl),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-
-                    // 텍스트 + 버튼
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
@@ -159,10 +146,6 @@ class _TitleVodTabState extends State<TitleVodTab> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // Text(
-                            //   DateFormat('yyyy.MM.dd').format(vod.createDate),
-                            //   style: const TextStyle(color: Colors.white70, fontSize: 11),
-                            // ),
                             const SizedBox(height: 4),
                             Text(
                               vod.name,
@@ -185,7 +168,6 @@ class _TitleVodTabState extends State<TitleVodTab> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    // TODO: 구매하기 버튼 로직
                                     print('VOD 구매: ${vod.vodCode}');
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -198,9 +180,9 @@ class _TitleVodTabState extends State<TitleVodTab> {
                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                     elevation: 0,
                                   ),
-                                  child: const Text(
-                                    '구매하기',
-                                    style: TextStyle(
+                                  child: Text(
+                                    buyText,
+                                    style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w500,
                                     ),

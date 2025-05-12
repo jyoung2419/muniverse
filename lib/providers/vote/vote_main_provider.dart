@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../models/vote/vote_main_model.dart';
 import '../../services/vote/vote_service.dart';
+import '../language_provider.dart';
 
 class VoteMainProvider with ChangeNotifier {
   final VoteService _voteService;
-  VoteMainProvider(Dio dio) : _voteService = VoteService(dio);
+  final LanguageProvider _languageProvider;
 
   List<VoteMainModel> _votes = [];
   List<VoteMainModel> get votes => _votes;
@@ -16,7 +17,19 @@ class VoteMainProvider with ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  String? _lastStatus;
+
+  VoteMainProvider(Dio dio, this._languageProvider)
+      : _voteService = VoteService(dio) {
+    _languageProvider.addListener(() {
+      if (_lastStatus != null) {
+        fetchVotesByStatus(_lastStatus!);
+      }
+    });
+  }
+
   Future<void> fetchVotesByStatus(String status) async {
+    _lastStatus = status;
     _isLoading = true;
     _error = null;
     notifyListeners();

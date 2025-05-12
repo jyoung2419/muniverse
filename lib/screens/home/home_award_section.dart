@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/event/main/event_main_vote_model.dart';
+import '../../utils/vote_text_util.dart';
 import '../../widgets/vote/voting_progress_list.dart';
 import '../../widgets/vote/voting_result_list.dart';
 
@@ -10,9 +11,11 @@ class HomeAwardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final labels = VoteTextUtil.getLabelsForMainVote(context, vote);
+
     return Column(
       children: [
-        if (vote.ongoing) // ✅ ongoing일 때만 Stack 보여줌
+        if (vote.ongoing)
           Stack(
             children: [
               ClipRRect(
@@ -28,8 +31,8 @@ class HomeAwardSection extends StatelessWidget {
                   height: 200,
                   width: double.infinity,
                   color: Colors.grey,
-                  child: const Center(
-                    child: Text('이미지 없음', style: TextStyle(color: Colors.white)),
+                  child: Center(
+                    child: Text(labels['vote_reward_empty']!, style: const TextStyle(color: Colors.white)),
                   ),
                 ),
               ),
@@ -44,9 +47,9 @@ class HomeAwardSection extends StatelessWidget {
                         color: const Color(0xFF2EFFAA),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text(
-                        '진행중',
-                        style: TextStyle(
+                      child: Text(
+                        labels['vote_ongoing']!,
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -65,7 +68,7 @@ class HomeAwardSection extends StatelessWidget {
                           const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
                           const SizedBox(width: 3),
                           Text(
-                            '남은 투표기간 ${vote.voteRestDay}일',
+                            labels['vote_remaining']!,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,

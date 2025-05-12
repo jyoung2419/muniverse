@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/event/detail/event_model.dart';
 import '../../providers/event/detail/event_vote_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../widgets/vote/vote_card.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
 
@@ -23,6 +24,11 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
   @override
   void initState() {
     super.initState();
+    final lang = context
+        .read<LanguageProvider>()
+        .selectedLanguageCode;
+    selectedStatus = lang == 'kr' ? '전체' : 'all';
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchVotes();
     });
@@ -30,32 +36,59 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
 
   Future<void> _fetchVotes() async {
     final mappedStatus = _mapStatus(selectedStatus);
-    await context.read<EventVoteProvider>().fetchVotes(widget.event.eventCode, mappedStatus);
+    await context.read<EventVoteProvider>().fetchVotes(
+        widget.event.eventCode, mappedStatus);
   }
 
   String _mapStatus(String status) {
-    switch (status) {
-      case '진행중':
-        return 'open';
-      case '진행완료':
-        return 'closed';
-      case '진행예정':
-        return 'before';
-      default:
-        return 'all';
+    final lang = context
+        .read<LanguageProvider>()
+        .selectedLanguageCode;
+
+    final statusMap = lang == 'kr'
+        ? {
+      '전체': 'all',
+      '진행중': 'open',
+      '진행완료': 'closed',
+      '진행예정': 'before',
     }
+        : {
+      'all': 'all',
+      'ongoing': 'open',
+      'closed': 'closed',
+      'upcoming': 'before',
+    };
+
+    return statusMap[status] ?? 'all';
   }
 
   void _onFilterChanged(String status) async {
+    final newMappedStatus = _mapStatus(status);
     setState(() {
-      selectedStatus = status;
+      selectedStatus = status.toLowerCase();
     });
-    await _fetchVotes();
+    await context.read<EventVoteProvider>().fetchVotes(widget.event.eventCode, newMappedStatus);
   }
 
   @override
   Widget build(BuildContext context) {
-    final votes = context.watch<EventVoteProvider>().votes;
+    final votes = context
+        .watch<EventVoteProvider>()
+        .votes;
+    final statusKey = _mapStatus(selectedStatus).toLowerCase();
+    final now = DateTime.now();
+
+    final filteredVotes = votes.where((vote) {
+      final isRunning = now.isAfter(vote.startTime) &&
+          now.isBefore(vote.endTime);
+      final isUpcoming = now.isBefore(vote.startTime);
+      final isEnded = now.isAfter(vote.endTime);
+
+      return statusKey == 'all' ||
+          (statusKey == 'open' && isRunning) ||
+          (statusKey == 'before' && isUpcoming) ||
+          (statusKey == 'closed' && isEnded);
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +96,6 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
           child: VoteFilterWidget(
-            filters: const ['전체', '진행중', '진행완료', '진행예정'],
             selectedFilter: selectedStatus,
             onChanged: _onFilterChanged,
           ),
@@ -71,15 +103,15 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: votes.length,
+            itemCount: filteredVotes.length,
             itemBuilder: (context, index) {
-              final vote = votes[index];
+              final vote = filteredVotes[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: VoteCard(
                   vote: vote,
                   event: widget.event,
-                  selectedStatus: selectedStatus,
+                  selectedStatus: statusKey,
                   onPressed: () {
                     print('투표 클릭: ${vote.voteCode}');
                   },

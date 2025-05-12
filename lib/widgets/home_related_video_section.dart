@@ -3,8 +3,29 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/event/main/event_main_related_provider.dart';
 
-class HomeRelatedVideoSection extends StatelessWidget {
+class HomeRelatedVideoSection extends StatefulWidget {
   const HomeRelatedVideoSection({super.key});
+
+  @override
+  State<HomeRelatedVideoSection> createState() => _HomeRelatedVideoSectionState();
+}
+
+class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
+  bool _hasFetched = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final provider = context.read<EventMainRelatedProvider>();
+
+    if (!_hasFetched &&
+        provider.relatedVideos.isEmpty &&
+        provider.error == null &&
+        !provider.isLoading) {
+      _hasFetched = true;
+      provider.fetchRelatedVideos();
+    }
+  }
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
@@ -19,11 +40,6 @@ class HomeRelatedVideoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<EventMainRelatedProvider>();
 
-    // 최초 로드
-    if (provider.relatedVideos.isEmpty && !provider.isLoading && provider.error == null) {
-      Future.microtask(() => context.read<EventMainRelatedProvider>().fetchRelatedVideos());
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,26 +52,17 @@ class HomeRelatedVideoSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Builder(
-          builder: (context) {
-            if (provider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (provider.error != null) {
-              return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
-            }
-
-            final videos = provider.relatedVideos;
-
-            if (videos.isEmpty) {
-              return const Center(child: Text("영상이 없습니다.", style: TextStyle(color: Colors.white70)));
-            }
-
-            return SingleChildScrollView(
+        if (provider.isLoading)
+          const Center(child: CircularProgressIndicator(color: Colors.white))
+        else if (provider.error != null)
+          const Center(child: Text("관련 영상이 없습니다.", style: TextStyle(color: Colors.white70)))
+        else if (provider.relatedVideos.isEmpty)
+            const Center(child: Text("관련 영상이 없습니다.", style: TextStyle(color: Colors.white70)))
+          else
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: videos.map((video) {
+                children: provider.relatedVideos.map((video) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
@@ -104,9 +111,7 @@ class HomeRelatedVideoSection extends StatelessWidget {
                   );
                 }).toList(),
               ),
-            );
-          },
-        ),
+            ),
       ],
     );
   }

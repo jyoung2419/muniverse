@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/language_provider.dart';
 import '../../../providers/vote/vote_detail_provider.dart';
 import '../../../widgets/vote/vote_dialog.dart';
 
@@ -110,7 +111,10 @@ class VoteDetailProgressTab extends StatelessWidget {
                             minimumSize: const Size(0, 30),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text('투표하기', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                          child: Text(
+                            context.watch<LanguageProvider>().selectedLanguageCode == 'kr' ? '투표하기' : 'VOTE',
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
                         ),
                         Align(
                           alignment: Alignment.centerRight,

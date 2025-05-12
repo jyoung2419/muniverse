@@ -16,6 +16,8 @@ class EventMainRelatedProvider with ChangeNotifier {
   String? get error => _error;
 
   Future<void> fetchRelatedVideos() async {
+    if (_isLoading || _relatedVideos.isNotEmpty || _error != null) return;
+
     _isLoading = true;
     _error = null;
     notifyListeners();

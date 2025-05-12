@@ -10,17 +10,30 @@ class GoogleOauthService {
       '/api/v1/user/app/oauth/google',
       data: {'idToken': idToken},
       options: Options(
-        headers: {'Content-Type': 'application/json'}, // Authorization 없이
+        headers: {'Content-Type': 'application/json'},
       ),
     );
 
-    // ✅ accessToken 저장 + print 추가
-    final accessToken = response.data['accessToken'];
-    final refreshToken = response.data['refreshToken'];
-    await SharedPrefsUtil.saveTokens(accessToken: accessToken, refreshToken: refreshToken);
-    print('✅ 로그인 시 저장된 accessToken: $accessToken');
+    final data = response.data;
 
-    return response.data;
+    if (data['status'] == 'NEEDS_INFO') {
+      return data;
+    }
+
+    final accessToken = data['accessToken'];
+    final refreshToken = data['refreshToken'];
+
+    if (accessToken == null || refreshToken == null) {
+      throw Exception('❌ 토큰이 없습니다: $data');
+    }
+
+    await SharedPrefsUtil.saveTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
+
+    print('✅ 로그인 시 저장된 accessToken: $accessToken');
+    return data;
   }
 
   Future<void> completeGoogleUserInfo({

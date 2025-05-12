@@ -10,7 +10,11 @@ class EventTitleService {
   // Title 조회
   Future<Map<String, dynamic>> fetchEventTitle(String eventCode) async {
     try {
-      final response = await _dio.get('/api/v1/event/title/$eventCode');
+      final lang = await SharedPrefsUtil.getAcceptLanguage();
+      final response = await _dio.get(
+        '/api/v1/event/title/$eventCode',
+        options: Options(headers: {'Accept-Language': lang}),
+      );
       return response.data;
     } catch (e) {
       print('❌ Title API 호출 실패: $e');
@@ -63,7 +67,10 @@ class EventTitleService {
   // Vote 리스트 조회
   Future<List<Map<String, dynamic>>> fetchEventVoteList(String eventCode, String status) async {
     try {
-      final response = await _dio.get('/api/v1/event/detail/vote/$eventCode/$status');
+      final lang = await SharedPrefsUtil.getAcceptLanguage();
+      final response = await _dio.get('/api/v1/event/detail/vote/$eventCode/$status',
+        options: Options(headers: {'Accept-Language': lang}),
+      );
       final List<dynamic> rawList = response.data;
       return rawList.cast<Map<String, dynamic>>();
     } catch (e) {
