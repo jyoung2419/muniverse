@@ -58,7 +58,6 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
     }
 
     final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN', 'END'].contains(event!.status);
-    // final showLiveTab = ['OPEN', 'PRE_OPEN'].contains(event!.status);
 
     final tabList = [
       const Tab(text: '상세정보'),
@@ -107,7 +106,11 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
                   const SizedBox(height: kToolbarHeight),
                   BannerSection(
                     imagePath: event!.bannerUrl,
+                    profileUrl: event!.profileUrl,
+                    title: event!.name,
+                    introContent: event!.introContent,
                     performanceStartTime: event!.performanceStartTime,
+                    performanceEndTime: event!.performanceEndTime,
                   ),
                   const SizedBox(height: 10),
                   Theme(
@@ -155,12 +158,20 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
 
 class BannerSection extends StatelessWidget {
   final String imagePath;
+  final String profileUrl;
+  final String title;
+  final String introContent;
   final DateTime performanceStartTime;
+  final DateTime performanceEndTime;
 
   const BannerSection({
     super.key,
     required this.imagePath,
+    required this.profileUrl,
+    required this.title,
+    required this.introContent,
     required this.performanceStartTime,
+    required this.performanceEndTime,
   });
 
   int getStreamingRound(DateTime now) {
@@ -168,6 +179,12 @@ class BannerSection extends StatelessWidget {
     if (diff < 0) return 1;
     return (diff ~/ 24) + 2;
   }
+
+  static String _formatDate(DateTime dt) {
+    return '${dt.year}.${_pad(dt.month)}.${_pad(dt.day)} ${_pad(dt.hour)}:${_pad(dt.minute)} (KST)';
+  }
+
+  static String _pad(int n) => n.toString().padLeft(2, '0');
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +199,65 @@ class BannerSection extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.network(imagePath, fit: BoxFit.cover),
-          Container(color: Colors.black.withOpacity(0.7)),
+          Container(color: Colors.black.withOpacity(0.6)),
+
+          Positioned(
+            top: 65,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(profileUrl),
+                        radius: 16,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '부산 원아시아',
+                        style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    introContent.replaceAll('\r\n', ' ').replaceAll('\n', ' '),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${_formatDate(performanceStartTime)} ~ ${_formatDate(performanceEndTime)}',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
           if (isBeforePerformance || round <= 3)
             Positioned(
               bottom: 20,
@@ -195,7 +270,7 @@ class BannerSection extends StatelessWidget {
                     '$round 회차 스트리밍까지 남은시간',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

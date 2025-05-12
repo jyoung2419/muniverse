@@ -2,6 +2,7 @@ class EventModel {
   final String eventCode;
   final String name;
   final String shortName;
+  final String introContent;
   final String content;
   final String bannerUrl;
   final String profileUrl;
@@ -17,6 +18,7 @@ class EventModel {
     required this.name,
     required this.shortName,
     required this.content,
+    required this.introContent,
     required this.bannerUrl,
     required this.profileUrl,
     required this.status,
@@ -33,6 +35,7 @@ class EventModel {
       name: json['name'] ?? '',
       shortName: json['shortName'] ?? '',
       content: json['content'] ?? '',
+      introContent: json['introContent'] ?? '',
       bannerUrl: json['bannerImageURL'] ?? '',
       profileUrl: json['profileImageURL'] ?? '',
       round: json['round']?.toString() ?? '',
