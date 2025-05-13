@@ -6,7 +6,6 @@ class LanguageProvider with ChangeNotifier {
 
   String get selectedLanguage => _selectedLanguage;
 
-  /// 서버 API에 보낼 언어 코드 (예: Accept-Language: kr)
   String get selectedLanguageCode {
     switch (_selectedLanguage) {
       case '한국어': return 'kr';
@@ -18,7 +17,6 @@ class LanguageProvider with ChangeNotifier {
     }
   }
 
-  /// Google 번역 API용 타겟 언어 코드
   String get googleTargetLangCode {
     switch (_selectedLanguage) {
       case '한국어': return 'ko';

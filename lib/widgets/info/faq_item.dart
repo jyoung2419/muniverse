@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muniverse_app/widgets/common/translate_text.dart';
 
 class FAQItem extends StatefulWidget {
   final String title;
@@ -27,7 +28,7 @@ class _FAQItemState extends State<FAQItem> {
           contentPadding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           tileColor: Colors.transparent,
-          title: Text(
+          title: TranslatedText(
             widget.title,
             style: const TextStyle(
               color: Colors.white,
@@ -54,7 +55,7 @@ class _FAQItemState extends State<FAQItem> {
                 color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text(
+              child: TranslatedText(
                 widget.content,
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),

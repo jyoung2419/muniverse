@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 class VodNotice extends StatefulWidget {
   const VodNotice({super.key});
 
@@ -27,6 +29,8 @@ class _VodNoticeState extends State<VodNotice> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+    final titleText = lang == 'ko' ? 'VOD 이용안내' : 'VOD NOTICE';
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -47,7 +51,7 @@ class _VodNoticeState extends State<VodNotice> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      'VOD 이용안내',
+                      titleText,
                       style: TextStyle(
                         color: Color(0xFF2EFFAA),
                         fontSize: 22,
@@ -107,7 +111,7 @@ class NoticeItem extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           tileColor: Colors.transparent,
-          title: Text(
+          title: TranslatedText(
             title,
             style: const TextStyle(
               color: Colors.white,
@@ -134,7 +138,7 @@ class NoticeItem extends StatelessWidget {
                 color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text(
+              child: TranslatedText(
                 content,
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
 import '../../models/product/product_vod_usd_model.dart';
 import '../../models/product/product_live_usd_model.dart';
+import '../../widgets/common/translate_text.dart';
 
 class TicketTab extends StatelessWidget {
   const TicketTab({super.key});
@@ -12,11 +14,12 @@ class TicketTab extends StatelessWidget {
     final provider = context.watch<ProductUSDProvider>();
     final vods = provider.vods;
     final lives = provider.lives;
-
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+    final buyText = lang == 'kr' ? '구매하기' : 'BUY';
     final products = [...vods, ...lives];
 
     if (provider.error != null) {
-      return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
+      return Center(child: TranslatedText(provider.error!, style: const TextStyle(color: Colors.red)));
     }
     if (provider.isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -68,7 +71,7 @@ class TicketTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
+                      TranslatedText(
                         name,
                         style: const TextStyle(
                           color: Colors.white,
@@ -77,7 +80,7 @@ class TicketTab extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
+                      TranslatedText(
                         note,
                         style: const TextStyle(color: Colors.white54, fontSize: 12),
                         maxLines: 2,
@@ -125,9 +128,9 @@ class TicketTab extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               elevation: 0,
                             ),
-                            child: const Text(
-                              '구매하기',
-                              style: TextStyle(
+                            child: Text(
+                              buyText,
+                              style: const TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                               ),

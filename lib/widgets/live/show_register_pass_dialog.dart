@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 void ShowRegisterPassDialog(BuildContext context) {
   String? selectedPass; // 선택된 이용권 값 (초기 null)
-
+  final lang = Localizations.localeOf(context).languageCode;
+  final okText = lang == 'ko' ? '확인' : 'OK';
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -20,7 +23,7 @@ void ShowRegisterPassDialog(BuildContext context) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      TranslatedText(
                         '알림',
                         style: TextStyle(
                           color: Colors.white,
@@ -36,7 +39,7 @@ void ShowRegisterPassDialog(BuildContext context) {
                   ),
                   const SizedBox(height: 32),
                   const Center(
-                    child: Text(
+                    child: TranslatedText(
                       '보유하신 이용권을 선택해 주세요.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -98,7 +101,7 @@ void ShowRegisterPassDialog(BuildContext context) {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('확인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      child: Text(okText, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],

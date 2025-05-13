@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 class LiveFAQ extends StatefulWidget {
   const LiveFAQ({super.key});
 
@@ -27,6 +29,8 @@ class _LiveFAQState extends State<LiveFAQ> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+    final titleText = lang == 'ko' ? '라이브 FAQ' : 'LIVE FAQ';
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -46,7 +50,7 @@ class _LiveFAQState extends State<LiveFAQ> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      '라이브 FAQ',
+                      titleText,
                       style: TextStyle(
                         color: Color(0xFF2EFFAA),
                         fontSize: 22,
@@ -106,7 +110,7 @@ class FAQItem extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           tileColor: Colors.transparent,
-          title: Text(
+          title: TranslatedText(
             title,
             style: const TextStyle(
               color: Colors.white,
@@ -133,7 +137,7 @@ class FAQItem extends StatelessWidget {
                 color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text(
+              child: TranslatedText(
                 content,
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),

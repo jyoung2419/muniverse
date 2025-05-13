@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:muniverse_app/widgets/common/translate_text.dart';
 import 'package:provider/provider.dart';
 import '../../models/vote/vote_detail_content_model.dart';
 import '../../providers/vote/vote_detail_provider.dart';
@@ -128,7 +129,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                 children: [
                   const SizedBox(height: 16),
                   Center(
-                    child: Text('투표', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                    child: TranslatedText('투표', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                   const SizedBox(height: 16),
                   IntrinsicHeight(
@@ -194,9 +195,9 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(widget.eventName, style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                                  TranslatedText(widget.eventName, style: const TextStyle(fontSize: 12, color: Colors.white70)),
                                   const SizedBox(height: 4),
-                                  Text(vote.voteName, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold)),
+                                  TranslatedText(vote.voteName, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 4),
                                   Text(labels['vote_period']!, style: const TextStyle(fontSize: 11, color: Colors.white70)),
                                   const SizedBox(height: 4),

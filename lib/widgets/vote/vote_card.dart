@@ -3,6 +3,7 @@ import '../../models/event/detail/event_model.dart';
 import '../../models/event/detail/event_vote_model.dart';
 import '../../screens/vote/vote_detail_screen.dart';
 import '../../utils/vote_text_util.dart';
+import '../common/translate_text.dart';
 
 class VoteCard extends StatelessWidget {
   final EventVoteModel vote;
@@ -140,9 +141,9 @@ class VoteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(event.name, style: const TextStyle(color: Colors.white, fontSize: 10)),
+                    TranslatedText(event.name, style: const TextStyle(color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
-                    Text(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                    TranslatedText(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
                     Text(labels['vote_period']!, style: const TextStyle(color: Colors.white70, fontSize: 11)),
                     const SizedBox(height: 6),
@@ -162,7 +163,7 @@ class VoteCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(vote.rewards.isNotEmpty ? vote.rewards.join(', ') : labels['vote_reward_empty']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                          TranslatedText(vote.rewards.isNotEmpty ? vote.rewards.join(', ') : labels['vote_reward_empty']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
                         ],
                       ),
                     ),

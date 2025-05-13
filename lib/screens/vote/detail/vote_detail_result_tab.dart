@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:muniverse_app/widgets/common/translate_text.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/vote/vote_detail_provider.dart';
 import '../../../widgets/vote/winner_card.dart';
@@ -133,7 +134,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                                       color: Color(0xFF353C49),
                                     )),
                                 const SizedBox(width: 10),
-                                Text(
+                                TranslatedText(
                                   artist.artistName,
                                   style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
@@ -164,7 +165,7 @@ class _VoteDetailResultTabState extends State<VoteDetailResultTab> {
                               minimumSize: const Size(0, 30),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
-                            child: const Text('투표종료', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                            child: TranslatedText('투표종료', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                           ),
                           Align(
                             alignment: Alignment.centerRight,

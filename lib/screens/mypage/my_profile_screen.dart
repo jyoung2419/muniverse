@@ -4,6 +4,7 @@ import '../../providers/user/user_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
+import '../../widgets/common/translate_text.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -44,7 +45,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           children: [
             const SizedBox(height: 16),
             const Center(
-              child: Text(
+              child: TranslatedText(
                 '내 정보 조회',
                 style: TextStyle(
                   color: Color(0xFF2EFFAA),
@@ -85,7 +86,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
+                    child: TranslatedText(
                       '사진 등록',
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
@@ -126,7 +127,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
+                  child: TranslatedText(
                     '중복 확인',
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
@@ -148,7 +149,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: TranslatedText(
                       '취소',
                       style: TextStyle(
                         color: Colors.white,
@@ -171,7 +172,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
+                    child: TranslatedText(
                       '저장',
                       style: TextStyle(
                         color: Colors.black,
@@ -192,7 +193,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _buildLabel(String text) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Text(
+      child: TranslatedText(
         text,
         style: const TextStyle(
           color: Colors.white70,

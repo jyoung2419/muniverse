@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import 'title_related_video_tab.dart';
 import 'title_live_tab.dart';
 import '../../models/event/detail/event_model.dart';
@@ -205,7 +207,7 @@ class BannerSection extends StatelessWidget {
           Container(color: Colors.black.withOpacity(0.6)),
 
           Positioned(
-            top: 65,
+            top: 80,
             left: 16,
             right: 16,
             child: Container(
@@ -224,14 +226,14 @@ class BannerSection extends StatelessWidget {
                         radius: 16,
                       ),
                       const SizedBox(width: 8),
-                      Text(
+                      TranslatedText(
                         title,
                         style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w500, fontSize: 14),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  TranslatedText(
                     title,
                     style: const TextStyle(
                       fontSize: 20,
@@ -240,12 +242,9 @@ class BannerSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    introContent.replaceAll('\r\n', ' ').replaceAll('\n', ' '),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.white70,
-                    ),
+                  TranslatedText(
+                    introContent.replaceAll('<br>', '\n'),
+                    style: const TextStyle(fontSize: 13, color: Colors.white70),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -263,13 +262,13 @@ class BannerSection extends StatelessWidget {
 
           if (isBeforePerformance || round <= 3)
             Positioned(
-              bottom: 20,
+              bottom: 10,
               left: 16,
               right: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TranslatedText(
                     '$round 회차 스트리밍까지 남은시간',
                     style: const TextStyle(
                       color: Colors.white,

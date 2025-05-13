@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/vote/vote_availability_provider.dart';
 import '../../providers/vote/vote_detail_provider.dart';
 import '../../services/vote/vote_submit_service.dart';
 import '../../utils/dio_client.dart';
+import '../common/translate_text.dart';
 
 class FreeVoteDialog extends StatefulWidget {
   final String voteCode;
@@ -43,6 +45,11 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
   Widget build(BuildContext context) {
     final availabilityProvider = context.watch<VoteAvailabilityProvider>();
     final remainingCount = availabilityProvider.availability?.remainingCount ?? 0;
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
+    final voteAvailableText = lang == 'kr'
+        ? '총 $remainingCount회 투표 가능합니다.'
+        : 'You can vote $remainingCount times.';
+    final unitLabel = lang == 'kr' ? '장' : 'tickets';
 
     return Dialog(
       backgroundColor: const Color(0xFF1B1B1D),
@@ -62,7 +69,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
           children: [
             Row(
               children: [
-                const Text('무료 투표권',
+                TranslatedText('무료 투표권',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -78,22 +85,11 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
               ],
             ),
             const SizedBox(height: 16),
-            const Text('사용할 투표권 수 선택', style: TextStyle(color: Colors.white)),
+            const TranslatedText('사용할 투표권 수 선택', style: TextStyle(color: Colors.white)),
             const SizedBox(height: 4),
-            Text.rich(
-              TextSpan(
-                text: '총 ',
-                style: const TextStyle(color: Colors.white),
-                children: [
-                  TextSpan(
-                    text: '$remainingCount',
-                    style: const TextStyle(
-                        color: Color(0xFFFFFF00),
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const TextSpan(text: '회 투표 가능합니다.'),
-                ],
-              ),
+            Text(
+              voteAvailableText,
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16),
             Row(
@@ -136,7 +132,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text('장', style: TextStyle(color: Colors.white)),
+                Text(unitLabel, style: TextStyle(color: Colors.white)),
               ],
             ),
             const SizedBox(height: 24),
@@ -169,7 +165,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                               children: [
                                 const Icon(Icons.check_circle, color: Color(0xFF2EFFAA), size: 30),
                                 const SizedBox(height: 12),
-                                const Text(
+                                const TranslatedText(
                                   '투표 완료!',
                                   style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
@@ -199,7 +195,7 @@ class _FreeVoteDialogState extends State<FreeVoteDialog> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
-                child: const Text('투표권 사용'),
+                child: const TranslatedText('투표권 사용'),
               ),
             ),
           ],

@@ -4,6 +4,7 @@ import '../../providers/event/detail/event_related_provider.dart';
 import '../../models/event/event_related_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/common/year_filter_drop_down.dart';
 
 class TitleRelatedVideoTab extends StatefulWidget {
@@ -79,7 +80,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
 
               if (provider.error != null) {
                 return Center(
-                  child: Text(
+                  child: TranslatedText(
                     provider.error!,
                     style: const TextStyle(color: Colors.white),
                   ),
@@ -88,7 +89,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
 
               if (provider.relatedVideos.isEmpty) {
                 return const Center(
-                  child: Text(
+                  child: TranslatedText(
                     '관련 영상이 없습니다.',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -131,7 +132,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8),
-                            child: Text(
+                            child: TranslatedText(
                               video.name,
                               style: const TextStyle(
                                 color: Colors.white70,

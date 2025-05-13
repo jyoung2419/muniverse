@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 void showOpenNoticeDialog(BuildContext context) {
+  final lang = Localizations.localeOf(context).languageCode;
+  final okText = lang == 'ko' ? '확인' : 'OK';
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -16,7 +20,7 @@ void showOpenNoticeDialog(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  TranslatedText(
                     '알림',
                     style: TextStyle(
                       color: Colors.white,
@@ -32,7 +36,7 @@ void showOpenNoticeDialog(BuildContext context) {
               ),
               const SizedBox(height: 32),
               const Center(
-                child: Text(
+                child: TranslatedText(
                   '해당 공연은\n오픈 예정입니다.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 16),
@@ -51,7 +55,7 @@ void showOpenNoticeDialog(BuildContext context) {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('확인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  child: Text(okText, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
               ),
             ],

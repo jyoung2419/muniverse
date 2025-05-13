@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_live_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/live_faq.dart';
 import '../../widgets/info/live_notice.dart';
@@ -195,12 +196,12 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                               style: const TextStyle(color: Colors.white70, fontSize: 11),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            TranslatedText(
                               item.name,
                               style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 6),
-                            Text(
+                            TranslatedText(
                               item.content,
                               style: const TextStyle(color: Colors.white54, fontSize: 12),
                               maxLines: 2,

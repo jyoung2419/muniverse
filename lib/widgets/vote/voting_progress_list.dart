@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/event/main/event_main_vote_artist_model.dart';
+import '../common/translate_text.dart';
 
 class VotingProgressList extends StatelessWidget {
   final List<EventMainVoteArtistModel> artists;
@@ -44,7 +45,7 @@ class VotingProgressList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TranslatedText(
                       artist.name,
                       style: const TextStyle(
                         color: Colors.white,
@@ -56,7 +57,7 @@ class VotingProgressList extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: TranslatedText(
                             artist.name, // 영어명 (추후 수정 가능)
                             style: const TextStyle(
                               color: Color(0xFFC2C4C8E0),

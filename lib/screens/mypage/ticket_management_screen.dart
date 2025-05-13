@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/back_fab.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/mypage/user_pass_card_list.dart';
 
 class TicketManagementScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class TicketManagementScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 16),
               const Center(
-                child: Text(
+                child: TranslatedText(
                   '보유 이용권',
                   style: TextStyle(
                     color: Color(0xFF2EFFAA),
@@ -62,7 +63,7 @@ class TicketManagementScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Center(
-                      child: Text(
+                      child: TranslatedText(
                         '이용권 등록',
                         style: TextStyle(
                           color: Color(0xFF2EFFAA),
@@ -79,7 +80,7 @@ class TicketManagementScreen extends StatelessWidget {
                 const Divider(color: Color(0xFF212225)),
                 const SizedBox(height: 100),
                 const Center(
-                  child: Text(
+                  child: TranslatedText(
                     '이용권을 등록해 주세요.',
                     style: TextStyle(color: Color(0xFF6D7582)),
                   ),

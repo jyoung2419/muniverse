@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/language_provider.dart';
 import '../../../providers/vote/vote_detail_provider.dart';
+import '../../../widgets/common/translate_text.dart';
 import '../../../widgets/vote/vote_dialog.dart';
 
 class VoteDetailProgressTab extends StatelessWidget {
@@ -67,7 +68,7 @@ class VoteDetailProgressTab extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              Text(
+                              TranslatedText(
                                 artist.artistName,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,

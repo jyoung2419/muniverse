@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 class PinFieldRow extends StatelessWidget {
   const PinFieldRow({super.key});
 
@@ -31,7 +33,7 @@ class PinFieldRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
+            child: TranslatedText(
               'PIN 복사',
               style: TextStyle(color: Colors.white),
             ),

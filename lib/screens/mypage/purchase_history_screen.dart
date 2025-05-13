@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/mypage/pin_field_row.dart';
 import '../../widgets/mypage/product_card.dart';
 
@@ -50,7 +51,7 @@ class PurchaseHistoryScreen extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
-                          Text(
+                          TranslatedText(
                             '결제 정보 보기',
                             style: TextStyle(
                               color: Colors.white,

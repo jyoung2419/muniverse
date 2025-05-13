@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_vod_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/vod_faq.dart';
 import '../../widgets/info/vod_notice.dart';
@@ -147,7 +148,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(height: 4),
-                            Text(
+                            TranslatedText(
                               vod.name,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -156,7 +157,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(
+                            TranslatedText(
                               vod.content,
                               style: const TextStyle(color: Colors.white54, fontSize: 12),
                               maxLines: 2,

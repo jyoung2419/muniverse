@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'translate_text.dart';
 
 class RemainingTimeText extends StatefulWidget {
   final DateTime endTime;
@@ -35,11 +36,14 @@ class _RemainingTimeTextState extends State<RemainingTimeText> {
   }
 
   String formatRemainingTime(Duration remaining) {
+    final lang = Localizations.localeOf(context).languageCode;
     final days = remaining.inDays.toString().padLeft(2, '0');
     final hours = (remaining.inHours % 24).toString().padLeft(2, '0');
     final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
     final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');
-    return '$days일 $hours:$minutes:$seconds';
+    return lang == 'ko'
+        ? '$days일 $hours:$minutes:$seconds'
+        : 'D-$days $hours:$minutes:$seconds';
   }
 
   @override
@@ -47,7 +51,7 @@ class _RemainingTimeTextState extends State<RemainingTimeText> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        const TranslatedText(
           '남은시간',
           style: TextStyle(
             color: Colors.white60,

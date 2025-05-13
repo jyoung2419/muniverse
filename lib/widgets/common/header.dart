@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
+import '../../providers/translation_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../muniverse_logo.dart';
 
@@ -118,7 +119,9 @@ class _HeaderState extends State<Header> {
             }
 
             context.read<LanguageProvider>().setLanguage(langCode);
+            final translationProvider = context.read<TranslationProvider>();
             await SharedPrefsUtil.setAcceptLanguage(langCode);
+            translationProvider.clear();
             print('선택된 언어: $value');
           },
           itemBuilder: (context) => [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/event/main/event_main_vote_artist_model.dart';
 import '../../widgets/vote/rank_card.dart';
 import '../../widgets/vote/winner_card.dart';
+import '../common/translate_text.dart';
 
 class VotingResultList extends StatelessWidget {
   final List<EventMainVoteArtistModel> artists;
@@ -12,7 +13,7 @@ class VotingResultList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (artists.isEmpty) {
       return const Center(
-        child: Text('데이터 없음', style: TextStyle(color: Colors.white)),
+        child: TranslatedText('데이터 없음', style: TextStyle(color: Colors.white)),
       );
     }
 

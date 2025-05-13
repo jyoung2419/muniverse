@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/back_fab.dart';
+import '../../widgets/common/translate_text.dart';
 
 class WinnerHistoryScreen extends StatelessWidget {
   const WinnerHistoryScreen({super.key});
@@ -16,7 +17,7 @@ class WinnerHistoryScreen extends StatelessWidget {
       body: const Center(
         child: Padding(
           padding: EdgeInsets.only(top: kToolbarHeight + 24),
-          child: Text(
+          child: TranslatedText(
             '당첨된 내역이 없습니다.',
             style: TextStyle(color: Colors.white),
           ),

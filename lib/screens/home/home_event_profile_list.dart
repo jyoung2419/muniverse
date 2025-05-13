@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../models/event/main/event_main_model.dart';
 import '../../providers/event/main/event_main_provider.dart';
 import '../../providers/event/detail/event_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import '../title/title_home_screen.dart';
 
 class HomeEventProfileList extends StatefulWidget {
@@ -121,7 +122,7 @@ class _HomeEventProfileListState extends State<HomeEventProfileList> {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: const Color(0xFF2EFFAA)),
               ),
-              child: const Text(
+              child: TranslatedText(
                 '오픈 예정',
                 style: TextStyle(
                   color: Color(0xFF2EFFAA),

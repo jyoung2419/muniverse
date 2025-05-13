@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/user/user_me_provider.dart';
 import '../../providers/user/user_provider.dart';
 import '../../screens/mypage/my_profile_screen.dart';
@@ -33,6 +34,16 @@ class AppDrawer extends StatelessWidget {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     final userMeProvider = context.watch<UserMeProvider>();
     final userNickName = userMeProvider.userMe?.userNickName ?? '사용자';
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+    final titleMyPage = lang == 'kr' ? '마이페이지' : 'MY PAGE';
+    final purchaseLabel = lang == 'kr' ? '구매 내역' : 'PURCHASE HISTORY';
+    final passLabel = lang == 'kr' ? '보유 이용권' : 'MY PASS';
+    final winnerLabel = lang == 'kr' ? '당첨 내역' : 'WINNER LIST';
+    final profileLabel = lang == 'kr' ? '내 정보 조회' : 'MY PROFILE';
+    final titleNotice = lang == 'kr' ? '공지사항' : 'NOTICE';
+    final logoutText = lang == 'kr' ? '로그아웃' : 'LOGOUT';
+    final greeting = lang == 'kr' ? '안녕하세요, $userNickName님!' : 'Hi, $userNickName!';
+
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
@@ -67,9 +78,8 @@ class AppDrawer extends StatelessWidget {
                           if (userMeProvider.isLoading) {
                             return const CircularProgressIndicator();
                           }
-                          final nickname = userMeProvider.userMe?.userNickName ?? '사용자';
                           return Text(
-                            '안녕하세요, $nickname님!',
+                            greeting,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -87,10 +97,10 @@ class AppDrawer extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.fromLTRB(16, 20, 16, 6),
                       child: Text(
-                        '마이페이지',
+                        titleMyPage,
                         style: TextStyle(
                           color: Color(0xFF2EFFAA),
                           fontSize: 16,
@@ -98,19 +108,13 @@ class AppDrawer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    _buildItem(context, Icons.shopping_cart_outlined, '구매 내역',
-                        const PurchaseHistoryScreen(), '/purchase', currentRoute),
-                    _buildItem(context, Icons.subscriptions_outlined, '보유 이용권',
-                        const TicketManagementScreen(), '/ticket', currentRoute),
-                    _buildItem(context, Icons.event_note, '당첨 내역',
-                        const WinnerHistoryScreen(), '/winner', currentRoute),
-                    _buildItem(context, Icons.person, '내 정보 조회',
-                        const MyProfileScreen(), '/profile', currentRoute),
+                    _buildItem(context, Icons.shopping_cart_outlined, purchaseLabel, const PurchaseHistoryScreen(), '/purchase', currentRoute),
+                    _buildItem(context, Icons.subscriptions_outlined, passLabel, const TicketManagementScreen(), '/ticket', currentRoute),
+                    _buildItem(context, Icons.event_note, winnerLabel, const WinnerHistoryScreen(), '/winner', currentRoute),
+                    _buildItem(context, Icons.person, profileLabel, const MyProfileScreen(), '/profile', currentRoute),
                     const Divider(color: Colors.white24, indent: 16, endIndent: 16),
-                    _buildItem(context, Icons.announcement_outlined, '공지사항',
-                        const NoticeScreen(), '/notice', currentRoute),
-                    _buildItem(context, Icons.help_outline, 'FAQ',
-                        const FAQScreen(), '/faq', currentRoute),
+                    _buildItem(context, Icons.announcement_outlined, titleNotice, const NoticeScreen(), '/notice', currentRoute),
+                    _buildItem(context, Icons.help_outline, 'FAQ', const FAQScreen(), '/faq', currentRoute),
                   ],
                 ),
               ),
@@ -129,11 +133,11 @@ class AppDrawer extends StatelessWidget {
                     }
                   },
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.logout, color: Colors.redAccent, size: 20),
                       SizedBox(width: 10),
                       Text(
-                        '로그아웃',
+                        logoutText,
                         style: TextStyle(
                           color: Colors.redAccent,
                           fontSize: 14,

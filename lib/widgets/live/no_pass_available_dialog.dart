@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 void noPassAvailableDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -16,7 +18,7 @@ void noPassAvailableDialog(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  const TranslatedText(
                     '알림',
                     style: TextStyle(
                       color: Colors.white,
@@ -32,7 +34,7 @@ void noPassAvailableDialog(BuildContext context) {
               ),
               const SizedBox(height: 32),
               const Center(
-                child: Text(
+                child: TranslatedText(
                   '보유 이용권이 없습니다.\n구매 또는 이용권 등록을 진행 해주세요.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 15),
@@ -54,7 +56,7 @@ void noPassAvailableDialog(BuildContext context) {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('보유 이용권 등록', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      child: TranslatedText('보유 이용권 등록', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -71,7 +73,7 @@ void noPassAvailableDialog(BuildContext context) {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('이용권 구매', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      child: TranslatedText('이용권 구매', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],

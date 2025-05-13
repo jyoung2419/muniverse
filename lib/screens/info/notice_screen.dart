@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/info/notice_item.dart';
 import '../../providers/notice/notice_provider.dart';
 import '../../widgets/common/header.dart';
@@ -25,8 +27,9 @@ class _NoticeScreenState extends State<NoticeScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<NoticeProvider>();
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final notices = provider.notices;
-
+    final noticeTitle = lang == 'kr' ? '공지사항' : 'NOTICE';
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
       appBar: const Header(),
@@ -37,9 +40,9 @@ class _NoticeScreenState extends State<NoticeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            const Center(
+            Center(
               child: Text(
-                '공지사항',
+                noticeTitle,
                 style: TextStyle(
                   color: Color(0xFF2EFFAA),
                   fontSize: 24,
@@ -53,7 +56,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
                 builder: (context) {
                   if (provider.notices.isEmpty) {
                     return const Center(
-                      child: Text(
+                      child: TranslatedText(
                         '공지사항이 없습니다.',
                         style: TextStyle(color: Colors.white70),
                       ),

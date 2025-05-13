@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import 'ticket_tab.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
@@ -25,6 +27,8 @@ class _StoreMainScreenState extends State<StoreMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -86,9 +90,9 @@ class _StoreMainScreenState extends State<StoreMainScreen> {
                 unselectedLabelStyle: const TextStyle(
                   fontSize: 14,
                 ),
-                tabs: const [
-                  Tab(text: '티켓'),
-                  Tab(text: '굿즈'),
+                tabs: [
+                  Tab(text: lang == 'kr' ? '티켓' : 'TICKET'),
+                  Tab(text: lang == 'kr' ? '굿즈' : 'MD'),
                 ],
               ),
             ),
@@ -100,7 +104,7 @@ class _StoreMainScreenState extends State<StoreMainScreen> {
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                      child: Text(
+                      child: TranslatedText(
                         '🎫 굿즈 상품은 추후 추가될 예정입니다.\n조금만 기다려주세요!',
                         style: TextStyle(
                           color: Colors.white70,

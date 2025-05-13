@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/event/detail/event_model.dart';
 import '../../providers/event/detail/event_info_provider.dart';
+import '../../widgets/common/translate_text.dart';
 
 class TitleDescriptionTab extends StatefulWidget {
   final EventModel event;
@@ -31,7 +32,7 @@ class _TitleDescriptionTabState extends State<TitleDescriptionTab> {
     }
 
     if (provider.error != null) {
-      return Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)));
+      return Center(child: TranslatedText(provider.error!, style: const TextStyle(color: Colors.red)));
     }
 
     final content = provider.eventInfo?.content ?? '';
@@ -66,7 +67,7 @@ class _TitleDescriptionTabState extends State<TitleDescriptionTab> {
                       children: [
                         Image.network(thumbnail),
                         const SizedBox(height: 8),
-                        const Text("▶ YouTube 영상 보기", style: TextStyle(color: Colors.white)),
+                        const TranslatedText("▶ YouTube 영상 보기", style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   );

@@ -74,9 +74,6 @@ class SharedPrefsUtil {
 
   static Future<String> getAcceptLanguage() async {
     final prefs = await SharedPreferences.getInstance();
-    final lang = prefs.getString(_acceptLanguageKey) ?? 'kr';
-
-    if (lang == 'kr') return 'kr';
-    return 'en';
+    return prefs.getString(_acceptLanguageKey) ?? 'kr';
   }
 }

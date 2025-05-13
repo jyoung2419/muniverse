@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'translate_text.dart';
 
 class TagBox extends StatelessWidget {
   final String text;
@@ -12,7 +13,7 @@ class TagBox extends StatelessWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
+      child: TranslatedText(
         text,
         style: const TextStyle(
           color: Color(0xFF2EFFAA),

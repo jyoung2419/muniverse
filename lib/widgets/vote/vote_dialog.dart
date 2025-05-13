@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/vote/vote_availability_provider.dart';
+import '../common/translate_text.dart';
 import 'free_vote_dialog.dart';
 
 class VoteDialog extends StatefulWidget {
@@ -45,7 +46,7 @@ class _VoteDialogState extends State<VoteDialog> {
           children: [
             Row(
               children: [
-                const Text('투표권',
+                const TranslatedText('투표권',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                 const Spacer(),
                 GestureDetector(
@@ -57,7 +58,7 @@ class _VoteDialogState extends State<VoteDialog> {
             const SizedBox(height: 20),
             Column(
               children: [
-                Text(
+                TranslatedText(
                   '${widget.artistName}',
                   style: const TextStyle(
                     color: Colors.white,
@@ -66,19 +67,19 @@ class _VoteDialogState extends State<VoteDialog> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 4),
-                const Text('투표를 진행하시겠습니까?',
+                const TranslatedText('투표를 진행하시겠습니까?',
                     style: TextStyle(color: Colors.white, fontSize: 14)
                 ),
                 const SizedBox(height: 8),
                 if (availabilityProvider.isLoading)
                   const CircularProgressIndicator()
                 else if (availabilityProvider.error != null)
-                  Text(
+                  TranslatedText(
                     availabilityProvider.error!,
                     style: const TextStyle(color: Colors.red, fontSize: 12),
                   )
                 else if (remainingCount != null)
-                    Text(
+                    TranslatedText(
                       '남은 무료 투표권: $remainingCount',
                       style: const TextStyle(
                         color: Color(0xFFFFFF00),
@@ -107,7 +108,7 @@ class _VoteDialogState extends State<VoteDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text('무료 투표권 선택', style: TextStyle(fontSize: 13)),
+                    child: const TranslatedText('무료 투표권 선택', style: TextStyle(fontSize: 13)),
                   ),
                 ),
                 // const SizedBox(width: 6),

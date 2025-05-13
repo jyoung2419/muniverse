@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 class RankCard extends StatelessWidget {
   final int index;
   final String name;
@@ -32,7 +34,7 @@ class RankCard extends StatelessWidget {
             children: [
               Icon(icon, color: iconColor, size: 28),
               const SizedBox(width: 4),
-              Text(
+              TranslatedText(
                 '$index위',
                 style: const TextStyle(
                   color: Colors.white,
@@ -67,12 +69,12 @@ class RankCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
+          TranslatedText(
             name,
             style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
           ),
-          Text(
-            artistCode, // ✅ 영어명 없어서 artistCode로 대체
+          TranslatedText(
+            name, // ✅ 영어명 없어서 name으로 대체
             style: const TextStyle(color: Color(0xFFC2C4C8E0), fontSize: 13),
           ),
           const SizedBox(height: 6),

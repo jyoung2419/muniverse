@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/google_translate_service.dart';
+import '../utils/dio_client.dart';
 import 'language_provider.dart';
 
 class TranslationProvider with ChangeNotifier {
@@ -10,13 +11,12 @@ class TranslationProvider with ChangeNotifier {
 
   String get currentLang => _currentLang;
 
-  /// 키워드 번역
   String get(String key) {
     return _translations[key] ?? key;
   }
 
   Future<void> loadTranslations(BuildContext context, List<String> keys) async {
-    final langProvider = context.read<LanguageProvider>();
+    final langProvider = Provider.of<LanguageProvider>(navigatorKey.currentContext!, listen: false);
     final targetLang = langProvider.googleTargetLangCode;
 
     if (_currentLang == targetLang && _translations.isNotEmpty) return;
@@ -39,16 +39,22 @@ class TranslationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// 서버에서 온 동적 텍스트 번역
   Future<String> translate(String text) async {
-    final cacheKey = '$_currentLang|$text';
+    final langProvider = Provider.of<LanguageProvider>(navigatorKey.currentContext!, listen: false);
+    final targetLang = langProvider.googleTargetLangCode;
+    if (_currentLang != targetLang) {
+      _currentLang = targetLang;
+      _dynamicCache.clear();
+    }
+    final cacheKey = '$targetLang|$text';
+
     if (_dynamicCache.containsKey(cacheKey)) return _dynamicCache[cacheKey]!;
 
     try {
       final translator = GoogleTranslateService();
-      final translated = await translator.translateText(text, targetLang: _currentLang);
+      final translated = await translator.translateText(text, targetLang: targetLang);
       _dynamicCache[cacheKey] = translated;
-      notifyListeners();
+
       return translated;
     } catch (_) {
       return text;
@@ -56,6 +62,7 @@ class TranslationProvider with ChangeNotifier {
   }
 
   void clear() {
+    print('🧹 [TranslationProvider] 캐시 초기화');
     _translations.clear();
     _dynamicCache.clear();
     notifyListeners();

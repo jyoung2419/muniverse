@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../../providers/vote/vote_reward_media_provider.dart';
 import '../../../models/vote/vote_reward_media_model.dart';
+import '../../../widgets/common/translate_text.dart';
 
 class VoteDetailRewardTab extends StatelessWidget {
   final String voteCode;
@@ -17,7 +18,7 @@ class VoteDetailRewardTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          TranslatedText(
             '보상 이벤트 결과',
             style: TextStyle(
               color: Colors.white,
@@ -27,7 +28,7 @@ class VoteDetailRewardTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           if (mediaList.isEmpty)
-            const Text('등록된 보상 미디어가 없습니다.',
+            TranslatedText('등록된 보상 미디어가 없습니다.',
                 style: TextStyle(color: Colors.white54))
           else
             ListView.builder(
@@ -46,7 +47,7 @@ class VoteDetailRewardTab extends StatelessWidget {
                         fit: BoxFit.contain,
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      TranslatedText(
                         media.rewordContent,
                         style: const TextStyle(color: Colors.white, fontSize: 13),
                       ),
@@ -59,7 +60,7 @@ class VoteDetailRewardTab extends StatelessWidget {
                     children: [
                       _VideoPlayerWidget(videoUrl: media.voteRewardMediaURL),
                       const SizedBox(height: 4),
-                      Text(
+                      TranslatedText(
                         media.rewordContent,
                         style: const TextStyle(color: Colors.white, fontSize: 13),
                       ),

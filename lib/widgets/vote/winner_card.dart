@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../common/tag_box.dart';
+import '../common/translate_text.dart';
 
 class WinnerCard extends StatelessWidget {
   final String name;
@@ -35,7 +36,7 @@ class WinnerCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          const Text('이 주의 아이돌은?', style: TextStyle(color: Colors.black87, fontSize: 20)),
+          TranslatedText('이 주의 아이돌은?', style: TextStyle(color: Colors.black87, fontSize: 20)),
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -48,8 +49,8 @@ class WinnerCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            name, // ✅ artistName만 표시
+          TranslatedText(
+            name,
             style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 6),

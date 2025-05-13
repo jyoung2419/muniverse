@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../models/event/main/event_main_vote_model.dart';
+import '../../widgets/common/translate_text.dart';
 import '../vote/vote_detail_screen.dart';
 
 class HomeAward extends StatelessWidget {
@@ -50,7 +51,7 @@ class HomeAward extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
+              TranslatedText(
                 '${vote.voteName} 투표에 참여하세요',
                 style: const TextStyle(
                   color: Color(0xC2C4C8E0),
@@ -77,7 +78,7 @@ class HomeAward extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: const [
-              Text(
+              TranslatedText(
                 '투표하러 가기',
                 style: TextStyle(
                   color: Colors.white,

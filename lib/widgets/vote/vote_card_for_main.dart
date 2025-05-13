@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/vote/vote_main_model.dart';
 import '../../providers/language_provider.dart';
 import '../../screens/vote/vote_detail_screen.dart';
+import '../common/translate_text.dart';
 
 class VoteCardForMain extends StatelessWidget {
   final VoteMainModel vote;
@@ -143,7 +144,7 @@ class VoteCardForMain extends StatelessWidget {
                   children: [
                     Text(vote.eventName, style: const TextStyle(color: Colors.white, fontSize: 10)),
                     const SizedBox(height: 6),
-                    Text(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                    TranslatedText(vote.voteName, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
                     Text(periodText,
                         style: const TextStyle(color: Colors.white70, fontSize: 11)),
@@ -164,7 +165,7 @@ class VoteCardForMain extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Text(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                          TranslatedText(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
                         ],
                       ),
                     ),

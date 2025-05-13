@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/translate_text.dart';
+
 class VodFAQ extends StatefulWidget {
   const VodFAQ({super.key});
 
@@ -106,7 +108,7 @@ class FAQItem extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           splashColor: Colors.transparent,
           tileColor: Colors.transparent,
-          title: Text(
+          title: TranslatedText(
             title,
             style: const TextStyle(
               color: Colors.white,
@@ -133,7 +135,7 @@ class FAQItem extends StatelessWidget {
                 color: const Color(0xFF252525),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text(
+              child: TranslatedText(
                 content,
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),

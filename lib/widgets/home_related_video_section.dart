@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/event/main/event_main_related_provider.dart';
+import 'common/translate_text.dart';
 
 class HomeRelatedVideoSection extends StatefulWidget {
   const HomeRelatedVideoSection({super.key});
@@ -23,7 +24,9 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
         provider.error == null &&
         !provider.isLoading) {
       _hasFetched = true;
-      provider.fetchRelatedVideos();
+      Future.microtask(() {
+        provider.fetchRelatedVideos();
+      });
     }
   }
 
@@ -43,7 +46,7 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        const TranslatedText(
           '최신 관련영상',
           style: TextStyle(
             color: Colors.white,
