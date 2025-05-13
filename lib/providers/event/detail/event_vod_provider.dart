@@ -11,11 +11,22 @@ class EventVODProvider with ChangeNotifier {
 
   List<EventVODModel> get vods => _vods;
 
-  Future<void> fetchVODs(String eventCode, int eventYear) async {
+  Future<void> fetchVODs(String eventCode, int? eventYear) async {
     try {
-      final List<Map<String, dynamic>> responseList =
-      await _eventTitleService.fetchEventVODList(eventCode, eventYear);
-      _vods = responseList.map((json) => EventVODModel.fromJson(json)).toList();
+      List<EventVODModel> allVods = [];
+
+      if (eventYear == null) {
+        final years = [2025, 2024, 2023];
+        for (final y in years) {
+          final res = await _eventTitleService.fetchEventVODList(eventCode, y);
+          allVods.addAll(res.map((json) => EventVODModel.fromJson(json)));
+        }
+      } else {
+        final res = await _eventTitleService.fetchEventVODList(eventCode, eventYear);
+        allVods = res.map((json) => EventVODModel.fromJson(json)).toList();
+      }
+
+      _vods = allVods;
       notifyListeners();
     } catch (e) {
       print('❌ VOD 불러오기 실패: $e');

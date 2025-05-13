@@ -10,11 +10,22 @@ class EventLiveProvider with ChangeNotifier {
   List<EventLiveModel> _lives = [];
   List<EventLiveModel> get lives => _lives;
 
-  Future<void> fetchLives(String eventCode, int eventYear) async {
+  Future<void> fetchLives(String eventCode, int? eventYear) async {
     try {
-      final List<Map<String, dynamic>> responseList =
-      await _eventTitleService.fetchEventLiveList(eventCode, eventYear);
-      _lives = responseList.map((json) => EventLiveModel.fromJson(json)).toList();
+      List<EventLiveModel> allLives = [];
+
+      if (eventYear == null) {
+        final years = [2025, 2024, 2023];
+
+        for (final y in years) {
+          final res = await _eventTitleService.fetchEventLiveList(eventCode, y);
+          allLives.addAll(res.map((json) => EventLiveModel.fromJson(json)));
+        }
+      } else {
+        final res = await _eventTitleService.fetchEventLiveList(eventCode, eventYear);
+        allLives = res.map((json) => EventLiveModel.fromJson(json)).toList();
+      }
+      _lives = allLives;
       notifyListeners();
     } catch (e) {
       print('❌ Live 불러오기 실패: \$e');

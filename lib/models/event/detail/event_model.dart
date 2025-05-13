@@ -6,7 +6,7 @@ class EventModel {
   final String content;
   final String bannerUrl;
   final String profileUrl;
-  final String? round;
+  final int round;
   final String? liveCode;
   final String status;
   final DateTime performanceStartTime;
@@ -24,12 +24,14 @@ class EventModel {
     required this.status,
     required this.performanceStartTime,
     required this.performanceEndTime,
-    this.round,
+    required this.round,
     this.liveCode,
     this.restNextPerformanceStartTime,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json, String eventCode) {
+    print('🔥 이벤트 파싱: $json'); // 여기에 로그 추가
+
     return EventModel(
       eventCode: eventCode,
       name: json['name'] ?? '',
@@ -38,7 +40,7 @@ class EventModel {
       introContent: json['introContent'] ?? '',
       bannerUrl: json['bannerImageURL'] ?? '',
       profileUrl: json['profileImageURL'] ?? '',
-      round: json['round']?.toString() ?? '',
+      round: json['round'] ?? '',
       liveCode: json['liveCode']?.toString() ?? '',
       status: json['status']?.toString() ?? '',
       performanceStartTime: DateTime.parse(json['performanceStartTime']),

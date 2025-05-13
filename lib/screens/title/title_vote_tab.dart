@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../models/event/detail/event_model.dart';
 import '../../providers/event/detail/event_vote_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/vote/vote_card.dart';
 import '../../widgets/vote/vote_filter_widget.dart';
 
@@ -101,7 +102,14 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
+          child: filteredVotes.isEmpty
+              ? const Center(
+            child: TranslatedText(
+              '현재 등록된 투표가 없습니다.',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          )
+              : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: filteredVotes.length,
             itemBuilder: (context, index) {
@@ -119,7 +127,7 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
               );
             },
           ),
-        ),
+        )
       ],
     );
   }

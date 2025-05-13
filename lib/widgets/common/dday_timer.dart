@@ -52,8 +52,8 @@ class _DdayTimerState extends State<DdayTimer> {
         height: 59,
         padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
           borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: Colors.white24),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

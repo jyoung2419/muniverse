@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_provider.dart';
 import '../../providers/language_provider.dart';
@@ -13,7 +12,6 @@ import '../../widgets/common/header.dart';
 import '../../widgets/common/dday_timer.dart';
 
 import 'title_description_tab.dart';
-import 'title_ticket_tab.dart';
 import 'title_vod_tab.dart';
 import 'title_vote_tab.dart';
 
@@ -60,30 +58,27 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       );
     }
 
-    final showLiveTab = ['BEFORE_OPEN', 'OPEN', 'PRE_OPEN', 'END'].contains(event!.status);
-
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
 
     final tabList = [
       Tab(text: lang == 'kr' ? '상세정보' : 'DETAILS'),
-      Tab(text: lang == 'kr' ? '상품' : 'TICKETS'),
+      // Tab(text: lang == 'kr' ? '상품' : 'TICKETS'),
       Tab(text: lang == 'kr' ? '투표' : 'VOTE'),
-      if (showLiveTab) Tab(text: lang == 'kr' ? '라이브' : 'LIVE'),
+      Tab(text: lang == 'kr' ? '라이브' : 'LIVE'),
       Tab(text: lang == 'kr' ? 'VOD' : 'VOD'),
       Tab(text: lang == 'kr' ? '관련 영상' : 'RELATED VIDEO'),
     ];
 
     final tabViews = [
       TitleDescriptionTab(event: event!),
-      TitleTicketTab(),
+      // TitleTicketTab(),
       TitleVoteTab(
         event: event!,
       ),
-      if (showLiveTab)
-        TitleLiveTab(
-          eventCode: event!.eventCode,
-          eventYear: event!.performanceStartTime.year,
-        ),
+      TitleLiveTab(
+        eventCode: event!.eventCode,
+        eventYear: event!.performanceStartTime.year,
+      ),
       TitleVodTab(
         eventCode: event!.eventCode,
         eventYear: event!.performanceStartTime.year,
@@ -110,12 +105,15 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
                 children: [
                   const SizedBox(height: kToolbarHeight),
                   BannerSection(
-                    imagePath: event!.bannerUrl,
-                    profileUrl: event!.profileUrl,
-                    title: event!.name,
-                    introContent: event!.introContent,
+                    imagePath: event!.bannerUrl ?? '',
+                    profileUrl: event!.profileUrl ?? '',
+                    title: event!.name ?? '제목 없음',
+                    introContent: event!.introContent ?? '',
                     performanceStartTime: event!.performanceStartTime,
                     performanceEndTime: event!.performanceEndTime,
+                    round: event!.round,
+                    status: event!.status ?? 'UNKNOWN',
+                    restNextPerformanceStartTime: event?.restNextPerformanceStartTime ?? DateTime.now(),
                   ),
                   const SizedBox(height: 10),
                   Theme(
@@ -123,7 +121,7 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
                       dividerColor: Colors.transparent,
                       tabBarTheme: const TabBarTheme(
                         dividerColor: Colors.transparent,
-                        overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                        overlayColor: WidgetStatePropertyAll(Colors.transparent),
                         indicator: UnderlineTabIndicator(
                           borderSide: BorderSide(width: 2, color: Color(0xFF2EFFAA)),
                           insets: EdgeInsets.symmetric(horizontal: 20),
@@ -168,6 +166,9 @@ class BannerSection extends StatelessWidget {
   final String introContent;
   final DateTime performanceStartTime;
   final DateTime performanceEndTime;
+  final int round;
+  final String status;
+  final DateTime restNextPerformanceStartTime;
 
   const BannerSection({
     super.key,
@@ -177,6 +178,9 @@ class BannerSection extends StatelessWidget {
     required this.introContent,
     required this.performanceStartTime,
     required this.performanceEndTime,
+    required this.round,
+    required this.status,
+    required this.restNextPerformanceStartTime,
   });
 
   int getStreamingRound(DateTime now) {
@@ -195,7 +199,6 @@ class BannerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final isBeforePerformance = now.isBefore(performanceStartTime);
-    final round = getStreamingRound(now);
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.45,
@@ -260,7 +263,53 @@ class BannerSection extends StatelessWidget {
             ),
           ),
 
-          if (isBeforePerformance || round <= 3)
+          if (status == 'DURING')
+            Positioned(
+              bottom: 40,
+              left: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TranslatedText(
+                    '$round회차 스트리밍 시작',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    width: 180,
+                    height: 36,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // 시청하기 동작
+                      },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.black.withOpacity(0.3), // 반투명 어두운 회색 배경
+                        side: const BorderSide(color: Color(0xFF2EFFAA), width: 1), // 연두색 테두리
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: const Size(60, 30),
+                      ),
+                      child: const Text(
+                        '시청하기',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF2EFFAA), // 글자색 연두색
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (isBeforePerformance || round <= 5)
             Positioned(
               bottom: 10,
               left: 16,
@@ -277,7 +326,7 @@ class BannerSection extends StatelessWidget {
                     ),
                   ),
                   DdayTimer(
-                    target: performanceStartTime.add(Duration(hours: (round - 1) * 24)),
+                    target: restNextPerformanceStartTime,
                     alignStart: true,
                   ),
                 ],

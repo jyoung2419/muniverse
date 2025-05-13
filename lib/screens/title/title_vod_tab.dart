@@ -9,7 +9,7 @@ import '../../widgets/info/vod_notice.dart';
 
 class TitleVodTab extends StatefulWidget {
   final String eventCode;
-  final int eventYear;
+  final int? eventYear;
 
   const TitleVodTab({
     super.key,
@@ -22,15 +22,15 @@ class TitleVodTab extends StatefulWidget {
 }
 
 class _TitleVodTabState extends State<TitleVodTab> {
-  late int _selectedYear;
+  late int? _selectedYear;
 
   @override
   void initState() {
     super.initState();
-    _selectedYear = widget.eventYear;
+    _selectedYear = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventVODProvider>(context, listen: false)
-          .fetchVODs(widget.eventCode, widget.eventYear);
+          .fetchVODs(widget.eventCode, null);
     });
   }
 
@@ -106,12 +106,18 @@ class _TitleVodTabState extends State<TitleVodTab> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
+          child: vodList.isEmpty
+              ? const Center(
+            child: TranslatedText(
+              '현재 등록된 VOD가 없습니다.',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          )
+              : ListView.builder(
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: vodList.length,
             itemBuilder: (context, index) {
               final vod = vodList[index];
-
               return Container(
                 height: 140,
                 margin: const EdgeInsets.only(bottom: 16),

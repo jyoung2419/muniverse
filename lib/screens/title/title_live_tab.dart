@@ -10,7 +10,7 @@ import '../../widgets/info/live_notice.dart';
 
 class TitleLiveTab extends StatefulWidget {
   final String eventCode;
-  final int eventYear;
+  final int? eventYear;
 
   const TitleLiveTab({
     super.key,
@@ -23,16 +23,16 @@ class TitleLiveTab extends StatefulWidget {
 }
 
 class _TitleLiveTabState extends State<TitleLiveTab> {
-  late int _selectedYear;
+  late int? _selectedYear;
 
   @override
   void initState() {
     super.initState();
-    _selectedYear = widget.eventYear;
+    _selectedYear = null;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventLiveProvider>(context, listen: false)
-          .fetchLives(widget.eventCode, widget.eventYear);
+          .fetchLives(widget.eventCode, null);
     });
   }
 
@@ -95,11 +95,11 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                     selectedYear: _selectedYear,
                     years: [2025, 2024, 2023],
                     onChanged: (newYear) {
-                      Provider.of<EventLiveProvider>(context, listen: false)
-                          .fetchLives(widget.eventCode, newYear);
                       setState(() {
                         _selectedYear = newYear;
                       });
+                      Provider.of<EventLiveProvider>(context, listen: false)
+                          .fetchLives(widget.eventCode, newYear);
                     },
                   ),
                 ],
@@ -108,7 +108,14 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
+          child: lives.isEmpty
+              ? const Center(
+            child: TranslatedText(
+              '현재 예정된 LIVE가 없습니다.',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          )
+              : ListView.builder(
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: lives.length,
@@ -120,7 +127,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
 
               if (now.isBefore(item.taskDateTime)) {
                 status = lang == 'kr' ? '진행예정' : 'UPCOMING';
-                buttonLabel = lang == 'kr' ? '시청하기' : 'Watch';
+                buttonLabel = lang == 'kr' ? '구매하기' : 'BUY';
                 isEnded = false;
               } else if (now.isAfter(item.taskEndDateTime)) {
                 status = lang == 'kr' ? '종료' : 'CLOSED';
@@ -186,7 +193,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
+                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -211,11 +218,51 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                if (isEnded)
+                                if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
                                   ElevatedButton(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF353C49),
+                                      backgroundColor: const Color(0xFF2EFFAA),
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
+                                  OutlinedButton(
+                                    onPressed: () {},
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF2EFFAA),
+                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                    ),
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF2EFFAA),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0x66B0B0B0),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       minimumSize: const Size(60, 30),
@@ -228,21 +275,6 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                                         fontWeight: FontWeight.w500,
                                         color: Color(0xFF171719),
                                       ),
-                                    ),
-                                  )
-                                else
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: const Color(0xFF2EFFAA),
-                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                    ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                                     ),
                                   ),
                               ],

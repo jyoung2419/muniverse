@@ -9,7 +9,7 @@ import '../../widgets/common/year_filter_drop_down.dart';
 
 class TitleRelatedVideoTab extends StatefulWidget {
   final String eventCode;
-  final int eventYear;
+  final int? eventYear;
 
   const TitleRelatedVideoTab({
     super.key,
@@ -31,15 +31,15 @@ void _launchUrl(String url) async {
 }
 
 class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
-  late int _selectedYear;
+  late int? _selectedYear;
 
   @override
   void initState() {
     super.initState();
-    _selectedYear = widget.eventYear;
+    _selectedYear = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventRelatedProvider>(context, listen: false)
-          .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: _selectedYear);
+          .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: null);
     });
   }
 
@@ -90,8 +90,8 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
               if (provider.relatedVideos.isEmpty) {
                 return const Center(
                   child: TranslatedText(
-                    '관련 영상이 없습니다.',
-                    style: TextStyle(color: Colors.white),
+                    '현재 등록된 관련 영상이 없습니다.',
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 );
               }
