@@ -63,15 +63,9 @@ class AppDrawer extends StatelessWidget {
                 child: MuniverseLogo(),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 35),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 22,
-                      backgroundImage: const AssetImage('assets/images/user_profile.png'),
-                      backgroundColor: Colors.grey,
-                    ),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Consumer<UserMeProvider>(
                         builder: (context, userMeProvider, _) {

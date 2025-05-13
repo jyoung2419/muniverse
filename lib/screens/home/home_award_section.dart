@@ -12,10 +12,11 @@ class HomeAwardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labels = VoteTextUtil.getLabelsForMainVote(context, vote);
+    final isClosed = vote.voteStatus == VoteStatus.CLOSED;
 
     return Column(
       children: [
-        if (vote.ongoing)
+        if (vote.ongoing || isClosed)
           Stack(
             children: [
               ClipRRect(
@@ -32,7 +33,10 @@ class HomeAwardSection extends StatelessWidget {
                   width: double.infinity,
                   color: Colors.grey,
                   child: Center(
-                    child: Text(labels['vote_reward_empty']!, style: const TextStyle(color: Colors.white)),
+                    child: Text(
+                      labels['vote_reward_empty']!,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
@@ -44,40 +48,42 @@ class HomeAwardSection extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2EFFAA),
+                        color: isClosed ? Colors.white38 : const Color(0xFF2EFFAA),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        labels['vote_ongoing']!,
-                        style: const TextStyle(
-                          color: Colors.black,
+                        isClosed ? '투표 집계 중' : labels['vote_ongoing']!,
+                        style: TextStyle(
+                          color: isClosed ? Colors.white : Colors.black,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1F1F1F),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
-                          const SizedBox(width: 3),
-                          Text(
-                            labels['vote_remaining']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
+                    if (!isClosed) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1F1F1F),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
+                            const SizedBox(width: 3),
+                            Text(
+                              labels['vote_remaining']!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

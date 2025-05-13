@@ -70,7 +70,7 @@ class VoteCardForMain extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(
                         image: NetworkImage(vote.voteImageURL ?? ''),
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

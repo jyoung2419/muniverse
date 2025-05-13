@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import 'package:provider/provider.dart';
-import '../../providers/user/user_provider.dart';
+import 'package:path/path.dart' as path;
+import '../../providers/user/user_profile_provider.dart';
+import '../../services/user/user_validation_service.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/translate_text.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -14,24 +20,154 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  late TextEditingController _nicknameController;
+  TextEditingController? _nicknameController;
+  String? _nicknameMessage;
+  bool _isNicknameAvailable = false;
+  final _validationService = UserValidationService();
+  final ImagePicker _picker = ImagePicker();
+  String? _imagePath;
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final dir = await getTemporaryDirectory();
+      final targetPath = path.join(dir.path, 'compressed_${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      final compressedFile = await FlutterImageCompress.compressAndGetFile(
+        image.path,
+        targetPath,
+        quality: 85,
+        minWidth: 800,
+        minHeight: 800,
+        format: CompressFormat.jpeg,
+      );
+
+      if (compressedFile != null) {
+        final file = File(compressedFile.path);
+        print('📏 압축된 이미지 크기: ${(file.lengthSync() / 1024 / 1024).toStringAsFixed(2)} MB');
+
+        setState(() {
+          _imagePath = compressedFile.path;
+        });
+      } else {
+        print('❌ 이미지 압축 실패');
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    final user = context.read<UserProvider>().currentUser;
-    _nicknameController = TextEditingController(text: user?.nickName ?? '');
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final provider = context.read<UserProfileProvider>();
+      await provider.fetchUserDetail();
+      final user = provider.user;
+      _nicknameController = TextEditingController(text: user?.nickname ?? '');
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _nicknameController.dispose();
+    _nicknameController?.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkNickname() async {
+    final nickname = _nicknameController?.text.trim() ?? '';
+    if (nickname.isEmpty) {
+      setState(() {
+        _nicknameMessage = '닉네임을 입력해주세요.';
+        _isNicknameAvailable = false;
+      });
+      return;
+    }
+
+    try {
+      final result = await _validationService.checkNickname(nickname);
+      final isDuplicate = result['duplicated'] == true;
+      final message = result['message'] as String;
+
+      setState(() {
+        if (isDuplicate) {
+          _nicknameMessage = message.contains('형식')
+              ? "❌ 닉네임 형식이 올바르지 않습니다."
+              : "❌ ${message}";
+          _isNicknameAvailable = false;
+        } else {
+          _nicknameMessage = "✅ 사용 가능한 닉네임입니다.";
+          _isNicknameAvailable = true;
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _nicknameMessage = "🚨 서버 오류가 발생했습니다.";
+        _isNicknameAvailable = false;
+      });
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    final provider = context.read<UserProfileProvider>();
+    final user = provider.user;
+    final newNickname = _nicknameController?.text.trim();
+
+    if (newNickname == null || newNickname.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❗ 닉네임을 입력해주세요.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    if (!_isNicknameAvailable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❗ 닉네임 중복 확인을 해주세요.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await provider.updateUserProfile(
+        userId: user!.id,
+        nickname: newNickname,
+        profileImagePath: _imagePath,
+      );
+
+      await provider.fetchUserDetail();
+
+      final updatedUser = provider.user;
+      setState(() {
+        _nicknameController?.text = updatedUser?.nickname ?? '';
+        _imagePath = null;
+        _isNicknameAvailable = false;
+        _nicknameMessage = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✅ 수정 완료'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🚨 수정 실패. 이미지 형식 또는 서버 오류입니다.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>().currentUser;
+    final userProfile = context.watch<UserProfileProvider>().user;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -40,7 +176,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       floatingActionButton: const BackFAB(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
+        child: userProfile == null
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
@@ -66,18 +204,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       image: DecorationImage(
-                        image: user?.profileUrl != null
-                            ? AssetImage(user!.profileUrl!)
-                            : const AssetImage('assets/images/user_profile.png'),
+                        image: _imagePath != null
+                            ? FileImage(File(_imagePath!))
+                            : userProfile.profileUrl != null
+                            ? NetworkImage(userProfile.profileUrl!)
+                            : const AssetImage('assets/images/user_profile.png')
+                        as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
-                    onPressed: () {
-                      // TODO: 사진 등록 로직
-                    },
+                    onPressed: _pickImage,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       backgroundColor: Color(0xFF0B0C0C),
@@ -86,7 +225,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: TranslatedText(
+                    child: const TranslatedText(
                       '사진 등록',
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
@@ -97,11 +236,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             const SizedBox(height: 32),
             _buildLabel('이메일'),
             const SizedBox(height: 5),
-            _buildReadOnlyField(user?.email ?? ''),
+            _buildReadOnlyField(userProfile.email),
             const SizedBox(height: 20),
             _buildLabel('이름'),
             const SizedBox(height: 5),
-            _buildReadOnlyField(user?.name ?? ''),
+            _buildReadOnlyField(userProfile.name),
             const SizedBox(height: 20),
             _buildLabel('닉네임'),
             const SizedBox(height: 5),
@@ -116,9 +255,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 const SizedBox(width: 10),
                 OutlinedButton(
-                  onPressed: () {
-                    // TODO: 중복 확인 로직
-                  },
+                  onPressed: _checkNickname,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     backgroundColor: Color(0xFF0B0C0C),
@@ -127,21 +264,29 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: TranslatedText(
+                  child: const TranslatedText(
                     '중복 확인',
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
-                )
+                ),
               ],
             ),
+            if (_nicknameMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  _nicknameMessage!,
+                  style: TextStyle(
+                    color: _isNicknameAvailable ? Colors.green : Colors.redAccent,
+                  ),
+                ),
+              ),
             const SizedBox(height: 40),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       backgroundColor: Color(0xFF212225),
@@ -149,7 +294,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: TranslatedText(
+                    child: const TranslatedText(
                       '취소',
                       style: TextStyle(
                         color: Colors.white,
@@ -162,9 +307,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: 저장 로직
-                    },
+                    onPressed: _saveProfile,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2EFFAA),
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -172,14 +315,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: TranslatedText(
-                      '저장',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: const TranslatedText('저장',
+                        style: TextStyle(color: Colors.black)),
                   ),
                 ),
               ],
@@ -190,50 +327,42 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: TranslatedText(
-        text,
-        style: const TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
+  Widget _buildLabel(String text) => Align(
+    alignment: Alignment.centerLeft,
+    child: TranslatedText(
+      text,
+      style: const TextStyle(color: Colors.white70, fontSize: 14),
+    ),
+  );
 
-  Widget _buildReadOnlyField(String value) {
-    return TextFormField(
-      initialValue: value,
-      enabled: false,
-      style: const TextStyle(color: Color(0xFF353C49), fontSize: 13),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color(0xFF212225),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration() {
-    return InputDecoration(
+  Widget _buildReadOnlyField(String value) => TextFormField(
+    initialValue: value,
+    enabled: false,
+    style: const TextStyle(color: Color(0xFF353C49), fontSize: 13),
+    decoration: InputDecoration(
       filled: true,
-      fillColor: const Color(0xFF0B0C0C),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      enabledBorder: OutlineInputBorder(
+      fillColor: const Color(0xFF212225),
+      contentPadding:
+      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white12),
+        borderSide: BorderSide.none,
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.white12),
-      ),
-    );
-  }
+    ),
+  );
+
+  InputDecoration _inputDecoration() => InputDecoration(
+    filled: true,
+    fillColor: const Color(0xFF0B0C0C),
+    contentPadding:
+    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.white12),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.white12),
+    ),
+  );
 }

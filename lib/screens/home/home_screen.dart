@@ -67,10 +67,33 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+
                 children: [
-                  if (mainVote != null) HomeAward(vote: mainVote),
-                  const SizedBox(height: 24),
-                  if (mainVote != null) HomeAwardSection(vote: mainVote),
+                  HomeAward(vote: mainVote),
+
+                  if (mainVote != null) ...[
+                    const SizedBox(height: 24),
+                    HomeAwardSection(vote: mainVote),
+                  ] else ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.hourglass_empty, color: Colors.white54, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            '주간 투표 준비중입니다',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 40),
                   const HomeRelatedVideoSection(),
                   const SizedBox(height: 40),
