@@ -160,26 +160,59 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                                   ),
                                 ),
                                 if (isRunning)
-                                  _buildBadge(labels['vote_ongoing']!, color: const Color(0xFF2EFFAA), textColor: Colors.black),
-                                if (isRunning)
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 8, left: 50),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.7),
-                                          borderRadius: BorderRadius.circular(6),
+                                  Positioned(
+                                    top: 8,
+                                    left: 8,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF2EFFAA),
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: Text(
+                                                labels['vote_ongoing']!,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.7),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 1.5),
+                                                child: const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
+                                              ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                labels['vote_remaining']!,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 1.0,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        child: Row(
-                                          children: [
-                                            const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
-                                            const SizedBox(width: 3),
-                                            Text(labels['vote_remaining']!, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500)),
-                                          ],
-                                        ),
-                                      ),
+                                      ],
                                     ),
                                   ),
                                 if (isUpcoming)
