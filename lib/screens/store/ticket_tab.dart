@@ -26,6 +26,7 @@ class TicketTab extends StatelessWidget {
     }
 
     return ListView.builder(
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
       itemCount: products.length,
       itemBuilder: (context, index) {

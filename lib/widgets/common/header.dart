@@ -71,7 +71,6 @@ class _HeaderState extends State<Header> {
                 languageProvider.selectedLanguageCode == 'kr' ? '투표' : 'VOTE',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -88,7 +87,6 @@ class _HeaderState extends State<Header> {
                 languageProvider.selectedLanguageCode == 'kr' ? '스토어' : 'STORE',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -185,7 +183,6 @@ class _HeaderState extends State<Header> {
             languageProvider.languageText,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),

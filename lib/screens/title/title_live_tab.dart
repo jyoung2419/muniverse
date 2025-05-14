@@ -199,7 +199,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDateTime)} ~ ${DateFormat('HH:mm').format(item.taskEndDateTime)}(KST)',
+                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDateTime)} ~ ${DateFormat('yyyy.MM.dd HH:mm').format(item.taskEndDateTime)}(KST)',
                               style: const TextStyle(color: Colors.white70, fontSize: 11),
                             ),
                             const SizedBox(height: 4),

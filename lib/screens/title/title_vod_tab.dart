@@ -114,6 +114,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
             ),
           )
               : ListView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
             itemCount: vodList.length,
             itemBuilder: (context, index) {

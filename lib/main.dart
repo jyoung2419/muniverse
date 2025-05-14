@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:muniverse_app/providers/translation_provider.dart';
 import 'providers/product/product_kr_provider.dart';
 import 'providers/product/product_usd_provider.dart';
+import 'providers/reward/reward_provider.dart';
 import 'providers/user/user_profile_provider.dart';
 import 'providers/vote/vote_availability_provider.dart';
 import 'providers/event/detail/event_info_provider.dart';
@@ -84,6 +85,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (context) => UserProfileProvider(dio)),
+        ChangeNotifierProvider(create: (context) => RewardProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],
       child: MyApp(initialRoute: initialRoute),

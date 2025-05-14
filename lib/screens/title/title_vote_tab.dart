@@ -110,6 +110,7 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
             ),
           )
               : ListView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: filteredVotes.length,
             itemBuilder: (context, index) {

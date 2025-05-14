@@ -5,7 +5,7 @@ import '../../providers/user/user_me_provider.dart';
 import '../../providers/user/user_provider.dart';
 import '../../screens/mypage/my_profile_screen.dart';
 import '../../screens/mypage/ticket_management_screen.dart';
-import '../../screens/mypage/winner_history_screen.dart';
+import '../../screens/mypage/reward_history_screen.dart';
 import '../../screens/info/faq_screen.dart';
 import '../../screens/info/notice_screen.dart';
 import '../../screens/mypage/purchase_history_screen.dart';
@@ -104,7 +104,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     _buildItem(context, Icons.shopping_cart_outlined, purchaseLabel, const PurchaseHistoryScreen(), '/purchase', currentRoute),
                     _buildItem(context, Icons.subscriptions_outlined, passLabel, const TicketManagementScreen(), '/ticket', currentRoute),
-                    _buildItem(context, Icons.event_note, winnerLabel, const WinnerHistoryScreen(), '/winner', currentRoute),
+                    _buildItem(context, Icons.event_note, winnerLabel, const RewardHistoryScreen(), '/winner', currentRoute),
                     _buildItem(context, Icons.person, profileLabel, const MyProfileScreen(), '/profile', currentRoute),
                     const Divider(color: Colors.white24, indent: 16, endIndent: 16),
                     _buildItem(context, Icons.announcement_outlined, titleNotice, const NoticeScreen(), '/notice', currentRoute),

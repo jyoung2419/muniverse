@@ -210,7 +210,7 @@ class BannerSection extends StatelessWidget {
           Container(color: Colors.black.withOpacity(0.6)),
 
           Positioned(
-            top: 80,
+            top: 85,
             left: 16,
             right: 16,
             child: Container(
@@ -309,7 +309,7 @@ class BannerSection extends StatelessWidget {
                 ],
               ),
             )
-          else if (isBeforePerformance || round <= 5)
+          else if ((isBeforePerformance || round <= 5) && restNextPerformanceStartTime.isAfter(DateTime.now()))
             Positioned(
               bottom: 10,
               left: 16,
