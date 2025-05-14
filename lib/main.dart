@@ -76,7 +76,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
         ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),  // 수정 예정
-        ChangeNotifierProvider(create: (_) => UserPassProvider()),  // 수정 예정
+        ChangeNotifierProvider(create: (context) => UserPassProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => VoteMainProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => VoteDetailProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => VoteAvailabilityProvider(dio)),

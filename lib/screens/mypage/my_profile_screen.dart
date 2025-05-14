@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
+import '../../providers/language_provider.dart';
 import '../../providers/user/user_profile_provider.dart';
 import '../../services/user/user_validation_service.dart';
 import '../../widgets/common/app_drawer.dart';
@@ -168,6 +169,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfile = context.watch<UserProfileProvider>().user;
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -182,10 +184,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            const Center(
-              child: TranslatedText(
-                '내 정보 조회',
-                style: TextStyle(
+            Center(
+              child: Text(
+                lang == 'kr' ? '내 정보 조회' : 'MY INFO',
+                style: const TextStyle(
                   color: Color(0xFF2EFFAA),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

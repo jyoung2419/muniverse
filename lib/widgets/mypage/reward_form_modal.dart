@@ -57,6 +57,16 @@ class _RewardFormModalState extends State<RewardFormModal> {
             .submitRewardUserInfo(model);
         print('✅ 제출 완료: ${model.toJson()}');
         Navigator.of(context).pop();
+
+        Future.delayed(Duration(milliseconds: 100), () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('제출이 완료되었습니다.'),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        });
       } catch (e) {
         print('❌ 제출 실패: $e');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -79,9 +89,12 @@ class _RewardFormModalState extends State<RewardFormModal> {
     final lang = Provider.of<LanguageProvider>(context, listen: false).selectedLanguageCode;
 
     return Dialog(
-      backgroundColor: const Color(0xFF121212),
+        backgroundColor: const Color(0xFF121212),
       insetPadding: const EdgeInsets.symmetric(horizontal: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: AnimatedPadding(
+      duration: const Duration(milliseconds: 200),
+      padding: MediaQuery.of(context).viewInsets,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
@@ -154,6 +167,7 @@ class _RewardFormModalState extends State<RewardFormModal> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

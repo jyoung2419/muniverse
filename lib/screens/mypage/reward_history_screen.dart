@@ -61,10 +61,10 @@ class _RewardHistoryScreenState extends State<RewardHistoryScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            const Center(
-              child: TranslatedText(
-                '당첨 내역',
-                style: TextStyle(
+            Center(
+              child: Text(
+                lang == 'kr' ? '당첨 내역' : 'WINNING EVENT',
+                style: const TextStyle(
                   color: Color(0xFF2EFFAA),
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

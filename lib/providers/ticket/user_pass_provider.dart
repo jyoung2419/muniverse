@@ -1,83 +1,59 @@
-//수정 예정
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../../models/ticket/user_pass_model.dart';
+import '../../services/ticket/user_pass_service.dart';
+import '../language_provider.dart';
 
 class UserPassProvider with ChangeNotifier {
-  final List<UserPass> _passes = [];
+  final UserPassService _userPassService;
+  final LanguageProvider _languageProvider;
 
-  List<UserPass> get passes => _passes;
-
-  UserPassProvider() {
-    fetchDummyUserPasses();
+  UserPassProvider(Dio dio, this._languageProvider)
+      : _userPassService = UserPassService(dio) {
+    _languageProvider.addListener(() {
+      fetchUserPasses();
+    });
   }
 
-  void fetchDummyUserPasses() {
-    _passes.clear();
+  List<UserPassModel> _userPasses = [];
+  List<UserPassModel> get userPasses => _userPasses;
 
-    _passes.add(
-      UserPass(
-        pinNumber: 'pass-001',
-        userId: 'user001',
-        passName: 'ALL PASS',
-        createdAt: DateTime(2025, 4, 1),
-        useFlag: true,
-        events: [
-          EventUseInfo(
-            code: 'L001',
-            type: UserPassType.STREAMING,
-            pinNumber: 'pin-001',
-            used: false,
-            usedAt: null,
-          ),
-          EventUseInfo(
-            code: 'L002',
-            type: UserPassType.STREAMING,
-            pinNumber: 'pin-002',
-            used: false,
-            usedAt: null,
-          ),
-          EventUseInfo(
-            code: 'vod-001',
-            type: UserPassType.VOD,
-            pinNumber: 'vod-001',
-            used: false,
-            usedAt: null,
-          ),
-        ],
-      ),
-    );
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-    _passes.add(
-        UserPass(
-          pinNumber: 'pass-002',
-          userId: 'user001',
-          passName: '뮤니버스 올패스',
-          createdAt: DateTime(2025, 4, 1),
-          useFlag: true,
-          events: [
-            EventUseInfo(
-              code: 'L001',
-              type: UserPassType.STREAMING,
-              pinNumber: 'pin-001',
-              used: false,
-              usedAt: null,
-            ),
-            EventUseInfo(
-              code: 'vod-001',
-              type: UserPassType.VOD,
-              pinNumber: 'vod-001',
-              used: false,
-              usedAt: null,
-            ),
-          ],
-        ),
-    );
+  Future<void> fetchUserPasses() async {
+    _isLoading = true;
+    notifyListeners();
 
+    try {
+      _userPasses = await _userPassService.fetchMyUserPasses();
+    } catch (e) {
+      _userPasses = [];
+      print('❌ 이용권 목록 불러오기 실패: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearPasses() {
+    _userPasses = [];
     notifyListeners();
   }
 
-  void clear() {
-    _passes.clear();
+  Future<void> registerUserPass(String pinNumber) async {
+    _isLoading = true;
     notifyListeners();
+
+    try {
+      await _userPassService.registerUserPass(pinNumber);
+      await fetchUserPasses();
+    } catch (e) {
+      print('❌ 등록 실패: $e');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

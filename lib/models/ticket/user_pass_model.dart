@@ -1,92 +1,55 @@
-import 'package:flutter/foundation.dart';
+class UserPassModel {
+  final String pinNumber;         // 이용권 PIN
+  final String passName;          // 이용권 이름
+  final bool useFlag;             // 사용중 여부
+  final bool hasLive;             // 라이브 포함 여부
+  final bool hasVod;              // VOD 포함 여부
+  final String productImageUrl;   // 대표 이미지 URL
+  final String productName;       // 대표 상품 이름
+  final String eventName;         // 이벤트 이름
+  final String type;              // LIVE 또는 VOD
+  final String eventCode;         // 이벤트 코드
 
-enum UserPassType { STREAMING, VOD }
-
-UserPassType userPassTypeFromString(String type) {
-  return UserPassType.values.firstWhere(
-        (e) => describeEnum(e) == type,
-    orElse: () => UserPassType.VOD,
-  );
-}
-
-String userPassTypeToString(UserPassType type) {
-  return describeEnum(type);
-}
-
-class EventUseInfo {
-  final String code;
-  final UserPassType type; // STREAMING | VOD
-  final String pinNumber;
-  final bool used;
-  final DateTime? usedAt;
-
-  EventUseInfo({
-    required this.code,
-    required this.type,
+  UserPassModel({
     required this.pinNumber,
-    required this.used,
-    this.usedAt,
-  });
-
-  factory EventUseInfo.fromJson(Map<String, dynamic> json) {
-    return EventUseInfo(
-      code: json['code'],
-      type: userPassTypeFromString(json['type']),
-      pinNumber: json['pinNumber'],
-      used: json['used'],
-      usedAt: json['usedAt'] != null ? DateTime.parse(json['usedAt']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'type': userPassTypeToString(type),
-      'pinNumber': pinNumber,
-      'used': used,
-      'usedAt': usedAt?.toIso8601String(),
-    };
-  }
-}
-
-class UserPass {
-  final String pinNumber;
-  final String userId;
-  final String passName;
-  final DateTime createdAt;
-  final bool useFlag;
-  final List<EventUseInfo> events;
-
-  UserPass({
-    required this.pinNumber,
-    required this.userId,
     required this.passName,
-    required this.createdAt,
     required this.useFlag,
-    required this.events,
+    required this.hasLive,
+    required this.hasVod,
+    required this.productImageUrl,
+    required this.productName,
+    required this.eventName,
+    required this.type,
+    required this.eventCode,
   });
 
-  factory UserPass.fromJson(Map<String, dynamic> json) {
-    return UserPass(
-      pinNumber: json['pinNumber'],
-      userId: json['userId'],
-      passName: json['passName'],
-      createdAt: DateTime.parse(json['createdAt']),
-      useFlag: json['useFlag'],
-      events: (json['events'] as List)
-          .map((e) => EventUseInfo.fromJson(e))
-          .toList(),
+  factory UserPassModel.fromJson(Map<String, dynamic> json) {
+    return UserPassModel(
+      pinNumber: json['pinNumber'] ?? '',
+      passName: json['passName'] ?? '',
+      useFlag: json['useFlag'] ?? false,
+      hasLive: json['hasLive'] ?? false,
+      hasVod: json['hasVod'] ?? false,
+      productImageUrl: json['productImageUrl'] ?? '',
+      productName: json['productName'] ?? '',
+      eventName: json['eventName'] ?? '',
+      type: json['type'] ?? '',
+      eventCode: json['eventCode'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'pinNumber': pinNumber,
-      'userId': userId,
       'passName': passName,
-      'createdAt': createdAt.toIso8601String(),
       'useFlag': useFlag,
-      'events': events.map((e) => e.toJson()).toList(),
+      'hasLive': hasLive,
+      'hasVod': hasVod,
+      'productImageUrl': productImageUrl,
+      'productName': productName,
+      'eventName': eventName,
+      'type': type,
+      'eventCode': eventCode,
     };
   }
 }
