@@ -34,6 +34,17 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
     _fetchEvent();
   }
 
+  @override
+  void didUpdateWidget(covariant TitleHomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.eventCode != widget.eventCode) {
+      setState(() {
+        isLoading = true;
+      });
+      _fetchEvent();
+    }
+  }
+
   Future<void> _fetchEvent() async {
     try {
       await context.read<EventProvider>().fetchAndAddEvent(widget.eventCode);
@@ -94,9 +105,13 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
       child: Scaffold(
         backgroundColor: const Color(0xFF0B0C0C),
         extendBodyBehindAppBar: true,
-        appBar: const Header(),
+        appBar: Header(eventCode: widget.eventCode),
         endDrawer: const AppDrawer(),
-        floatingActionButton: const BackFAB(),
+        floatingActionButton: BackFAB(
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          },
+        ),
         body: NestedScrollView(
           headerSliverBuilder: (context, _) => [
             SliverToBoxAdapter(

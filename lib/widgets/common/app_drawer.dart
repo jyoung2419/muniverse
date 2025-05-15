@@ -9,6 +9,8 @@ import '../../screens/mypage/reward_history_screen.dart';
 import '../../screens/info/faq_screen.dart';
 import '../../screens/info/notice_screen.dart';
 import '../../screens/mypage/purchase_history_screen.dart';
+import '../../screens/store/store_main_screen.dart';
+import '../../screens/vote/vote_main_screen.dart';
 import '../../services/user/user_service.dart';
 import '../muniverse_logo.dart';
 
@@ -109,6 +111,9 @@ class AppDrawer extends StatelessWidget {
                     const Divider(color: Colors.white24, indent: 16, endIndent: 16),
                     _buildItem(context, Icons.announcement_outlined, titleNotice, const NoticeScreen(), '/notice', currentRoute),
                     _buildItem(context, Icons.help_outline, 'FAQ', const FAQScreen(), '/faq', currentRoute),
+                    const Divider(color: Colors.white24, indent: 16, endIndent: 16),
+                    _buildItem(context, Icons.how_to_vote, lang == 'kr' ? '투표' : 'VOTE', const VoteMainScreen(), '/voteMainScreen', currentRoute),
+                    _buildItem(context, Icons.storefront, lang == 'kr' ? '스토어' : 'STORE', const StoreMainScreen(), '/storeMainScreen', currentRoute),
                   ],
                 ),
               ),

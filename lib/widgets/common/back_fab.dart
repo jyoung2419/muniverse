@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BackFAB extends StatelessWidget {
-  const BackFAB({super.key});
+  final VoidCallback? onPressed;
+
+  const BackFAB({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -10,11 +12,12 @@ class BackFAB extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 40, bottom: 24),
         child: GestureDetector(
-          onTap: () {
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            }
-          },
+          onTap: onPressed ??
+                  () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
           child: Container(
             width: 48,
             height: 48,

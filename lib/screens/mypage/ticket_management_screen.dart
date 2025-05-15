@@ -99,7 +99,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                             content: Text(
                                 lang == 'kr' ? '올바른 형식의 핀 번호를 입력해주세요. (예: 1111-2222-3333)' : 'Please enter a valid PIN number. (e.g., 1111-2222-3333)',
                             ),
-                            behavior: SnackBarBehavior.floating,
+                            behavior: SnackBarBehavior.fixed,
                           ),
                         );
                         return;
@@ -128,7 +128,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(msg),
-                            behavior: SnackBarBehavior.floating,
+                            behavior: SnackBarBehavior.fixed,
                           ),
                         );
                       }

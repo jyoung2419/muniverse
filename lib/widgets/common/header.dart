@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:muniverse_app/widgets/common/translate_text.dart';
 import 'package:provider/provider.dart';
+import '../../models/event/main/event_nav_model.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/translation_provider.dart';
+import '../../providers/event/main/event_nav_provider.dart';
+import '../../screens/title/title_home_screen.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../muniverse_logo.dart';
 
@@ -9,12 +13,14 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
   final double height;
   final bool showMenu;
   final bool isHome;
+  final String? eventCode;
 
   const Header({
     super.key,
     this.height = kToolbarHeight,
     this.showMenu = true,
     this.isHome = false,
+    this.eventCode,
   });
 
   @override
@@ -25,9 +31,40 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _HeaderState extends State<Header> {
+  String? selectedEventName;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<EventNavProvider>().fetchEventNavs();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final languageProvider = context.watch<LanguageProvider>();
+    final navs = context.watch<EventNavProvider>().navs;
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+    final homeText = languageProvider.selectedLanguageCode == 'kr' ? '홈' : 'HOME';
+
+    if (currentRoute == '/home') {
+      selectedEventName = homeText;
+    }
+
+    if (navs.length > 1) {
+      if (widget.isHome) {
+        selectedEventName = homeText;
+      } else if (widget.eventCode != null) {
+        final matched = navs.firstWhere(
+              (e) => e.eventCode == widget.eventCode,
+          orElse: () => navs[1],
+        );
+        if (selectedEventName != matched.eventName) {
+          selectedEventName = matched.eventName;
+        }
+      }
+    }
 
     return AppBar(
       leadingWidth: 120,
@@ -55,48 +92,79 @@ class _HeaderState extends State<Header> {
       )
           : null,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/voteMainScreen');
+        padding: const EdgeInsets.only(left: 30),
+        child: SizedBox(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isDense: true,
+              value: selectedEventName,
+              alignment: Alignment.centerLeft,
+              icon: const SizedBox.shrink(),
+              dropdownColor: const Color(0xFF212225),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() {
+                  selectedEventName = value;
+                });
+                if (value == homeText) {
+                  Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                  return;
+                }
+                final target = navs.firstWhere(
+                      (e) => e.eventName == value,
+                  orElse: () => EventNavModel(eventName: '', eventCode: ''),
+                );
+                if (target.eventCode.isNotEmpty) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      settings: RouteSettings(arguments: target.eventCode),
+                      builder: (_) => TitleHomeScreen(eventCode: target.eventCode),
+                    ),
+                  );
+                }
               },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(40, 32),
-              ),
-              child: Text(
-                languageProvider.selectedLanguageCode == 'kr' ? '투표' : 'VOTE',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/storeMainScreen');
+              selectedItemBuilder: (context) {
+                return [
+                  DropdownMenuItem<String>(
+                    value: homeText,
+                    child: Row(
+                      children: [
+                        TranslatedText(homeText),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                  ...navs.skip(1).map((e) => DropdownMenuItem<String>(
+                    value: e.eventName,
+                    child: Row(
+                      children: [
+                        TranslatedText(e.eventName),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Colors.white),
+                      ],
+                    ),
+                  )),
+                ];
               },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(40, 32),
-              ),
-              child: Text(
-                languageProvider.selectedLanguageCode == 'kr' ? '스토어' : 'STORE',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+              items: [
+                DropdownMenuItem<String>(
+                  value: homeText,
+                  child: TranslatedText(homeText),
                 ),
-              ),
+                ...navs.skip(1).map((e) => DropdownMenuItem<String>(
+                  value: e.eventName,
+                  child: TranslatedText(e.eventName),
+                )),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       title: GestureDetector(
         onTap: () {
-          final currentRoute = ModalRoute.of(context)?.settings.name;
           if (currentRoute != '/home') {
             Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           }
@@ -120,7 +188,6 @@ class _HeaderState extends State<Header> {
             final translationProvider = context.read<TranslationProvider>();
             await SharedPrefsUtil.setAcceptLanguage(langCode);
             translationProvider.clear();
-            print('선택된 언어: $value');
           },
           itemBuilder: (context) => [
             PopupMenuItem(
