@@ -5,6 +5,7 @@ class SharedPrefsUtil {
   static const _deviceIdKey = 'x-device-id';
   static const _userStatusKey = 'userStatus';
   static const _acceptLanguageKey = 'acceptLanguage';
+  static const _popupHiddenUntilKey = 'popup_hidden_until';
 
   static Future<void> saveUserId(String userId) async {
     final prefs = await SharedPreferences.getInstance();
@@ -64,6 +65,27 @@ class SharedPrefsUtil {
     if (deviceId != null) {
       await prefs.setString(_deviceIdKey, deviceId);
     }
+  }
+
+  // 팝업
+  static Future<void> setPopupHiddenUntilTomorrow() async {
+    final prefs = await SharedPreferences.getInstance();
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
+
+    final normalized = DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
+
+    await prefs.setString(_popupHiddenUntilKey, normalized.toIso8601String());
+  }
+
+  static Future<bool> isPopupHiddenToday() async {
+    final prefs = await SharedPreferences.getInstance();
+    final untilStr = prefs.getString(_popupHiddenUntilKey);
+    if (untilStr == null) return false;
+
+    final hiddenUntil = DateTime.tryParse(untilStr);
+    if (hiddenUntil == null) return false;
+
+    return hiddenUntil.isAfter(DateTime.now());
   }
 
   // 언어

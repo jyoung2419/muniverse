@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await popupProvider.loadPopups();
       final popupList = popupProvider.popupList;
 
-      if (popupList != null) {
+      if (popupList != null && !await SharedPrefsUtil.isPopupHiddenToday()) {
         showPopupDialog(context, popupList);
       }
     });

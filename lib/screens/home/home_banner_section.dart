@@ -1,54 +1,70 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
-class HomeBannerSection extends StatelessWidget {
+class HomeBannerSection extends StatefulWidget {
   const HomeBannerSection({super.key});
+
+  @override
+  State<HomeBannerSection> createState() => _HomeBannerSectionState();
+}
+
+class _HomeBannerSectionState extends State<HomeBannerSection> {
+  late String selectedImage;
+  late Timer _timer;
+  int currentIndex = 0;
+
+  final List<String> bannerImages = [
+    'assets/images/banner/banner1.png',
+    'assets/images/banner/banner2.png',
+    'assets/images/banner/banner3.png',
+    'assets/images/banner/banner4.png',
+    'assets/images/banner/banner5.png',
+    'assets/images/banner/banner6.png',
+    'assets/images/banner/banner7.png',
+    'assets/images/banner/banner8.png',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedImage = bannerImages[currentIndex];
+
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      _setNextImage();
+    });
+  }
+
+  void _setNextImage() {
+    setState(() {
+      currentIndex = (currentIndex + 1) % bannerImages.length;
+      selectedImage = bannerImages[currentIndex];
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.45,
       width: double.infinity,
-      child: Stack(
-        children: [
-          Image.asset(
-            'assets/images/banner_home.png',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.65), // 어두운 반투명 레이어
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  'K-컬처의 심장이 뛰는 곳!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 12),
-                Text(
-                  '당신의 2025년, 가장 빛나는 순간을\nMBC 페스티벌에서 만나보세요.\n뜨거운 무대, 찬란한 별들, 그리고 당신의 이야기.\n지금 바로 공식 사이트에서 확인하세요!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 800),
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        child: Image.asset(
+          selectedImage,
+          key: ValueKey<String>(selectedImage),
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
       ),
     );
   }

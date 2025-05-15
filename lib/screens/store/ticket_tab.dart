@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
@@ -6,8 +7,26 @@ import '../../models/product/product_vod_usd_model.dart';
 import '../../models/product/product_live_usd_model.dart';
 import '../../widgets/common/translate_text.dart';
 
-class TicketTab extends StatelessWidget {
+class TicketTab extends StatefulWidget {
   const TicketTab({super.key});
+
+  @override
+  State<TicketTab> createState() => _TicketTabState();
+}
+
+class _TicketTabState extends State<TicketTab> {
+  String? _prevLang;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+
+    if (_prevLang != lang) {
+      _prevLang = lang;
+      context.read<ProductUSDProvider>().fetchProducts();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +38,14 @@ class TicketTab extends StatelessWidget {
     final products = [...vods, ...lives];
 
     if (provider.error != null) {
-      return Center(child: TranslatedText(provider.error!, style: const TextStyle(color: Colors.red)));
+      return Center(
+        child: TranslatedText(
+          provider.error!,
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
     }
+
     if (provider.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -32,21 +57,18 @@ class TicketTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final product = products[index];
         final isVod = product is ProductVodUSDModel;
-        final imageUrl = isVod ? product.productImageUrl : (product as ProductLiveUSDModel).productImageUrl;
+        final imageUrl = product.productImageUrl;
         final name = product.name;
         final note = product.note;
         final price = product.totalPrice;
 
         return Container(
-          height: 160,
+          height: 170,
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
             color: const Color(0xFF212225),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0x5270737C),
-              width: 1,
-            ),
+            border: Border.all(color: const Color(0x5270737C), width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,13 +76,12 @@ class TicketTab extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Container(
-                  width: 170,
-                  height: double.infinity,
+                  width: 200,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
                       image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
@@ -70,7 +91,6 @@ class TicketTab extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TranslatedText(
                         name,
@@ -81,11 +101,18 @@ class TicketTab extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      TranslatedText(
-                        note,
-                        style: const TextStyle(color: Colors.white54, fontSize: 12),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      Html(
+                        data: note,
+                        style: {
+                          'body': Style(
+                            margin: Margins.zero,
+                            padding: HtmlPaddings.zero,
+                            fontSize: FontSize(12),
+                            color: Colors.white70,
+                            maxLines: 2,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                        },
                       ),
                       const SizedBox(height: 8),
                       Text(

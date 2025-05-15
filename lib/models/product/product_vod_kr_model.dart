@@ -33,7 +33,7 @@ class ProductVodKRModel {
       discountRate: json['discountRate'],
       totalPrice: json['totalPrice'],
       productImageUrl: json['productImageUrl'] ?? '',
-      isPackage: json['isPackage'] ?? false,
+      isPackage: json['package'] ?? false,
       categories: List<String>.from(json['categories'] ?? []),
     );
   }

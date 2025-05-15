@@ -1,6 +1,6 @@
-import 'product_usd_item.dart';
+import 'product_item.dart';
 
-class ProductVodUSDModel implements ProductUSDItem {
+class ProductVodUSDModel implements ProductItem {
   @override
   final String productCode;
   @override
@@ -45,8 +45,10 @@ class ProductVodUSDModel implements ProductUSDItem {
       discountRate: json['discountRate'],
       totalPrice: (json['totalPrice'] ?? 0).toDouble(),
       productImageUrl: json['productImageUrl'] ?? '',
-      isPackage: json['isPackage'] ?? false,
-      categories: List<String>.from(json['categories'] ?? []),
+      isPackage: json['package'] ?? false,
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ?? [],
     );
   }
 }

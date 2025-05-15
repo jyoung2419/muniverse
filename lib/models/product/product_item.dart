@@ -1,9 +1,9 @@
-abstract class ProductUSDItem {
+abstract class ProductItem {
   String get productCode;
   String get name;
   String get note;
   String get productImageUrl;
-  double get totalPrice;
+  num get totalPrice;
   bool get isVod;
   List<String> get categories;
 }

@@ -1,18 +1,17 @@
-// ProductUSDProvider 안에서 API 응답 파싱용.. 실제 UI 구현에는 사용x!!
 import 'product_live_usd_model.dart';
 import 'product_vod_usd_model.dart';
 
-class ProductEventUSDModel {
+class ProductGroupUSDModel {
   final List<ProductVodUSDModel> vods;
   final List<ProductLiveUSDModel> lives;
 
-  ProductEventUSDModel({
+  ProductGroupUSDModel({
     required this.vods,
     required this.lives,
   });
 
-  factory ProductEventUSDModel.fromJson(Map<String, dynamic> json) {
-    return ProductEventUSDModel(
+  factory ProductGroupUSDModel.fromJson(Map<String, dynamic> json) {
+    return ProductGroupUSDModel(
       vods: (json['vods'] as List<dynamic>?)
           ?.map((e) => ProductVodUSDModel.fromJson(e))
           .toList() ??

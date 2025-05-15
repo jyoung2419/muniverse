@@ -56,8 +56,7 @@ flutter:
     - assets/svg/Muniverse.svg
     - assets/svg/scroll_top.svg
     - assets/images/
-    - assets/images/artist/
-    - assets/images/vote/
+    - assets/images/banner/
 
   fonts:
     - family: Pretendard

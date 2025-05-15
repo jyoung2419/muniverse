@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../../models/product/product_event_usd_model.dart';
+import '../../models/product/product_group_usd_model.dart';
 import '../../models/product/product_live_usd_model.dart';
 import '../../models/product/product_vod_usd_model.dart';
 import '../../services/product/product_service.dart';
@@ -29,7 +29,7 @@ class ProductUSDProvider with ChangeNotifier {
     try {
       final langHeader = await SharedPrefsUtil.getAcceptLanguage();
       final data = await _productService.fetchUSDProducts(langHeader: langHeader);
-      final eventModel = ProductEventUSDModel.fromJson(data);
+      final eventModel = ProductGroupUSDModel.fromJson(data);
       _vods = eventModel.vods;
       _lives = eventModel.lives;
     } catch (e) {

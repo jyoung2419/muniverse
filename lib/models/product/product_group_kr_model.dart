@@ -1,17 +1,17 @@
 import 'product_live_kr_model.dart';
 import 'product_vod_kr_model.dart';
 
-class ProductEventKRModel {
+class ProductGroupKRModel {
   final List<ProductVodKRModel> vods;
   final List<ProductLiveKRModel> lives;
 
-  ProductEventKRModel({
+  ProductGroupKRModel({
     required this.vods,
     required this.lives,
   });
 
-  factory ProductEventKRModel.fromJson(Map<String, dynamic> json) {
-    return ProductEventKRModel(
+  factory ProductGroupKRModel.fromJson(Map<String, dynamic> json) {
+    return ProductGroupKRModel(
       vods: (json['vods'] as List<dynamic>?)
           ?.map((e) => ProductVodKRModel.fromJson(e))
           .toList() ??
