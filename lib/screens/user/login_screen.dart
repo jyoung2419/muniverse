@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../providers/user/google_oauth_provider.dart';
-import '../../widgets/muniverse_logo.dart';
+import '../../widgets/common/muniverse_logo.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {

@@ -48,16 +48,14 @@ class _LiveFAQState extends State<LiveFAQ> {
             Row(
               children: [
                 Expanded(
-                  child: Center(
                     child: Text(
                       titleText,
                       style: TextStyle(
-                        color: Color(0xFF2EFFAA),
-                        fontSize: 22,
+                        color: Colors.white,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.close, color: Colors.white),

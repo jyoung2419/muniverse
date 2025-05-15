@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/main/event_main_provider.dart';
 import '../../providers/event/main/event_main_vote_provider.dart';
+import '../../providers/popup/popup_provider.dart';
 import '../../providers/user/user_me_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
-import '../../widgets/home_related_video_section.dart';
+import '../../widgets/home/home_related_video_section.dart';
+import '../../widgets/home/show_popup_dialog.dart';
 import 'home_award.dart';
 import 'home_banner_section.dart';
 import 'home_event_profile_list.dart';
@@ -21,16 +23,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  @override
   void initState() {
     super.initState();
     _printCurrentUserId();
 
-    Future.microtask(() {
+    Future.microtask(() async {
       context.read<EventMainProvider>().fetchMainEvents();
       context.read<EventMainVoteProvider>().fetchEventMainVotes();
       context.read<UserMeProvider>().fetchUserMe();
+
+      final popupProvider = context.read<PopupProvider>();
+      await popupProvider.loadPopups();
+      final popupList = popupProvider.popupList;
+
+      if (popupList != null) {
+        showPopupDialog(context, popupList);
+      }
     });
   }
+
   Future<void> _printCurrentUserId() async {
     try {
       final userId = await SharedPrefsUtil.getUserId();

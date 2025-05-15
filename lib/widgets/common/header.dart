@@ -7,7 +7,7 @@ import '../../providers/translation_provider.dart';
 import '../../providers/event/main/event_nav_provider.dart';
 import '../../screens/title/title_home_screen.dart';
 import '../../utils/shared_prefs_util.dart';
-import '../muniverse_logo.dart';
+import 'muniverse_logo.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
   final double height;

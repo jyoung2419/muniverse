@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:muniverse_app/providers/popup/popup_provider.dart';
 import 'package:muniverse_app/providers/translation_provider.dart';
 import 'providers/event/main/event_nav_provider.dart';
 import 'providers/product/product_kr_provider.dart';
@@ -65,6 +66,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
         ChangeNotifierProvider(create: (_) => TranslationProvider()),
+        ChangeNotifierProvider(create: (_) => PopupProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventMainProvider(dio)),
         ChangeNotifierProvider(create: (context) => EventProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => EventInfoProvider(dio, context.read<LanguageProvider>())),

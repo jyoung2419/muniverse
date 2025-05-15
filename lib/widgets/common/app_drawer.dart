@@ -12,7 +12,7 @@ import '../../screens/mypage/purchase_history_screen.dart';
 import '../../screens/store/store_main_screen.dart';
 import '../../screens/vote/vote_main_screen.dart';
 import '../../services/user/user_service.dart';
-import '../muniverse_logo.dart';
+import 'muniverse_logo.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

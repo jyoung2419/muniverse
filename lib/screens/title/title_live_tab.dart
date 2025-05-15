@@ -140,7 +140,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
               }
 
               return Container(
-                height: 140,
+                height: 160,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF212225),

@@ -46,16 +46,14 @@ class _VodFAQState extends State<VodFAQ> {
             Row(
               children: [
                 Expanded(
-                  child: Center(
                     child: Text(
                       'VOD FAQ',
                       style: TextStyle(
-                        color: Color(0xFF2EFFAA),
-                        fontSize: 22,
+                        color: Colors.white,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.close, color: Colors.white),

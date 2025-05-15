@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../providers/event/main/event_main_related_provider.dart';
-import 'common/translate_text.dart';
+import '../../../providers/event/main/event_main_related_provider.dart';
+import '../common/translate_text.dart';
 
 class HomeRelatedVideoSection extends StatefulWidget {
   const HomeRelatedVideoSection({super.key});

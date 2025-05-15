@@ -49,14 +49,12 @@ class _VodNoticeState extends State<VodNotice> {
             Row(
               children: [
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      titleText,
-                      style: TextStyle(
-                        color: Color(0xFF2EFFAA),
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child: Text(
+                    titleText,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
