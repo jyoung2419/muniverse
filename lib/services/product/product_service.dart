@@ -22,7 +22,7 @@ class ProductService {
     try {
       final response = await _dio.get(
         '/api/v1/product/usd',
-        options: Options(headers: {'Accept-Language': 'kr'}),
+        options: Options(headers: {'Accept-Language': langHeader}),
       );
       return response.data;
     } catch (e) {

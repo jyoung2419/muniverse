@@ -96,7 +96,7 @@ class ProductCardBase extends StatelessWidget {
                     children: [
                       Container(
                         alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: isVod ? Colors.black : const Color(0xFF2EFFAA),
                           borderRadius: BorderRadius.circular(6),

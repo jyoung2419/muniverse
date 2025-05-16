@@ -21,9 +21,11 @@ class ProductLiveUSDModel implements ProductItem {
   final int? discountRate;
   final bool isPackage;
   final List<String> categories;
+  final String eventName;
 
   ProductLiveUSDModel({
     required this.productCode,
+    required this.eventName,
     required this.name,
     required this.note,
     required this.priceDollar,
@@ -38,6 +40,7 @@ class ProductLiveUSDModel implements ProductItem {
   factory ProductLiveUSDModel.fromJson(Map<String, dynamic> json) {
     return ProductLiveUSDModel(
       productCode: json['productCode'] ?? '',
+      eventName: json['eventName'] ?? '',
       name: json['name'] ?? '',
       note: json['note'] ?? '',
       priceDollar: (json['priceDollar'] ?? 0).toDouble(),

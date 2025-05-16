@@ -82,7 +82,6 @@ class _TitleProductTabState extends State<TitleProductTab> {
         itemCount: merged.length,
         itemBuilder: (context, index) => ProductCardKR(
           product: merged[index],
-          eventCode: widget.eventCode,
         ),
       );
     } else {
@@ -121,7 +120,6 @@ class _TitleProductTabState extends State<TitleProductTab> {
         itemCount: merged.length,
         itemBuilder: (context, index) => ProductCardUSD(
           product: merged[index],
-          eventCode: widget.eventCode,
         ),
       );
     }

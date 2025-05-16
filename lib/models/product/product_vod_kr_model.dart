@@ -9,9 +9,11 @@ class ProductVodKRModel {
   final String productImageUrl;
   final bool isPackage;
   final List<String> categories;
+  final String eventName;
 
   ProductVodKRModel({
     required this.productCode,
+    required this.eventName,
     required this.name,
     required this.note,
     required this.priceWon,
@@ -26,6 +28,7 @@ class ProductVodKRModel {
   factory ProductVodKRModel.fromJson(Map<String, dynamic> json) {
     return ProductVodKRModel(
       productCode: json['productCode'] ?? '',
+      eventName: json['eventName'] ?? '',
       name: json['name'] ?? '',
       note: json['note'] ?? '',
       priceWon: json['priceWon'] ?? 0,
