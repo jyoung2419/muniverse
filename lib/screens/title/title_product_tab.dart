@@ -116,6 +116,7 @@ class _TitleProductTabState extends State<TitleProductTab> {
       final merged = [...products.vods, ...products.lives];
 
       return ListView.builder(
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: merged.length,
         itemBuilder: (context, index) => ProductCardUSD(

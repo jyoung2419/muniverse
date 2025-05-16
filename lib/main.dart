@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:muniverse_app/providers/popup/popup_provider.dart';
-import 'package:muniverse_app/providers/product/event_product_kr_provider.dart';
-import 'package:muniverse_app/providers/product/event_product_usd_provider.dart';
-import 'package:muniverse_app/providers/translation_provider.dart';
+import 'providers/popup/popup_provider.dart';
+import 'providers/product/event_product_kr_provider.dart';
+import 'providers/product/event_product_usd_provider.dart';
+import 'providers/product/product_detail_provider.dart';
+import 'providers/translation_provider.dart';
 import 'providers/event/main/event_nav_provider.dart';
 import 'providers/product/product_kr_provider.dart';
 import 'providers/product/product_usd_provider.dart';
@@ -22,7 +23,8 @@ import 'providers/user/user_me_provider.dart';
 import 'providers/vote/vote_detail_provider.dart';
 import 'providers/vote/vote_main_provider.dart';
 import 'providers/vote/vote_reward_media_provider.dart';
-import 'screens/store/store_main_screen.dart';
+import 'screens/product/product_detail_screen.dart';
+import 'screens/product/product_main_screen.dart';
 import 'screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/event/detail/event_provider.dart';
@@ -83,6 +85,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => NoticeProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
         ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
+        ChangeNotifierProvider(create: (context) => ProductDetailProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),  // 수정 예정
         ChangeNotifierProvider(create: (context) => UserPassProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => VoteMainProvider(dio, context.read<LanguageProvider>())),
@@ -120,7 +123,7 @@ class MyApp extends StatelessWidget {
         '/faq': (context) => const FAQScreen(),
         '/home': (context) => const HomeScreen(),
         '/voteMainScreen': (context) => const VoteMainScreen(),
-        '/storeMainScreen': (context) => const StoreMainScreen(),
+        '/productMainScreen': (context) => const ProductMainScreen(),
       },
 
       onGenerateRoute: (settings) {

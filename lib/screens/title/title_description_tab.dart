@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/flutter_html.dart' as html;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/event/detail/event_model.dart';
@@ -74,6 +75,20 @@ class _TitleDescriptionTabState extends State<TitleDescriptionTab> {
                 }
               }
               return const SizedBox.shrink();
+            },
+          ),
+          html.TagExtension(
+            tagsToExtend: {"img"},
+            builder: (context) {
+              final src = context.attributes['src'] ?? '';
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.network(
+                  src,
+                  fit: BoxFit.contain,
+                  width: MediaQuery.of(context.buildContext!).size.width - 32,
+                ),
+              );
             },
           ),
         ],

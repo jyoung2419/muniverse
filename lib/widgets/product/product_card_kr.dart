@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../screens/product/product_detail_screen.dart';
 import 'product_card_base.dart';
 import '../../models/product/product_vod_kr_model.dart';
 
@@ -10,15 +11,27 @@ class ProductCardKR extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVod = product is ProductVodKRModel;
+    final viewType = isVod ? 'VOD' : 'LIVE';
 
     return ProductCardBase(
-      eventName: product.eventName ?? 'Unknown Event',
+      eventName: product.eventName,
       productName: product.name,
       imageUrl: product.productImageUrl,
-      priceLabel: '₩${product.totalPrice ?? 0}',
+      priceLabel: '₩${product.totalPrice.toStringAsFixed(0)}',
       isVod: isVod,
       buttonText: '구매하기',
-      onPressed: () => print('구매: ${product.productCode}'),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductDetailScreen(
+              productCode: product.productCode,
+              viewType: viewType,
+              eventName: product.eventName,
+            ),
+          ),
+        );
+      },
     );
   }
 }

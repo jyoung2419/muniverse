@@ -9,14 +9,14 @@ import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 
-class StoreMainScreen extends StatefulWidget {
-  const StoreMainScreen({super.key});
+class ProductMainScreen extends StatefulWidget {
+  const ProductMainScreen({super.key});
 
   @override
-  State<StoreMainScreen> createState() => _StoreMainScreenState();
+  State<ProductMainScreen> createState() => _ProductMainScreenState();
 }
 
-class _StoreMainScreenState extends State<StoreMainScreen> {
+class _ProductMainScreenState extends State<ProductMainScreen> {
   @override
   void initState() {
     super.initState();
