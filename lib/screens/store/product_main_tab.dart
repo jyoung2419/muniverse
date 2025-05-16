@@ -7,14 +7,14 @@ import '../../models/product/product_vod_usd_model.dart';
 import '../../models/product/product_live_usd_model.dart';
 import '../../widgets/common/translate_text.dart';
 
-class TicketTab extends StatefulWidget {
-  const TicketTab({super.key});
+class ProductMainTab extends StatefulWidget {
+  const ProductMainTab({super.key});
 
   @override
-  State<TicketTab> createState() => _TicketTabState();
+  State<ProductMainTab> createState() => _ProductMainTabState();
 }
 
-class _TicketTabState extends State<TicketTab> {
+class _ProductMainTabState extends State<ProductMainTab> {
   String? _prevLang;
 
   @override

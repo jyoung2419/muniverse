@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muniverse_app/screens/title/title_product_tab.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_provider.dart';
 import '../../providers/language_provider.dart';
@@ -73,7 +74,7 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
 
     final tabList = [
       Tab(text: lang == 'kr' ? '상세정보' : 'DETAILS'),
-      // Tab(text: lang == 'kr' ? '상품' : 'TICKETS'),
+      Tab(text: lang == 'kr' ? '상품' : 'TICKETS'),
       Tab(text: lang == 'kr' ? '투표' : 'VOTE'),
       Tab(text: lang == 'kr' ? '라이브' : 'LIVE'),
       Tab(text: lang == 'kr' ? 'VOD' : 'VOD'),
@@ -81,8 +82,12 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
     ];
 
     final tabViews = [
-      TitleDescriptionTab(event: event!),
-      // TitleTicketTab(),
+      TitleDescriptionTab(
+          event: event!
+      ),
+      TitleProductTab(
+          eventCode: event!.eventCode
+      ),
       TitleVoteTab(
         event: event!,
       ),
@@ -214,6 +219,7 @@ class BannerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final isBeforePerformance = now.isBefore(performanceStartTime);
+    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.45,
@@ -311,12 +317,12 @@ class BannerSection extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: const Size(60, 30),
                       ),
-                      child: const Text(
-                        '시청하기',
-                        style: TextStyle(
+                      child: Text(
+                        lang == 'kr' ? '시청하기' : 'WATCH',
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF2EFFAA), // 글자색 연두색
+                          color: Color(0xFF2EFFAA),
                         ),
                       ),
                     ),

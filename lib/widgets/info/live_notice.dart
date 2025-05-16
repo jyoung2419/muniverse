@@ -30,7 +30,6 @@ class _LiveNoticeState extends State<LiveNotice> {
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
-    final titleText = lang == 'ko' ? '라이브 이용안내' : 'Instructions for use';
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -49,8 +48,8 @@ class _LiveNoticeState extends State<LiveNotice> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    titleText,
+                  child: TranslatedText(
+                    '라이브 이용안내',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

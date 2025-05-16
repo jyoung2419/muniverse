@@ -250,7 +250,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                                           ],
                                         ),
                                         const SizedBox(height: 2),
-                                        Text(
+                                        TranslatedText(
                                           voteDetail.rewards.isNotEmpty
                                               ? voteDetail.rewards.map((reward) => reward.rewardContent).join(', ')
                                               : labels['vote_reward_empty']!,

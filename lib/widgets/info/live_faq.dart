@@ -30,7 +30,6 @@ class _LiveFAQState extends State<LiveFAQ> {
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
-    final titleText = lang == 'ko' ? '라이브 FAQ' : 'LIVE FAQ';
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -48,8 +47,8 @@ class _LiveFAQState extends State<LiveFAQ> {
             Row(
               children: [
                 Expanded(
-                    child: Text(
-                      titleText,
+                    child: TranslatedText(
+                      '라이브 FAQ',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

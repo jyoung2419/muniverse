@@ -94,6 +94,8 @@ class _HeaderState extends State<Header> {
       leading: Padding(
         padding: const EdgeInsets.only(left: 30),
         child: SizedBox(
+          width: 160,
+        child: FittedBox(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               isDense: true,
@@ -130,8 +132,20 @@ class _HeaderState extends State<Header> {
                   DropdownMenuItem<String>(
                     value: homeText,
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        TranslatedText(homeText),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 100),
+                          child: TranslatedText(
+                            homeText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                         const SizedBox(width: 4),
                         const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Colors.white),
                       ],
@@ -140,27 +154,49 @@ class _HeaderState extends State<Header> {
                   ...navs.skip(1).map((e) => DropdownMenuItem<String>(
                     value: e.eventName,
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        TranslatedText(e.eventName),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 100),
+                          child: TranslatedText(
+                            e.eventName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                         const SizedBox(width: 4),
                         const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Colors.white),
                       ],
                     ),
-                  )),
+                  ),
+                  ),
                 ];
               },
               items: [
                 DropdownMenuItem<String>(
                   value: homeText,
-                  child: TranslatedText(homeText),
+                  child: TranslatedText(
+                    homeText,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 ...navs.skip(1).map((e) => DropdownMenuItem<String>(
                   value: e.eventName,
-                  child: TranslatedText(e.eventName),
+                  child: TranslatedText(
+                    e.eventName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 )),
               ],
+
             ),
-          ),
+          ),),
         ),
       ),
       title: GestureDetector(

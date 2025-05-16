@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/back_fab.dart';
+import '../../widgets/common/translate_text.dart';
 import '../../widgets/mypage/user_pass_card_list.dart';
 import '../../widgets/mypage/show_ticket_dialog.dart';
 
@@ -160,7 +161,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                 const Divider(color: Color(0xFF212225)),
                 const SizedBox(height: 100),
                 Center(
-                  child: Text('현재 보유 중인 이용권이 없습니다.',
+                  child: TranslatedText('현재 보유 중인 이용권이 없습니다.',
                     style: TextStyle(color: Color(0xFF6D7582)),
                   ),
                 ),

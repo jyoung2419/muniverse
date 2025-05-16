@@ -165,7 +165,23 @@ class VoteCardForMain extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          TranslatedText(rewardText, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: vote.rewards.isNotEmpty
+                                ? vote.rewards.map((r) => Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: TranslatedText(
+                                r.rewardContent,
+                                style: const TextStyle(color: Colors.white, fontSize: 11),
+                              ),
+                            )).toList()
+                                : [
+                              TranslatedText(
+                                lang == 'kr' ? '리워드 정보 없음' : 'No reward info',
+                                style: const TextStyle(color: Colors.white, fontSize: 11),
+                              )
+                            ],
+                          )
                         ],
                       ),
                     ),

@@ -16,7 +16,7 @@ class HomeAwardSection extends StatelessWidget {
 
     return Column(
       children: [
-        if (vote.ongoing || isClosed)
+        if (vote.ongoing)
           Stack(
             children: [
               ClipRRect(

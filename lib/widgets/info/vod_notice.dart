@@ -30,7 +30,6 @@ class _VodNoticeState extends State<VodNotice> {
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
-    final titleText = lang == 'ko' ? 'VOD 이용안내' : 'Instructions for use';
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -49,8 +48,8 @@ class _VodNoticeState extends State<VodNotice> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    titleText,
+                  child: TranslatedText(
+                    'VOD 이용안내',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

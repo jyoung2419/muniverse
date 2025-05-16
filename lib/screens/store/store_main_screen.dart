@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
 import '../../widgets/common/translate_text.dart';
-import 'ticket_tab.dart';
+import 'product_main_tab.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
@@ -100,7 +100,7 @@ class _StoreMainScreenState extends State<StoreMainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  const TicketTab(),
+                  const ProductMainTab(),
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),

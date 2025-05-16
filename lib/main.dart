@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:muniverse_app/providers/popup/popup_provider.dart';
+import 'package:muniverse_app/providers/product/event_product_kr_provider.dart';
+import 'package:muniverse_app/providers/product/event_product_usd_provider.dart';
 import 'package:muniverse_app/providers/translation_provider.dart';
 import 'providers/event/main/event_nav_provider.dart';
 import 'providers/product/product_kr_provider.dart';
@@ -70,6 +72,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EventMainProvider(dio)),
         ChangeNotifierProvider(create: (context) => EventProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => EventInfoProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (context) => EventProductKRProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (context) => EventProductUSDProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => EventVoteProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => EventVODProvider(dio)),
         ChangeNotifierProvider(create: (_) => EventLiveProvider(dio)),
