@@ -19,10 +19,9 @@ class EventInfoProvider with ChangeNotifier {
 
   EventInfoProvider(Dio dio, this._languageProvider)
       : _eventInfoService = EventTitleService(dio) {
-    // ✅ 언어 변경 리스너 등록
     _languageProvider.addListener(() {
       if (_eventCode != null) {
-        fetchEventInfo(_eventCode!); // 언어 바뀌면 자동으로 재요청
+        fetchEventInfo(_eventCode!);
       }
     });
   }

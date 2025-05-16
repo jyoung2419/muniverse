@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/language_provider.dart';
 import '../utils/shared_prefs_util.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,9 @@ class DioClient {
       onRequest: (options, handler) async {
         final deviceId = await SharedPrefsUtil.getOrCreateDeviceId();
         final userAgent = Platform.isAndroid ? 'MuniverseApp/Android' : 'MuniverseApp/iOS';
-        final lang = await SharedPrefsUtil.getAcceptLanguage();
-
-        options.headers['Accept-Language'] = lang;
+        final rawLang = await SharedPrefsUtil.getAcceptLanguage();
+        final langCode = rawLang == 'kr' ? 'kr' : 'en';
+        options.headers['Accept-Language'] = langCode;
         options.headers['X-Device-Id'] = deviceId;
         options.headers['User-Agent'] = userAgent;
 

@@ -5,7 +5,7 @@ class LanguageProvider with ChangeNotifier {
   String _selectedLanguage = '한국어';
 
   String get selectedLanguage => _selectedLanguage;
-
+  String get serverLanguageCode => selectedLanguageCode == 'kr' ? 'kr' : 'en';
   String get selectedLanguageCode {
     switch (_selectedLanguage) {
       case '한국어': return 'kr';
