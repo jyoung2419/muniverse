@@ -30,8 +30,6 @@ class EventModel {
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json, String eventCode) {
-    print('🔥 이벤트 파싱: $json'); // 여기에 로그 추가
-
     return EventModel(
       eventCode: eventCode,
       name: json['name'] ?? '',

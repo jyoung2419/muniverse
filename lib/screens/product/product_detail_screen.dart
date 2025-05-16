@@ -7,6 +7,7 @@ import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../widgets/common/translate_text.dart';
+import '../order/order_sheet_screen.dart';
 import 'detail/product_detail_info_tab.dart';
 import 'detail/product_detail_note_tab.dart';
 import 'detail/product_detail_faq_tab.dart';
@@ -230,7 +231,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                           padding: const EdgeInsets.only(right: 6),
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: 구매 처리
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => OrderSheetScreen(
+                                    eventName: widget.eventName,
+                                    imageUrl: imageUrl,
+                                    productName: name,
+                                    quantity: _quantity,
+                                    unitPrice: unitPrice,
+                                    formattedTotalPrice: formattedTotalPrice,
+                                    totalPrice: '$unitSymbol $formattedTotalPrice',
+                                  ),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2EFFAA),
