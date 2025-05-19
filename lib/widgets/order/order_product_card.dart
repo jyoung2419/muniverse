@@ -3,13 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/language_provider.dart';
+import '../common/translate_text.dart';
 
 class OrderProductCard extends StatelessWidget {
   final String eventName;
   final String imageUrl;
   final String productName;
   final int quantity;
-  final double unitPrice;
+  final double totalPrice;
 
   const OrderProductCard({
     super.key,
@@ -17,7 +18,7 @@ class OrderProductCard extends StatelessWidget {
     required this.imageUrl,
     required this.productName,
     required this.quantity,
-    required this.unitPrice,
+    required this.totalPrice,
   });
 
   @override
@@ -25,8 +26,9 @@ class OrderProductCard extends StatelessWidget {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final symbol = lang == 'kr' ? '₩' : '\$';
     final formattedTotal = lang == 'kr'
-        ? '$symbol${NumberFormat('#,###').format(unitPrice * quantity)}'
-        : '$symbol${(unitPrice * quantity).toStringAsFixed(2)}';
+        ? '$symbol${NumberFormat('#,###').format(totalPrice)}'
+        : '$symbol${totalPrice.toStringAsFixed(2)}';
+    final totalLabel = lang == 'kr' ? '총 상품 금액' : 'Total';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +51,7 @@ class OrderProductCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TranslatedText(
                   '총 $quantity건',
                   style: const TextStyle(
                     color: Colors.white,
@@ -58,7 +60,7 @@ class OrderProductCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                Text(
+                TranslatedText(
                   eventName,
                   style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                 ),
@@ -74,8 +76,7 @@ class OrderProductCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Text(
-                      '총 상품 금액',
+                    Text(totalLabel,
                       style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),

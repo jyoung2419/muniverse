@@ -72,7 +72,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
     final isUSD = usd != null;
     final imageUrl = isUSD ? usd!.productImgUrl : kr!.productImgUrl;
     final name = isUSD ? usd!.name : kr!.name;
-    final unitPrice = isUSD ? usd.priceDollar : kr!.priceWon.toDouble();
+    final price = isUSD ? usd.priceDollar : kr!.priceWon.toDouble();
+    final fee = isUSD ? usd.chargeDollar : kr!.chargeWon.toDouble();
+    final unitPrice = isUSD ? usd.totalPrice : kr!.totalPrice.toDouble();
     final totalPrice = unitPrice * _quantity;
 
     final unitSymbol = isUSD ? '\$' : '₩';
@@ -239,9 +241,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                                     imageUrl: imageUrl,
                                     productName: name,
                                     quantity: _quantity,
-                                    unitPrice: unitPrice,
                                     formattedTotalPrice: formattedTotalPrice,
-                                    totalPrice: '$unitSymbol $formattedTotalPrice',
+                                    totalPrice: totalPrice,
+                                    price: price,
+                                    fee: fee,
                                   ),
                                 ),
                               );
