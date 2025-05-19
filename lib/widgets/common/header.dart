@@ -94,10 +94,11 @@ class _HeaderState extends State<Header> {
       leading: Padding(
         padding: const EdgeInsets.only(left: 30),
         child: SizedBox(
-          width: 160,
-        child: FittedBox(
+          width: 100,
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
+              isExpanded: true, // ✅ 추가
+
               isDense: true,
               value: selectedEventName,
               alignment: Alignment.centerLeft,
@@ -132,7 +133,6 @@ class _HeaderState extends State<Header> {
                   DropdownMenuItem<String>(
                     value: homeText,
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 100),
@@ -154,10 +154,8 @@ class _HeaderState extends State<Header> {
                   ...navs.skip(1).map((e) => DropdownMenuItem<String>(
                     value: e.eventName,
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 100),
+                        Expanded( // ✅ 이 부분!
                           child: TranslatedText(
                             e.eventName,
                             maxLines: 1,
@@ -172,8 +170,7 @@ class _HeaderState extends State<Header> {
                         const Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: Colors.white),
                       ],
                     ),
-                  ),
-                  ),
+                  )),
                 ];
               },
               items: [
@@ -198,7 +195,7 @@ class _HeaderState extends State<Header> {
             ),
           ),),
         ),
-      ),
+
       title: GestureDetector(
         onTap: () {
           if (currentRoute != '/home') {
