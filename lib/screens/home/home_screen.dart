@@ -11,7 +11,6 @@ import '../../widgets/home/home_related_video_section.dart';
 import '../../widgets/home/show_popup_dialog.dart';
 import 'home_award.dart';
 import 'home_banner_section.dart';
-import 'home_event_profile_list.dart';
 import 'home_award_section.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -56,6 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final mainVotes = context.watch<EventMainVoteProvider>().votes;
     final mainVote = mainVotes.isNotEmpty ? mainVotes.first : null;
+    final allEvents = context.watch<EventMainProvider>().events;
+    final opened = allEvents.where((e) => e.status != 'PRE_OPEN').toList();
+    final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
+    final filteredEvents = [...opened, ...upcoming];
+    final matchingEvents = filteredEvents.take(7).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
@@ -67,11 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: kToolbarHeight),
+            const SizedBox(height: kToolbarHeight + 55),
             Stack(
-              children: const [
-                HomeBannerSection(),
-                HomeEventProfileList(),
+              children: [
+                HomeBannerSection(events: matchingEvents),
               ],
             ),
             const SizedBox(height: 20),
