@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 
 class OrderAmount extends StatelessWidget {
   final String lang;
-  final double price;        // 단가
-  final double fee;          // 단가 수수료
-  final double totalPrice;   // 이미 곱해진 총합
+  final double price;
+  final double fee;
+  final double totalPrice;
   final int quantity;
 
   const OrderAmount({
@@ -30,52 +30,46 @@ class OrderAmount extends StatelessWidget {
         ? '$symbol${NumberFormat('#,###').format(totalPrice)}'
         : '$symbol${totalPrice.toStringAsFixed(2)}';
 
-    final priceLabel = lang == 'kr' ? '상품 금액' : 'Product Price';
+    final priceLabel = lang == 'kr' ? '상품금액' : 'Product Price';
     final feeLabel = lang == 'kr' ? '수수료' : 'Fee';
-    final totalLabel = lang == 'kr' ? '총 상품 금액' : 'Total';
+    final totalLabel = lang == 'kr' ? '총 상품금액' : 'Total';
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        _buildRow(priceLabel, priceText, quantity),
+        _buildRow(feeLabel, feeText, quantity),
+        const SizedBox(height: 10),
+        const Divider(color: Colors.white10, height: 1.0),
+        const SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(priceLabel, style: TextStyle(color: Colors.white, fontSize: 13)),
-            Row(
-              children: [
-                Text(priceText, style: const TextStyle(color: Colors.white, fontSize: 13)),
-                const SizedBox(width: 4),
-                Text('(x$quantity)', style: const TextStyle(color: Colors.white54, fontSize: 12)),
-              ],
-            ),
+            Text(totalLabel, style: const TextStyle(color: Colors.white)),
+            Text(totalText, style: const TextStyle(color: Colors.white)),
           ],
         ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(feeLabel, style: TextStyle(color: Colors.white, fontSize: 13)),
-            Row(
-              children: [
-                Text(feeText, style: const TextStyle(color: Colors.white, fontSize: 13)),
-                const SizedBox(width: 4),
-                Text('(x$quantity)', style: const TextStyle(color: Colors.white54, fontSize: 12)),
-              ],
-            ),
-          ],
-        ),
-        const Divider(color: Colors.white12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(totalLabel, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            Text(
-              totalText,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+        const SizedBox(height: 15),
+        const Divider(color: Colors.white10, height: 1.0),
       ],
+    );
+  }
+
+  Widget _buildRow(String label, String value, int quantity) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.white)),
+          Row(
+            children: [
+              Text(value, style: const TextStyle(color: Colors.white)),
+              const SizedBox(width: 4),
+              Text('(x$quantity)', style: const TextStyle(color: Colors.white54, fontSize: 12)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -90,26 +90,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 24),
                     HomeAwardSection(vote: mainVote),
                   ] else ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.hourglass_empty, color: Colors.white54, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            '주간 투표 준비중입니다',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF1E1E1E)
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '내 손으로 뽑는 글로벌 원픽!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 4),
+                            Text(
+                              '🎁 쇼음중 방청권 + MBC전광판 + 팬카페\n5/23(금) 10AM, 엠픽이 열린다!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
-                  const SizedBox(height: 40),
                   const HomeRelatedVideoSection(),
                   const SizedBox(height: 40),
                 ],

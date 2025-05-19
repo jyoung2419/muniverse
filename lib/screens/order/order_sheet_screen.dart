@@ -9,8 +9,9 @@ import '../../widgets/common/translate_text.dart';
 import '../../widgets/order/order_amount.dart';
 import '../../widgets/order/order_product_card.dart';
 import '../../widgets/order/orderer_info.dart';
+import 'order_complete_screen.dart';
 
-class OrderSheetScreen extends StatelessWidget {
+class OrderSheetScreen extends StatefulWidget {
   final String eventName;
   final String imageUrl;
   final String productName;
@@ -29,16 +30,36 @@ class OrderSheetScreen extends StatelessWidget {
     required this.formattedTotalPrice,
     required this.totalPrice,
     required this.price,
-    required this.fee
+    required this.fee,
   });
+
+  @override
+  State<OrderSheetScreen> createState() => _OrderSheetScreenState();
+}
+
+class _OrderSheetScreenState extends State<OrderSheetScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final titleText = lang == 'kr' ? '주문자 정보 입력' : 'Orderer Information';
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final phoneController = TextEditingController();
+
+    final symbol = lang == 'kr' ? '₩' : '\$';
+    final total = lang == 'kr'
+        ? NumberFormat('#,###').format(widget.totalPrice)
+        : widget.totalPrice.toStringAsFixed(2);
+    final payText = lang == 'kr' ? '결제하기' : 'PAY NOW';
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -64,23 +85,21 @@ class OrderSheetScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              // 주문 상품
               _buildSectionTitle(lang == 'kr' ? '주문 상품' : 'Order Items'),
-              const Divider(color: Colors.white10, height: 1.0),
+              const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
               OrderProductCard(
-                eventName: eventName,
-                imageUrl: imageUrl,
-                productName: productName,
-                quantity: quantity,
-                totalPrice: totalPrice
+                eventName: widget.eventName,
+                imageUrl: widget.imageUrl,
+                productName: widget.productName,
+                quantity: widget.quantity,
+                totalPrice: widget.totalPrice,
               ),
               const SizedBox(height: 10),
-              const Divider(color: Colors.white10, height: 1.0),
-              // 주문자 정보
+              const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 30),
               _buildSectionTitle(lang == 'kr' ? '주문자' : 'Orderer'),
-              const Divider(color: Colors.white10, height: 1.0),
+              const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
               OrdererInfo(
                 nameController: nameController,
@@ -88,24 +107,61 @@ class OrderSheetScreen extends StatelessWidget {
                 phoneController: phoneController,
               ),
               const SizedBox(height: 10),
-              const Divider(color: Colors.white10, height: 1.0),
-              // 주문 금액
+              const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 30),
               _buildSectionTitle(lang == 'kr' ? '주문 금액' : 'Order Amount'),
-              const Divider(color: Colors.white10, height: 1.0),
+              const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
               OrderAmount(
                 lang: lang,
-                price: price,
-                fee: fee,
-                totalPrice: totalPrice,
-                quantity: quantity,
+                price: widget.price,
+                fee: widget.fee,
+                totalPrice: widget.totalPrice,
+                quantity: widget.quantity,
               ),
-              const SizedBox(height: 10),
-              const Divider(color: Colors.white10, height: 1.0),
-              // 하단 결제 요약
               const SizedBox(height: 30),
-              _buildBottomSummaryAndButton(context),
+              Row(
+                children: [
+                  TranslatedText('총 ${widget.quantity}건',
+                      style: const TextStyle(color: Colors.white)),
+                  const Spacer(),
+                  Text('$symbol$total',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500)),
+                  const SizedBox(width: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OrderCompleteScreen(
+                            eventName: widget.eventName,
+                            imageUrl: widget.imageUrl,
+                            productName: widget.productName,
+                            quantity: widget.quantity,
+                            userName: nameController.text,
+                            email: emailController.text,
+                            phone: phoneController.text,
+                            price: widget.price,
+                            fee: widget.fee,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2EFFAA),
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(payText),
+                  ),
+                ],
+              ),
               const SizedBox(height: 40),
             ],
           ),
@@ -121,40 +177,10 @@ class OrderSheetScreen extends StatelessWidget {
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 16,
+          fontSize: 17,
           fontWeight: FontWeight.bold,
         ),
       ),
-    );
-  }
-
-  Widget _buildBottomSummaryAndButton(BuildContext context) {
-    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
-    final symbol = lang == 'kr' ? '₩' : '\$';
-    final total = lang == 'kr'
-        ? NumberFormat('#,###').format(totalPrice)
-        : totalPrice.toStringAsFixed(2);
-    final payText= lang == 'kr' ? '결제하기' : 'PAY NOW';
-
-    return Row(
-      children: [
-        TranslatedText('총 $quantity건', style: const TextStyle(color: Colors.white)),
-        const Spacer(),
-        Text('$symbol$total', style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
-        const SizedBox(width: 12),
-        ElevatedButton(
-          onPressed: () {
-            // 결제 처리
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2EFFAA),
-            foregroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          child: Text(payText),
-        ),
-      ],
     );
   }
 }
