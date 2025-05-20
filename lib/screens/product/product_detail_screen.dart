@@ -91,230 +91,176 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF212225),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 이미지 + 텍스트 Row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 180,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                              image: NetworkImage(imageUrl),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TranslatedText(widget.eventName,
-                                    style: const TextStyle(fontSize: 11, color: Colors.white)),
-                                const SizedBox(height: 6),
-                                Text(name,
-                                    style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: widget.viewType == 'VOD' ? Colors.black : const Color(0xFF2EFFAA),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    widget.viewType,
-                                    style: TextStyle(
-                                      color: widget.viewType == 'VOD' ? const Color(0xFF2EFFAA) : Colors.black,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF212225),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 180,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: NetworkImage(imageUrl),
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 6),
-                                  child: Row(
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        '$unitSymbol $formattedUnitPrice',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
+                                      TranslatedText(widget.eventName, style: const TextStyle(fontSize: 11, color: Colors.white)),
+                                      const SizedBox(height: 6),
+                                      Text(name, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: widget.viewType == 'VOD' ? Colors.black : const Color(0xFF2EFFAA),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          widget.viewType,
+                                          style: TextStyle(
+                                            color: widget.viewType == 'VOD' ? const Color(0xFF2EFFAA) : Colors.black,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
-                                      const Spacer(),
-                                      // Row(
-                                      //   children: [
-                                      //     Container(
-                                      //       width: 16,
-                                      //       height: 16,
-                                      //       decoration: BoxDecoration(
-                                      //         border: Border.all(color: Color(0xFF992BEF), width: 1.5),
-                                      //         borderRadius: BorderRadius.circular(4),
-                                      //       ),
-                                      //       child: const Icon(
-                                      //         Icons.keyboard_arrow_down,
-                                      //         size: 14,
-                                      //         color: Color(0xFF992BEF),
-                                      //       ),
-                                      //     ),
-                                      //     const SizedBox(width: 6),
-                                      //     const Text(
-                                      //       'USD',
-                                      //       style: TextStyle(
-                                      //         color: Colors.white,
-                                      //         fontSize: 14,
-                                      //         fontWeight: FontWeight.w500,
-                                      //       ),
-                                      //     ),
-                                      //   ],
-                                      // ),
+                                      const SizedBox(height: 10),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 6),
+                                        child: Row(
+                                          children: [
+                                            Text('$unitSymbol $formattedUnitPrice', style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
+                                            const Spacer(),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          const Divider(color: Colors.white10),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              RawMaterialButton(
+                                onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
+                                fillColor: const Color(0xFF992BEF),
+                                shape: const CircleBorder(),
+                                constraints: const BoxConstraints.tightFor(width: 22, height: 22),
+                                child: const Icon(Icons.remove, color: Color(0xFF212225), size: 20),
+                              ),
+                              const SizedBox(width: 4),
+                              Text('$_quantity', style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
+                              const SizedBox(width: 4),
+                              RawMaterialButton(
+                                onPressed: () => setState(() => _quantity++),
+                                fillColor: const Color(0xFF992BEF),
+                                shape: const CircleBorder(),
+                                constraints: const BoxConstraints.tightFor(width: 22, height: 22),
+                                child: const Icon(Icons.add, color: Color(0xFF212225), size: 20),
+                              ),
+                              const Spacer(),
+                              Text('$unitSymbol $formattedTotalPrice', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+                              const SizedBox(width: 14),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => OrderSheetScreen(
+                                          eventName: widget.eventName,
+                                          imageUrl: imageUrl,
+                                          productName: name,
+                                          quantity: _quantity,
+                                          formattedTotalPrice: formattedTotalPrice,
+                                          totalPrice: totalPrice,
+                                          price: price,
+                                          fee: fee,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2EFFAA),
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                    minimumSize: const Size(0, 28),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  child: Text(buyButtonText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(8, 0, 0, 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TranslatedText('* 해당 상품은 1장당 1400원의 판매수수료가 부과됩니다.', style: TextStyle(color: Colors.white70, fontSize: 10)),
+                                SizedBox(height: 6),
+                                TranslatedText('영상 예시 화면 확인하기', style: TextStyle(color: Color(0xFF2EFFAA), fontSize: 10)),
                               ],
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    const Divider(color: Colors.white10),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        RawMaterialButton(
-                          onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
-                          fillColor: Color(0xFF992BEF),
-                          shape: const CircleBorder(),
-                          constraints: const BoxConstraints.tightFor(width: 22, height: 22),
-                          child: const Icon(Icons.remove, color: Color(0xFF212225), size: 20),
-                        ),
-                        const SizedBox(width: 4),
-                        Text('$_quantity', style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
-                        const SizedBox(width: 4),
-                        RawMaterialButton(
-                          onPressed: () => setState(() => _quantity++),
-                          fillColor: Color(0xFF992BEF),
-                          shape: const CircleBorder(),
-                          constraints: const BoxConstraints.tightFor(width: 22, height: 22),
-                          child: const Icon(Icons.add, color: Color(0xFF212225), size: 20),
-                        ),
-                        const Spacer(),
-                        Text(
-                          '$unitSymbol $formattedTotalPrice',
-                          style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(width: 14),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => OrderSheetScreen(
-                                    eventName: widget.eventName,
-                                    imageUrl: imageUrl,
-                                    productName: name,
-                                    quantity: _quantity,
-                                    formattedTotalPrice: formattedTotalPrice,
-                                    totalPrice: totalPrice,
-                                    price: price,
-                                    fee: fee,
-                                  ),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2EFFAA),
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), // 높이 줄임
-                              minimumSize: const Size(0, 28),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                            child: Text(
-                              buyButtonText,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 4),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TranslatedText(
-                            '* 해당 상품은 1장당 1400원의 판매수수료가 부과됩니다.',
-                            style: TextStyle(color: Colors.white70, fontSize: 10),
-                          ),
-                          SizedBox(height: 6),
-                          TranslatedText(
-                            '영상 예시 화면 확인하기',
-                            style: TextStyle(color: Color(0xFF2EFFAA), fontSize: 10),
                           ),
                         ],
                       ),
                     ),
-
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TabBar(
+                    controller: _tabController,
+                    labelColor: const Color(0xFF2EFFAA),
+                    unselectedLabelColor: Colors.white60,
+                    indicatorColor: const Color(0xFF2EFFAA),
+                    tabs: tabs.map((label) => Tab(text: label)).toList(),
+                  ),
+                ),
+              ],
             ),
-            ),
-
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: const Color(0xFF2EFFAA),
-                unselectedLabelColor: Colors.white60,
-                indicatorColor: const Color(0xFF2EFFAA),
-                tabs: tabs.map((label) => Tab(text: label)).toList(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  ProductDetailInfoTab(),
-                  ProductDetailNoteTab(),
-                  ProductDetailFAQTab(),
-                ],
-              ),
-            ),
+          ),
+        ],
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            ProductDetailInfoTab(),
+            ProductDetailNoteTab(),
+            ProductDetailFAQTab(),
           ],
         ),
       ),

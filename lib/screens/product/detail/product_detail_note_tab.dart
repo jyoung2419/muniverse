@@ -16,21 +16,16 @@ class ProductDetailNoteTab extends StatelessWidget {
         ? provider.krDetail?.note ?? ''
         : provider.usdDetail?.note ?? '';
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Html(
-            data: note,
-            style: {
-              "body": Style(color: Colors.white),
-              "li": Style(color: Colors.white),
-              "p": Style(color: Colors.white),
-            },
-          ),
-          const SizedBox(height: 10),
-        ],
+      child: Html(
+        data: note,
+        style: {
+          "*": Style(color: Colors.white),
+          "body": Style(color: Colors.white),
+          "li": Style(color: Colors.white),
+          "p": Style(color: Colors.white),
+        },
       ),
     );
   }

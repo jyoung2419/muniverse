@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/flutter_html.dart' as html;
 import 'package:provider/provider.dart';
 import '../../../providers/language_provider.dart';
 import '../../../providers/product/product_detail_provider.dart';
@@ -18,18 +19,29 @@ class ProductDetailInfoTab extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Html(
-            data: content,
-            style: {
-              "body": Style(color: Colors.white),
-              "li": Style(color: Colors.white),
-              "p": Style(color: Colors.white),
+      child: Html(
+        data: content,
+        style: {
+          "*": Style(color: Colors.white),
+          "body": Style(color: Colors.white),
+          "li": Style(color: Colors.white),
+          "p": Style(color: Colors.white),
+        },
+        extensions: [
+          html.TagExtension(
+            tagsToExtend: {"img"},
+            builder: (context) {
+              final src = context.attributes['src'] ?? '';
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.network(
+                  src,
+                  fit: BoxFit.contain,
+                  width: MediaQuery.of(context.buildContext!).size.width - 32, // 패딩 고려
+                ),
+              );
             },
           ),
-          const SizedBox(height: 10),
         ],
       ),
     );
