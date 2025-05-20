@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'providers/payment/user_payment_provider.dart';
 import 'providers/popup/popup_provider.dart';
 import 'providers/product/event_product_kr_provider.dart';
 import 'providers/product/event_product_usd_provider.dart';
@@ -96,6 +97,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMeProvider()),
         ChangeNotifierProvider(create: (context) => UserProfileProvider(dio)),
+        ChangeNotifierProvider(create: (context) => UserPaymentProvider(dio)),
         ChangeNotifierProvider(create: (context) => RewardProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (_) => GoogleOauthProvider()),
       ],

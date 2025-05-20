@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
+import '../../providers/payment/user_payment_provider.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
@@ -8,14 +9,34 @@ import '../../widgets/common/translate_text.dart';
 import '../../widgets/mypage/pin_field_row.dart';
 import '../../widgets/mypage/product_card.dart';
 
-class PurchaseHistoryScreen extends StatelessWidget {
+class PurchaseHistoryScreen extends StatefulWidget {
   const PurchaseHistoryScreen({super.key});
+
+  @override
+  State<PurchaseHistoryScreen> createState() => _PurchaseHistoryScreenState();
+}
+
+class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      // 더미 데이터용
+      context.read<UserPaymentProvider>().insertMockData();
+
+      // 실제 API
+      // context.read<UserPaymentProvider>().fetchUserPayments();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+    final provider = context.watch<UserPaymentProvider>();
+    final isLoading = provider.isLoading;
+    final payments = provider.payments;
 
-    final titleText = lang == 'kr' ? '주문 내역' : 'Purchase History';
+    final titleText = lang == 'kr' ? '구매 내역' : 'Purchase History';
     final successText = '고객님의 주문이 정상적으로 완료되었습니다.';
     final payDoneText = lang == 'kr' ? '결제 완료' : 'Payment Completed';
     final payInfoText = lang == 'kr' ? '결제 정보 보기' : 'View Payment Info';
@@ -28,46 +49,57 @@ class PurchaseHistoryScreen extends StatelessWidget {
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
-      body: SingleChildScrollView(
-        child: Padding(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-              Center(
-                child: Text(
-                  titleText,
-                  style: const TextStyle(
-                    color: Color(0xFF2EFFAA),
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+          Center(
+            child: Text(
+              titleText,
+              style: const TextStyle(
+                color: Color(0xFF2EFFAA),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 30),
-              TranslatedText(
-                successText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          if (payments.isEmpty)
+            const TranslatedText(
+            '구매 내역이 없습니다.',
+            textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
               ),
-              const SizedBox(height: 30),
+            )
+          else ...[
+            TranslatedText(
+              successText,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 30),
+            for (final payment in payments) ...[
               const Divider(color: Colors.white12, thickness: 1),
               const SizedBox(height: 10),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text.rich(
                     TextSpan(
                       children: [
-                        const TextSpan(
-                          text: '2024.04.02 ',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        TextSpan(
+                          text: '${payment.createdAt.year}.${payment.createdAt.month.toString().padLeft(2, '0')}.${payment.createdAt.day.toString().padLeft(2, '0')} ',
+                          style: const TextStyle(color: Colors.white, fontSize: 13),
                         ),
                         TextSpan(
                           text: payDoneText,
@@ -115,7 +147,7 @@ class PurchaseHistoryScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '$orderNoText XXXXXXXXXX',
+                  '$orderNoText ${payment.orderId}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 13,
@@ -140,9 +172,14 @@ class PurchaseHistoryScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, thickness: 1),
-              const ProductCard(),
+              for (final item in payment.orderItems)
+                ProductCard(
+                  productName: item.productName,
+                  productImageUrl: item.productImageUrl,
+                  quantity: item.amount,
+                  totalPriceForAmount: item.totalPriceForAmount,
+                ),
               const Divider(color: Colors.white12, thickness: 1, height: 32),
-
               Row(
                 children: [
                   const Icon(Icons.arrow_circle_right, color: Colors.white, size: 20),
@@ -157,12 +194,12 @@ class PurchaseHistoryScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const PinFieldRow(),
-              const PinFieldRow(),
-              const PinFieldRow(),
+              for (final pass in payment.userPasses)
+                PinFieldRow(pinCode: pass.regisPinNumber),
             ],
+          ],
+        ],
           ),
-        ),
       ),
     );
   }

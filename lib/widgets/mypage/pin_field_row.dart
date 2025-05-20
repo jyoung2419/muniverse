@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Clipboard 기능 사용
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../providers/language_provider.dart'; // lang 사용을 위한 import
+import '../../providers/language_provider.dart';
 
 class PinFieldRow extends StatelessWidget {
-  const PinFieldRow({super.key});
+  final String pinCode;
+
+  const PinFieldRow({super.key, required this.pinCode});
 
   @override
   Widget build(BuildContext context) {
-    const pinCode = 'XXXX-XXXX-XXXX';
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final copyText = lang == 'kr' ? 'PIN 복사' : 'Copy PIN';
     final snackbarText = lang == 'kr' ? '복사되었습니다.' : 'Copied to clipboard.';
@@ -26,16 +27,16 @@ class PinFieldRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 pinCode,
-                style: TextStyle(color: Color(0xFF353C49), fontSize: 12),
+                style: const TextStyle(color: Color(0xFF353C49), fontSize: 12),
               ),
             ),
           ),
           const SizedBox(width: 10),
           OutlinedButton(
             onPressed: () {
-              Clipboard.setData(const ClipboardData(text: pinCode));
+              Clipboard.setData(ClipboardData(text: pinCode));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(snackbarText),
