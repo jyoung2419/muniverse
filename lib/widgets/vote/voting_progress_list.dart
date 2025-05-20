@@ -34,9 +34,18 @@ class VotingProgressList extends StatelessWidget {
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Color(0xFFC2C4C8E0), width: 1),
-                  image: DecorationImage(
-                    image: NetworkImage(artist.profileUrl),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    artist.profileUrl,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/default_profile.png',
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),

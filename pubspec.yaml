@@ -57,6 +57,7 @@ flutter:
     - assets/svg/scroll_top.svg
     - assets/images/
     - assets/images/banner/
+    - assets/images/default_profile.png
 
   fonts:
     - family: Pretendard
