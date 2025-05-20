@@ -16,7 +16,7 @@ class GoogleOauthService {
 
     final data = response.data;
 
-    if (data['status'] == 'NEEDS_INFO') {
+    if (data['status'] == 'NEEDS_INFO' || data['status'] == 'NEW_USER') {
       return data;
     }
 
@@ -40,10 +40,12 @@ class GoogleOauthService {
     required String userId,
     required String nickName,
     required String phoneNumber,
+    required bool localFlag,
   }) async {
     final Map<String, dynamic> data = {
       'userId': userId,
       'nickName': nickName,
+      'localFlag': localFlag,
     };
     if (phoneNumber.isNotEmpty) {
       data['phoneNumber'] = phoneNumber;

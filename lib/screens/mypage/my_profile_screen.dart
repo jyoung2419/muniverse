@@ -22,11 +22,13 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   TextEditingController? _nicknameController;
+  String? _originalNickname;
   String? _nicknameMessage;
   bool _isNicknameAvailable = false;
   final _validationService = UserValidationService();
   final ImagePicker _picker = ImagePicker();
   String? _imagePath;
+  bool? _isLocalFlag;
 
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -63,7 +65,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       final provider = context.read<UserProfileProvider>();
       await provider.fetchUserDetail();
       final user = provider.user;
-      _nicknameController = TextEditingController(text: user?.nickname ?? '');
+      _originalNickname = user?.nickname ?? '';
+      _nicknameController = TextEditingController(text: _originalNickname);
+      _nicknameController?.addListener(() {
+        if (_nicknameController!.text.trim() != _originalNickname) {
+          setState(() {
+            _isNicknameAvailable = false;
+            _nicknameMessage = null;
+          });
+        }
+      });
+
+      _isLocalFlag = user?.localFlag ?? false;
       setState(() {});
     });
   }
@@ -123,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       return;
     }
 
-    if (!_isNicknameAvailable) {
+    if (newNickname != _originalNickname && !_isNicknameAvailable) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('❗ 닉네임 중복 확인을 해주세요.'),
@@ -138,6 +151,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         userId: user!.id,
         nickname: newNickname,
         profileImagePath: _imagePath,
+        localFlag: _isLocalFlag,
       );
 
       await provider.fetchUserDetail();
@@ -196,15 +210,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             const SizedBox(height: 30),
             Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
+              child: Column(
                 children: [
                   Container(
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
+                      shape: BoxShape.circle,
                       image: DecorationImage(
                         image: _imagePath != null
                             ? FileImage(File(_imagePath!))
@@ -216,33 +228,73 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: _pickImage,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      backgroundColor: Color(0xFF0B0C0C),
-                      side: const BorderSide(color: Colors.white70, width: 1.5),
+                      backgroundColor: const Color(0xFF0B0C0C),
+                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1.5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const TranslatedText(
                       '사진 등록',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Color(0xFF2EFFAA), fontSize: 12),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 20),
             _buildLabel('이메일'),
             const SizedBox(height: 5),
             _buildReadOnlyField(userProfile.email),
             const SizedBox(height: 20),
-            _buildLabel('이름'),
+            Row(
+              children: [
+                Expanded(flex: 3, child: _buildLabel('이름')),
+                const SizedBox(width: 10),
+                Expanded(flex: 2, child: _buildLabel('거주지')),
+              ],
+            ),
             const SizedBox(height: 5),
-            _buildReadOnlyField(userProfile.name),
+            Row(
+              children: [
+                Expanded(flex: 3,
+                  child: _buildReadOnlyField(userProfile.name),
+                ),
+                const SizedBox(width: 10),
+                Expanded(flex: 2,
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildToggleButton('국내', _isLocalFlag == false, () {
+                            setState(() {
+                              _isLocalFlag = false;
+                            });
+                          }),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: _buildToggleButton('국외', _isLocalFlag == true, () {
+                            setState(() {
+                              _isLocalFlag = true;
+                            });
+                          }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             _buildLabel('닉네임'),
             const SizedBox(height: 5),
@@ -367,4 +419,30 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       borderSide: const BorderSide(color: Colors.white12),
     ),
   );
+
+  Widget _buildToggleButton(String label, bool selected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? const Color(0xFF2EFFAA) : Colors.white,
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? const Color(0xFF2EFFAA) : Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
 }

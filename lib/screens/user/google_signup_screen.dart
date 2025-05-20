@@ -28,6 +28,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
   String? _nicknameErrorText;
   bool _isNicknameAvailable = false;
   bool _nicknameChecked = false;
+  bool? _isLocalFlag = false;
 
   void _checkNickname() async {
     final nickname = _nicknameController.text.trim();
@@ -108,6 +109,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
         userId: userId,
         nickName: nickname,
         phoneNumber: '00000000000',
+        localFlag: _isLocalFlag ?? false,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -163,20 +165,51 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
-            const Text('이름', style: TextStyle(color: Colors.white70)),
-            const SizedBox(height: 4),
-            SizedBox(
-              height: 45,
-              child: TextFormField(
-                initialValue: widget.name,
-                enabled: false,
-                style: const TextStyle(color: Colors.white),
-                decoration: _inputDecoration(),
-              ),
+            Row(
+              children: [
+                Expanded(flex: 3, child: _buildLabel('이름')),
+                const SizedBox(width: 10),
+                Expanded(flex: 2, child: _buildLabel('거주지')),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: TextFormField(
+                    initialValue: widget.name,
+                    enabled: false,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: _inputDecoration(),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildToggleButton('국내', _isLocalFlag == false, () {
+                          setState(() {
+                            _isLocalFlag = false;
+                          });
+                        }),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _buildToggleButton('국외', _isLocalFlag == true, () {
+                          setState(() {
+                            _isLocalFlag = true;
+                          });
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-
             Row(
               children: const [
                 Text('닉네임', style: TextStyle(color: Colors.white70)),
@@ -204,16 +237,20 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
                 ElevatedButton(
                   onPressed: _checkNickname,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2EFFAA),
+                    backgroundColor: Colors.transparent,
                     elevation: 0,
                     minimumSize: const Size(80, 45),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
+                      side: const BorderSide(
+                        color: Color(0xFF2EFFAA),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                   child: const Text(
                     '중복 확인',
-                    style: TextStyle(color: Colors.black87),
+                    style: TextStyle(color: Color(0xFF2EFFAA)),
                   ),
                 ),
               ],
@@ -288,6 +325,42 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
         borderSide: const BorderSide(color: Colors.white38),
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+    );
+  }
+
+  Widget _buildLabel(String text) => Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      text,
+      style: const TextStyle(color: Colors.white70, fontSize: 14),
+    ),
+  );
+
+  Widget _buildToggleButton(String label, bool selected, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: selected ? const Color(0xFF2EFFAA) : Colors.white,
+              width: 1.5,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected ? const Color(0xFF2EFFAA) : Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
