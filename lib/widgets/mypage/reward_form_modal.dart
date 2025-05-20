@@ -313,13 +313,6 @@ class _RewardFormModalState extends State<RewardFormModal> {
       validator: (value) {
         if (value == null || value.trim().isEmpty) return '필수 입력 항목입니다.';
 
-        if (fieldType == 'phone') {
-          final digitsOnly = value.replaceAll(RegExp(r'[^0-9]'), '');
-          if (!RegExp(r'^[0-9]{10,11}$').hasMatch(digitsOnly)) {
-            return '유효한 전화번호를 입력하세요.';
-          }
-        }
-
         if (fieldType == 'email') {
           if (!RegExp(r'^[\w\.\-]+@[\w\-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
             return '유효한 이메일을 입력하세요.';

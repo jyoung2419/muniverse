@@ -21,12 +21,26 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      // 더미 데이터용
-      context.read<UserPaymentProvider>().insertMockData();
-
-      // 실제 API
-      // context.read<UserPaymentProvider>().fetchUserPayments();
+      context.read<UserPaymentProvider>().fetchUserPayments();
     });
+  }
+
+  String getOrderStatusText(String status, String lang) {
+    switch (status) {
+      case 'PENDING_PAYMENT':
+        return lang == 'kr' ? '결제 대기중' : 'Payment Pending';
+      case 'PAID':
+      case 'COMPLETED':
+        return lang == 'kr' ? '결제 완료' : 'Payment Completed';
+      case 'CANCELLED':
+        return lang == 'kr' ? '주문 취소' : 'Cancelled';
+      case 'FAILED_PAYMENT':
+        return lang == 'kr' ? '결제 실패' : 'Payment Failed';
+      case 'DRAFT':
+        return lang == 'kr' ? '주문 오류' : 'Order Error';
+      default:
+        return '';
+    }
   }
 
   @override
@@ -35,10 +49,10 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
     final provider = context.watch<UserPaymentProvider>();
     final isLoading = provider.isLoading;
     final payments = provider.payments;
+    final filteredPayments = payments.where((p) => p.orderStatus != 'CREATED').toList();
 
     final titleText = lang == 'kr' ? '구매 내역' : 'Purchase History';
     final successText = '고객님의 주문이 정상적으로 완료되었습니다.';
-    final payDoneText = lang == 'kr' ? '결제 완료' : 'Payment Completed';
     final payInfoText = lang == 'kr' ? '결제 정보 보기' : 'View Payment Info';
     final orderNoText = lang == 'kr' ? '주문번호' : 'Order No.';
     final orderProductText = lang == 'kr' ? '주문 상품' : 'Ordered Products';
@@ -52,6 +66,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,7 +83,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          if (payments.isEmpty)
+          if (filteredPayments.isEmpty)
             const TranslatedText(
             '구매 내역이 없습니다.',
             textAlign: TextAlign.center,
@@ -88,7 +103,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            for (final payment in payments) ...[
+            for (final payment in filteredPayments) ...[
               const Divider(color: Colors.white12, thickness: 1),
               const SizedBox(height: 10),
               Row(
@@ -102,7 +117,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
                           style: const TextStyle(color: Colors.white, fontSize: 13),
                         ),
                         TextSpan(
-                          text: payDoneText,
+                          text: ' ${getOrderStatusText(payment.orderStatus, lang)}',
                           style: const TextStyle(
                             color: Color(0xFF2EFFAA),
                             fontSize: 13,

@@ -21,6 +21,15 @@ class UserPaymentProvider with ChangeNotifier {
 
       final rawList = await _paymentService.fetchPayments();
       _payments = rawList.map((e) => UserPaymentModel.fromJson(e)).toList();
+      print('📦 구매내역 개수: ${_payments.length}');
+
+      for (final payment in _payments) {
+        print('🧾 주문 ID: ${payment.orderId}');
+        print('📌 상태: ${payment.orderStatus}');
+        print('🛒 상품 수: ${payment.orderItems.length}');
+        print('🎫 이용권 수: ${payment.userPasses.length}');
+      }
+
     } catch (e) {
       debugPrint('❌ Failed to fetch user payments: $e');
     } finally {
@@ -33,46 +42,4 @@ class UserPaymentProvider with ChangeNotifier {
     _payments = [];
     notifyListeners();
   }
-
-
-  /// 예시 데이터
-  void insertMockData() {
-    _payments = [
-      UserPaymentModel(
-        orderId: 'ORDER123456',
-        totalOrderPrice: 19800.0,
-        orderStatus: 'COMPLETED',
-        paymentType: 'CARD',
-        createdAt: DateTime.now(),
-        orderItems: [
-          OrderItemModel(
-            productName: 'VOD 이용권',
-            productImageUrl: 'assets/images/ticket.png',
-            amount: 1,
-            totalPriceForAmount: 19800.0,
-          ),
-        ],
-        userPasses: [
-          UserPassModel(
-            passName: 'VOD 풀패스',
-            regisPinNumber: '1234-5678-ABCD',
-            useFlag: false,
-            createdAt: DateTime.now(),
-            events: [
-              EventUseInfoModel(
-                code: 'EVT123',
-                type: 'VOD',
-                pinNumber: '1234-5678-ABCD',
-                used: false,
-                usedAt: null,
-              ),
-            ],
-          ),
-        ],
-      ),
-    ];
-    notifyListeners();
-  }
-
-
 }

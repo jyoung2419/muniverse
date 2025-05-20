@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../common/dotted_divider.dart';
+import '../common/translate_text.dart';
 
 class ProductCard extends StatelessWidget {
   final String productName;
@@ -27,9 +28,10 @@ class ProductCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Image.asset(
+          child: Image.network(
             productImageUrl,
             fit: BoxFit.fitWidth,
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
           ),
         ),
         const SizedBox(width: 12),
@@ -46,7 +48,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
+              TranslatedText(
                 productName,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
                 maxLines: 2,
@@ -66,7 +68,7 @@ class ProductCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  TranslatedText(
                     '총 상품금액 ($quantity개)',
                     style: const TextStyle(
                       color: Colors.white,
