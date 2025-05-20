@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_related_provider.dart';
-import '../../models/event/event_related_model.dart';
+import '../../models/event/detail/event_related_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/common/translate_text.dart';

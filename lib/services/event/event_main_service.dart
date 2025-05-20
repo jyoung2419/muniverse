@@ -28,7 +28,7 @@ class EventMainService {
 
   Future<List<Map<String, dynamic>>> fetchMainRelatedVideos() async {
     try {
-      final response = await _dio.get('/api/v1/event/main/related');
+      final response = await _dio.get('/api/v1/event/main/related/temp');
       return List<Map<String, dynamic>>.from(response.data);
     } catch (e) {
       print('❌ 관련 영상 API 실패: $e');

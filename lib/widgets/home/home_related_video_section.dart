@@ -20,12 +20,12 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
     final provider = context.read<EventMainRelatedProvider>();
 
     if (!_hasFetched &&
-        provider.relatedVideos.isEmpty &&
+        provider.relatedGroups.isEmpty &&
         provider.error == null &&
         !provider.isLoading) {
       _hasFetched = true;
       Future.microtask(() {
-        provider.fetchRelatedVideos();
+        provider.fetchRelatedGroups();
       });
     }
   }
@@ -43,29 +43,35 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
   Widget build(BuildContext context) {
     final provider = context.watch<EventMainRelatedProvider>();
 
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
+    }
+
+    if (provider.error != null || provider.relatedGroups.isEmpty) {
+      return const Center(child: Text("관련 영상이 없습니다.", style: TextStyle(color: Colors.white70)));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TranslatedText(
-          '최신 관련영상',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        if (provider.isLoading)
-          const Center(child: CircularProgressIndicator(color: Colors.white))
-        else if (provider.error != null)
-          const Center(child: Text("관련 영상이 없습니다.", style: TextStyle(color: Colors.white70)))
-        else if (provider.relatedVideos.isEmpty)
-            const Center(child: Text("관련 영상이 없습니다.", style: TextStyle(color: Colors.white70)))
-          else
+      children: provider.relatedGroups.map((group) {
+        if (group.relatedDetails.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TranslatedText(
+              group.eventShortName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: provider.relatedVideos.map((video) {
+                children: group.relatedDetails.map((video) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
@@ -74,9 +80,8 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
                             child: SizedBox(
-                              width: 350,
+                              width: 160,
                               child: AspectRatio(
                                 aspectRatio: 510 / 290,
                                 child: Stack(
@@ -115,7 +120,10 @@ class _HomeRelatedVideoSectionState extends State<HomeRelatedVideoSection> {
                 }).toList(),
               ),
             ),
-      ],
+            const SizedBox(height: 20),
+          ],
+        );
+      }).toList(),
     );
   }
 }
