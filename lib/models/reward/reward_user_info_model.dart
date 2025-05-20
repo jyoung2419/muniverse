@@ -3,12 +3,16 @@ class RewardUserInfoModel {
   final String name;
   final String phone;
   final String email;
+  final String? sex;
+  final String? birthDate;
 
   RewardUserInfoModel({
     required this.rewardCode,
     required this.name,
     required this.phone,
     required this.email,
+    this.sex,
+    this.birthDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -17,15 +21,8 @@ class RewardUserInfoModel {
       'name': name,
       'phone': phone,
       'email': email,
+      'sex': sex,
+      'birthDate': birthDate,
     };
-  }
-
-  factory RewardUserInfoModel.fromJson(Map<String, dynamic> json) {
-    return RewardUserInfoModel(
-      rewardCode: json['rewardCode'] ?? '',
-      name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
-      email: json['email'] ?? '',
-    );
   }
 }
