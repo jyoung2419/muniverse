@@ -1,16 +1,19 @@
 class ImagePopup {
   final String popupName;
   final String popupImageUrl;
+  final String popupUrl;
 
   ImagePopup({
     required this.popupName,
     required this.popupImageUrl,
+    required this.popupUrl,
   });
 
   factory ImagePopup.fromJson(Map<String, dynamic> json) {
     return ImagePopup(
       popupName: json['popupName'] ?? '',
       popupImageUrl: json['popupImageUrl'] ?? '',
+      popupUrl: json['popupUrl'] ?? '',
     );
   }
 }

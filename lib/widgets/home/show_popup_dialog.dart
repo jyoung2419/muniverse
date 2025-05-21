@@ -6,22 +6,22 @@ import '../../providers/language_provider.dart';
 import '../../utils/shared_prefs_util.dart';
 import '../common/translate_text.dart';
 
-void showPopupDialog(BuildContext context, PopupListResponse popupList) {
+void showPopupDialog(BuildContext context, PopupListResponse popupList) async {
   final lang = context.read<LanguageProvider>().selectedLanguageCode;
 
-  if (popupList.textPopups.isNotEmpty) {
-    final textPopup = popupList.textPopups.first;
+  for (final textPopup in popupList.textPopups) {
+    final key = 'text_${textPopup.popupTitle}';
+    final isHidden = await SharedPrefsUtil.isPopupHiddenTodayWithKey(key);
+    if (isHidden) continue;
     final content = lang == 'kr'
         ? textPopup.popupContent
         : (textPopup.popupContentEn ?? textPopup.popupContent);
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (_) => Dialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           child: Column(
@@ -38,10 +38,6 @@ void showPopupDialog(BuildContext context, PopupListResponse popupList) {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
@@ -60,7 +56,7 @@ void showPopupDialog(BuildContext context, PopupListResponse popupList) {
               const SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
-                  await SharedPrefsUtil.setPopupHiddenUntilTomorrow();
+                  await SharedPrefsUtil.setPopupHiddenUntilTomorrowWithKey(key);
                   Navigator.pop(context);
                 },
                 child: Align(
@@ -82,61 +78,77 @@ void showPopupDialog(BuildContext context, PopupListResponse popupList) {
     );
   }
 
-  else if (popupList.imagePopups.isNotEmpty) {
-    final imagePopup = popupList.imagePopups.first;
+  for (int i = 0; i < popupList.imagePopups.length; i++) {
+    final imagePopup = popupList.imagePopups[i];
+    final key = 'popup_hidden_${imagePopup.popupName}';
 
-    showDialog(
+    final isHidden = await SharedPrefsUtil.isPopupHiddenTodayWithKey(key);
+    if (isHidden) continue;
+    final result = await showDialog<bool>(
       context: context,
+      barrierColor: Colors.black.withOpacity(0.7),
       builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TranslatedText(
-                      imagePopup.popupName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        backgroundColor: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context, true); // 팝업 닫고 true 리턴
+                Navigator.pushNamed(context, '/voteMainScreen');
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  imagePopup.popupImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
-              const SizedBox(height: 8),
-              Image.network(imagePopup.popupImageUrl),
-              const SizedBox(height: 16),
-              GestureDetector(
-                onTap: () async {
-                  await SharedPrefsUtil.setPopupHiddenUntilTomorrow();
-                  Navigator.pop(context);
-                },
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    lang == 'kr' ? '오늘 하루 보지 않기' : "Don't show again today",
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    await SharedPrefsUtil.setPopupHiddenUntilTomorrowWithKey(key);
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text(
+                    '오늘 하루 보지 않기',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey[700],
+                      color: Colors.white70,
                       decoration: TextDecoration.underline,
+                      decorationColor: Colors.white70,
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 60),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context, false),
+                  child: const Text(
+                    '닫기',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.white70,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white70,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
+
+    if (result == true) {
+      break;
+    }
   }
 }
