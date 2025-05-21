@@ -44,8 +44,16 @@ class _TitleDescriptionTabState extends State<TitleDescriptionTab> {
       child: Html(
         data: content,
         style: {
-          "body": Style(color: Colors.white),
-          "p": Style(fontSize: FontSize(14)),
+          "*": Style(color: Colors.white),
+          "body": Style(
+            color: Colors.white70,
+            lineHeight: LineHeight(1.2),
+          ),
+          "li": Style(color: Colors.white),
+          "p": Style(color: Colors.white),
+          "h1": Style(color: Colors.white, fontSize: FontSize(14), fontWeight: FontWeight.w600, margin: Margins.zero),
+          "h2": Style(color: Colors.white, fontSize: FontSize(12), fontWeight: FontWeight.w600, margin: Margins.zero),
+          "h3": Style(color: Colors.white, fontSize: FontSize(10), fontWeight: FontWeight.w600, margin: Margins.zero),
         },
         extensions: [
           TagExtension(

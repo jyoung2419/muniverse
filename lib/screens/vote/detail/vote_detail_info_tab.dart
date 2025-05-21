@@ -19,15 +19,16 @@ class VoteDetailInfoTab extends StatelessWidget {
           Html(
             data: content,
             style: {
+              "*": Style(color: Colors.white),
               "body": Style(
-                color: Colors.white,
+                color: Colors.white70,
+                lineHeight: LineHeight(1.2),
               ),
-              "li": Style(
-                color: Colors.white,
-              ),
-              "p": Style(
-                color: Colors.white,
-              ),
+              "li": Style(color: Colors.white),
+              "p": Style(color: Colors.white),
+              "h1": Style(color: Colors.white, fontSize: FontSize(14), fontWeight: FontWeight.w600, margin: Margins.zero),
+              "h2": Style(color: Colors.white, fontSize: FontSize(12), fontWeight: FontWeight.w600, margin: Margins.zero),
+              "h3": Style(color: Colors.white, fontSize: FontSize(10), fontWeight: FontWeight.w600, margin: Margins.zero),
             },
           ),
           const SizedBox(height: 10),

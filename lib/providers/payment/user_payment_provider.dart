@@ -24,12 +24,16 @@ class UserPaymentProvider with ChangeNotifier {
       print('📦 구매내역 개수: ${_payments.length}');
 
       for (final payment in _payments) {
-        print('🧾 주문 ID: ${payment.orderId}');
-        print('📌 상태: ${payment.orderStatus}');
-        print('🛒 상품 수: ${payment.orderItems.length}');
-        print('🎫 이용권 수: ${payment.userPasses.length}');
-      }
+        final uniquePasses = <String, UserPassModel>{};
 
+        for (final pass in payment.userPasses) {
+          uniquePasses[pass.regisPinNumber] = pass;
+        }
+
+        payment.userPasses
+          ..clear()
+          ..addAll(uniquePasses.values.toList());
+      }
     } catch (e) {
       debugPrint('❌ Failed to fetch user payments: $e');
     } finally {

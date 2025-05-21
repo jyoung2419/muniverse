@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:muniverse_app/screens/title/title_product_tab.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_provider.dart';
@@ -28,11 +29,34 @@ class TitleHomeScreen extends StatefulWidget {
 class _TitleHomeScreenState extends State<TitleHomeScreen> {
   EventModel? event;
   bool isLoading = true;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTopButton = false;
 
   @override
   void initState() {
     super.initState();
     _fetchEvent();
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 300 && !_showTopButton) {
+        setState(() => _showTopButton = true);
+      } else if (_scrollController.offset <= 300 && _showTopButton) {
+        setState(() => _showTopButton = false);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -112,12 +136,33 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
         extendBodyBehindAppBar: true,
         appBar: Header(eventCode: widget.eventCode),
         endDrawer: const AppDrawer(),
-        floatingActionButton: BackFAB(
-          onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-          },
+        floatingActionButton: Stack(
+          children: [
+            Align(
+              alignment: Alignment.bottomRight,
+              child: BackFAB(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                },
+              ),
+            ),
+            if (_showTopButton)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: _scrollToTop,
+                  child: SvgPicture.asset(
+                    'assets/svg/scroll_top.svg',
+                    width: 80,
+                    height: 80,
+                  ),
+                ),
+              ),
+          ],
         ),
         body: NestedScrollView(
+          controller: _scrollController,
           headerSliverBuilder: (context, _) => [
             SliverToBoxAdapter(
               child: Column(

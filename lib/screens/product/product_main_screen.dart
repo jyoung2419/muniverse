@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
@@ -70,7 +70,6 @@ class _ProductMainScreenState extends State<ProductMainScreen> {
               ),
             ),
             const SizedBox(height: 26),
-            // 탭바
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: TabBar(
@@ -98,20 +97,38 @@ class _ProductMainScreenState extends State<ProductMainScreen> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: TabBarView(
+              child: Stack(
                 children: [
-                  const ProductMainTab(),
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                      child: TranslatedText(
-                        '🎫 굿즈 상품은 추후 추가될 예정입니다.\n조금만 기다려주세요!',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                  const TabBarView(
+                    children: [
+                      ProductMainTab(),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                          child: TranslatedText(
+                            '🎫 굿즈 상품은 추후 추가될 예정입니다.\n조금만 기다려주세요!',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 40,
+                    right: 16,
+                    child: GestureDetector(
+                      onTap: () {
+                        ProductMainTab.scrollToTop();
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svg/scroll_top.svg',
+                        width: 80,
+                        height: 80,
                       ),
                     ),
                   ),

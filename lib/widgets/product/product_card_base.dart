@@ -28,9 +28,9 @@ class ProductCardBase extends StatelessWidget {
       height: 176,
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF212225),
+        color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0x5270737C), width: 1),
+        border: Border.all(color: const Color(0xFF1A1A1A), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

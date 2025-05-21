@@ -3,12 +3,18 @@ class EventVODModel {
   final String name;
   final String content;
   final String profileImageUrl;
+  final DateTime openDate;
+  final DateTime endDate;
+  final String vodStatus;
 
   EventVODModel({
     required this.vodCode,
     required this.name,
     required this.content,
     required this.profileImageUrl,
+    required this.openDate,
+    required this.endDate,
+    required this.vodStatus,
   });
 
   factory EventVODModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +23,9 @@ class EventVODModel {
       name: json['name']?.toString() ?? '',
       content: json['content']?.toString() ?? '',
       profileImageUrl: json['profileImageUrl']?.toString() ?? '',
+      openDate: DateTime.tryParse(json['openDate'] ?? '') ?? DateTime.now(),
+      endDate: DateTime.tryParse(json['endDate'] ?? '') ?? DateTime.now(),
+      vodStatus: json['vodStatus']?.toString() ?? 'CLOSED',
     );
   }
 
@@ -26,6 +35,9 @@ class EventVODModel {
       'name': name,
       'content': content,
       'profileImageUrl': profileImageUrl,
+      'openDate': openDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'vodStatus': vodStatus,
     };
   }
 }

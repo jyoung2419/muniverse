@@ -41,7 +41,7 @@ class VoteCard extends StatelessWidget {
     return IntrinsicHeight(
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF212225),
+          color: const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

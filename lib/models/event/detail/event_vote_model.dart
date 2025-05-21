@@ -28,9 +28,11 @@ class EventVoteModel {
       voteRestDay: json['voteRestDay'] ?? 0,
       startTime: DateTime.parse(json['startTime']),
       endTime: DateTime.parse(json['endTime']),
-      rewards: (json['rewards'] as List<dynamic>)
+      rewards: (json['rewards'] != null && json['rewards'] is List)
+          ? (json['rewards'] as List)
           .map((reward) => reward['rewardContent']?.toString() ?? '')
-          .toList(),
+          .toList()
+          : [],
     );
   }
 

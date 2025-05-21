@@ -21,7 +21,15 @@ class VoteMainScreen extends StatefulWidget {
 
 class _VoteMainScreenState extends State<VoteMainScreen> {
   String selectedStatus = '전체';
+  final ScrollController _scrollController = ScrollController();
 
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -69,82 +77,99 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Center(
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Transform.translate(
-                        offset: const Offset(1, -2),
-                        child: SvgPicture.asset(
-                          'assets/svg/m_logo.svg',
-                          height: 26,
-                        ),
-                      ),
-                    ),
-                    const TextSpan(
-                      text: '-Pick',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: VoteFilterWidget(
-              selectedFilter: selectedStatus,
-              onChanged: (status) {
-                setState(() {
-                  selectedStatus = status;
-                  context.read<VoteMainProvider>().fetchVotesByStatus(_mapStatus(status));
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: provider.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : provider.error != null
-                ? Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)))
-                : ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              itemCount: filteredVotes.length,
-              itemBuilder: (context, index) {
-                final vote = filteredVotes[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: VoteCardForMain(
-                    vote: vote,
-                    selectedStatus: statusKey,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => VoteDetailScreen(
-                            voteCode: vote.voteCode,
-                            eventName: vote.eventName,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Transform.translate(
+                            offset: const Offset(1, -2),
+                            child: SvgPicture.asset(
+                              'assets/svg/m_logo.svg',
+                              height: 26,
+                            ),
                           ),
                         ),
-                      );
-                    },
+                        const TextSpan(
+                          text: '-Pick',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
+                ),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: VoteFilterWidget(
+                  selectedFilter: selectedStatus,
+                  onChanged: (status) {
+                    setState(() {
+                      selectedStatus = status;
+                      context.read<VoteMainProvider>().fetchVotesByStatus(_mapStatus(status));
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: provider.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : provider.error != null
+                    ? Center(child: Text(provider.error!, style: const TextStyle(color: Colors.red)))
+                    : ListView.builder(
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  itemCount: filteredVotes.length,
+                  itemBuilder: (context, index) {
+                    final vote = filteredVotes[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: VoteCardForMain(
+                        vote: vote,
+                        selectedStatus: statusKey,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VoteDetailScreen(
+                                voteCode: vote.voteCode,
+                                eventName: vote.eventName,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 40,
+            right: 16,
+            child: GestureDetector(
+              onTap: _scrollToTop,
+              child: SvgPicture.asset(
+                'assets/svg/scroll_top.svg',
+                width: 80,
+                height: 80,
+              ),
             ),
           ),
         ],

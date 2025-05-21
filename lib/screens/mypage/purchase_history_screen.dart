@@ -140,7 +140,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
                         Text(
                           payInfoText,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.white54,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -150,7 +150,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
                           child: Icon(
                             Icons.arrow_forward_ios,
                             size: 12,
-                            color: Colors.white70,
+                            color: Colors.white54,
                           ),
                         ),
                       ],
@@ -193,6 +193,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
                   productImageUrl: item.productImageUrl,
                   quantity: item.amount,
                   totalPriceForAmount: item.totalPriceForAmount,
+                  currency: payment.paymentType == 'WON' ? '₩' : '\$',
                 ),
               const Divider(color: Colors.white12, thickness: 1, height: 32),
               Row(

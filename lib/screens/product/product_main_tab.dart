@@ -10,6 +10,18 @@ import '../../widgets/product/product_card_kr.dart';
 class ProductMainTab extends StatefulWidget {
   const ProductMainTab({super.key});
 
+  static final ScrollController scrollController = ScrollController();
+
+  static void scrollToTop() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   State<ProductMainTab> createState() => _ProductMainTabState();
 }
@@ -58,6 +70,8 @@ class _ProductMainTabState extends State<ProductMainTab> {
       }
 
       return ListView.builder(
+        controller: ProductMainTab.scrollController,
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: products.length,
         itemBuilder: (context, index) => ProductCardKR(product: products[index]),
@@ -77,6 +91,8 @@ class _ProductMainTabState extends State<ProductMainTab> {
       }
 
       return ListView.builder(
+        controller: ProductMainTab.scrollController,
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: products.length,
         itemBuilder: (context, index) => ProductCardUSD(product: products[index]),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_vod_provider.dart';
 import '../../providers/language_provider.dart';
@@ -119,14 +120,42 @@ class _TitleVodTabState extends State<TitleVodTab> {
             itemCount: vodList.length,
             itemBuilder: (context, index) {
               final vod = vodList[index];
+
+              // 👇 여기에 추가
+              late String status;
+              late String buttonLabel;
+              late bool isEnded;
+
+              switch (vod.vodStatus) {
+                case 'BE_OPEN':
+                  status = lang == 'kr' ? '진행예정' : 'UPCOMING';
+                  buttonLabel = lang == 'kr' ? '구매하기' : 'BUY';
+                  isEnded = false;
+                  break;
+                case 'OPEN':
+                  status = lang == 'kr' ? '진행중' : 'ONGOING';
+                  buttonLabel = lang == 'kr' ? '시청하기' : 'Watch';
+                  isEnded = false;
+                  break;
+                case 'CLOSED':
+                  status = lang == 'kr' ? '종료' : 'CLOSED';
+                  buttonLabel = lang == 'kr' ? '시청종료' : 'Ended';
+                  isEnded = true;
+                  break;
+                default:
+                  status = '';
+                  buttonLabel = '';
+                  isEnded = true;
+              }
+
               return Container(
-                height: 140,
+                height: 160,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF212225),
+                  color: const Color(0xFF1A1A1A),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0x5270737C),
+                    color: const Color(0xFF1A1A1A),
                     width: 1,
                   ),
                 ),
@@ -135,18 +164,43 @@ class _TitleVodTabState extends State<TitleVodTab> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
-                      child: Container(
-                        width: 170,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            image: NetworkImage(vod.profileImageUrl),
-                            fit: BoxFit.cover,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 170,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              image: DecorationImage(
+                                image: NetworkImage(vod.profileImageUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                  color: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
@@ -154,6 +208,10 @@ class _TitleVodTabState extends State<TitleVodTab> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Text(
+                              '${DateFormat('yyyy.MM.dd HH:mm').format(vod.openDate)} ~ ${DateFormat('yyyy.MM.dd HH:mm').format(vod.endDate)}(KST)',
+                              style: const TextStyle(color: Colors.white70, fontSize: 11),
+                            ),
                             const SizedBox(height: 4),
                             TranslatedText(
                               vod.name,
@@ -170,32 +228,73 @@ class _TitleVodTabState extends State<TitleVodTab> {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 6),
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    print('VOD 구매: ${vod.vodCode}');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2EFFAA),
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      print('VOD 구매: ${vod.vodCode}');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2EFFAA),
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      minimumSize: const Size(60, 30),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      elevation: 0,
                                     ),
-                                    minimumSize: const Size(60, 30),
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    elevation: 0,
-                                  ),
-                                  child: Text(
-                                    buyText,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      print('VOD 시청: ${vod.vodCode}');
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF2EFFAA),
+                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                    ),
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF2EFFAA),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  ElevatedButton(
+                                    onPressed: () {}, // 종료된 경우
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0x66B0B0B0),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(60, 30),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      buttonLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF171719),
+                                      ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                           ],

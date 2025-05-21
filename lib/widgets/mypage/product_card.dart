@@ -7,6 +7,7 @@ class ProductCard extends StatelessWidget {
   final String productImageUrl;
   final int quantity;
   final double totalPriceForAmount;
+  final String currency;
 
   const ProductCard({
     super.key,
@@ -14,6 +15,7 @@ class ProductCard extends StatelessWidget {
     required this.productImageUrl,
     required this.quantity,
     required this.totalPriceForAmount,
+    required this.currency
   });
 
   @override
@@ -40,7 +42,7 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text( // eventName (하드코딩)
-                'Muniverse Special Event',
+                '이벤트명 필요해용',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -56,7 +58,7 @@ class ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '₩$unitPrice',
+                '$currency$unitPrice',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -76,7 +78,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '₩$totalPrice',
+                    '$currency$totalPrice',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,

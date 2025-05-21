@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/ticket/user_pass_provider.dart';
@@ -18,6 +19,7 @@ class TicketManagementScreen extends StatefulWidget {
 
 class _TicketManagementScreenState extends State<TicketManagementScreen> {
   late final TextEditingController pinController;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
     Future.microtask(() {
       context.read<UserPassProvider>().fetchUserPasses();
     });
+    _scrollController = ScrollController();
   }
 
   @override
@@ -50,6 +53,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
       floatingActionButton: const BackFAB(),
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
+        controller: _scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -74,8 +78,8 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                       controller: pinController,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
-                        hintText: 'XXXX-XXXX-XXXX',
-                        hintStyle: TextStyle(color: Colors.white54, fontSize: 16),
+                        hintText: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX',
+                        hintStyle: TextStyle(color: Colors.white54, fontSize: 12),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white, width: 1),
                         ),
@@ -88,8 +92,8 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                   const SizedBox(width: 12),
                   GestureDetector(
                     onTap: isLoading ? null : () async {
-                      final pin = pinController.text.trim().toUpperCase();
-                      final pinRegExp = RegExp(r'^\d{4}-\d{4}-\d{4}$');
+                      final pin = pinController.text.trim();
+                      final pinRegExp = RegExp(r'^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$');
 
                       if (pin.isEmpty) return;
 
@@ -112,9 +116,19 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                           message: '이용권이 등록되었습니다.',
                         );
                       } catch (e) {
-                        final msg = e.toString().contains('이미 등록')
-                            ? ('이미 등록되어 있는 이용권입니다.')
-                            : ('등록 실패: $e');
+                        String msg;
+
+                        if (e is DioException) {
+                          final statusCode = e.response?.statusCode;
+
+                          if (statusCode == 500) {
+                            msg = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                          } else {
+                            msg = e.response?.data['message'] ?? '등록에 실패했습니다.';
+                          }
+                        } else {
+                          msg = '알 수 없는 오류가 발생했습니다.';
+                        }
 
                         await showTicketDialog(
                           context,
@@ -122,10 +136,11 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> {
                           isError: true,
                         );
                       }
+
                     },
                     child: Container(
                       height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         border: Border.all(color: Color(0xFF2EFFAA)),
                         borderRadius: BorderRadius.circular(12),

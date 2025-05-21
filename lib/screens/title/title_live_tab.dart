@@ -143,10 +143,10 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                 height: 160,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF212225),
+                  color: const Color(0xFF1A1A1A),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0x5270737C),
+                    color: const Color(0xFF1A1A1A),
                     width: 1,
                   ),
                 ),

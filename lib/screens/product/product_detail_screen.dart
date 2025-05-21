@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
@@ -49,6 +50,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final tabs = lang == 'kr' ? ['판매정보', '유의사항', 'FAQ'] : ['Info', 'Note', 'FAQ'];
+    final ScrollController _scrollController = ScrollController();
 
     final provider = context.watch<ProductDetailProvider>();
     final kr = provider.krDetail;
@@ -91,7 +93,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
       appBar: const Header(),
       endDrawer: const AppDrawer(),
       floatingActionButton: const BackFAB(),
-      body: NestedScrollView(
+      body: Stack(
+        children: [
+        NestedScrollView(        controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverToBoxAdapter(
             child: Column(
@@ -102,7 +106,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF212225),
+                      color: const Color(0xFF1A1A1A),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Padding(
@@ -255,14 +259,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
             ),
           ),
         ],
-        body: TabBarView(
-          controller: _tabController,
-          children: const [
-            ProductDetailInfoTab(),
-            ProductDetailNoteTab(),
-            ProductDetailFAQTab(),
-          ],
+          body: TabBarView(
+            controller: _tabController,
+            children: const [
+              ProductDetailInfoTab(),
+              ProductDetailNoteTab(),
+              ProductDetailFAQTab(),
+            ],
+          ),
         ),
+          Positioned(
+            bottom: 40,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: SvgPicture.asset(
+                'assets/svg/scroll_top.svg',
+                width: 80,
+                height: 80,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

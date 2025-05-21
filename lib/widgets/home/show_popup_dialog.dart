@@ -19,6 +19,7 @@ void showPopupDialog(BuildContext context, PopupListResponse popupList) async {
 
     await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Dialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
@@ -86,6 +87,7 @@ void showPopupDialog(BuildContext context, PopupListResponse popupList) async {
     if (isHidden) continue;
     final result = await showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.7),
       builder: (_) => Dialog(
         shape: RoundedRectangleBorder(
