@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../../providers/ticket/user_pass_provider.dart';
+import '../../models/ticket/user_pass_model.dart' as ticket;
 import '../common/translate_text.dart';
 
 void ShowRegisterPassDialog(BuildContext context) {
-  String? selectedPass; // 선택된 이용권 값 (초기 null)
   final lang = Localizations.localeOf(context).languageCode;
   final okText = lang == 'ko' ? '확인' : 'OK';
+  final userPasses = context.read<UserPassProvider>().userPasses;
+
+  String? selectedPass = userPasses.isNotEmpty ? userPasses.first.pinNumber : null;
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -45,14 +50,14 @@ void ShowRegisterPassDialog(BuildContext context) {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 20),
                   Center(
                     child: Container(
-                      width: 200,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      width: 240,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.white),
                       ),
                       child: DropdownButtonHideUnderline(
@@ -60,10 +65,6 @@ void ShowRegisterPassDialog(BuildContext context) {
                           isExpanded: true,
                           dropdownColor: const Color(0xFF222222),
                           value: selectedPass,
-                          hint: const Text(
-                            'XXXX-XXXX-XXXX',
-                            style: TextStyle(color: Color(0xFF353C49)),
-                          ),
                           icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
                           style: const TextStyle(color: Colors.white),
                           onChanged: (String? newValue) {
@@ -71,14 +72,16 @@ void ShowRegisterPassDialog(BuildContext context) {
                               selectedPass = newValue;
                             });
                           },
-                          items: [
-                            '1234-5678-9012',
-                            '2345-6789-0123',
-                            '3456-7890-1234',
-                          ].map<DropdownMenuItem<String>>((String value) {
+                          items: userPasses.map<DropdownMenuItem<String>>((ticket.UserPassModel pass) {
                             return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
+                              value: pass.pinNumber,
+                              child: Text(
+                                pass.pinNumber,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
                             );
                           }).toList(),
                         ),
