@@ -62,9 +62,12 @@ class VoteService {
 
       final response = await _dio.get(
         '/api/v1/vote/main/detail/freeCount/$voteCode',
-        options: Options(headers: {
-          'Authorization': 'Bearer $token',
-        }),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+          receiveTimeout: const Duration(seconds: 20),
+        ),
       );
 
       return response.data;

@@ -124,6 +124,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
             thumbColor: const Color(0xFFD9D9D9),
             child: SingleChildScrollView(
               controller: _scrollController,
+              physics: const ClampingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

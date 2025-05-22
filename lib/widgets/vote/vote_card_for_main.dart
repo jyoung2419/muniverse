@@ -52,6 +52,7 @@ class VoteCardForMain extends StatelessWidget {
 
     return IntrinsicHeight(
       child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           color: const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.circular(12),
@@ -60,11 +61,11 @@ class VoteCardForMain extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.only(right: 10),
               child: Stack(
                 children: [
                   Container(
-                    width: 170,
+                    width: 180,
                     height: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
@@ -165,23 +166,17 @@ class VoteCardForMain extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 2),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: vote.rewards.isNotEmpty
-                                ? vote.rewards.map((r) => Padding(
-                              padding: const EdgeInsets.only(bottom: 2),
-                              child: TranslatedText(
-                                r.rewardContent,
-                                style: const TextStyle(color: Colors.white, fontSize: 11),
-                              ),
-                            )).toList()
-                                : [
-                              TranslatedText(
-                                lang == 'kr' ? '리워드 정보 없음' : 'No reward info',
-                                style: const TextStyle(color: Colors.white, fontSize: 11),
-                              )
-                            ],
+                          vote.rewards.isNotEmpty
+                              ? Text(
+                            rewardText,
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           )
+                              : TranslatedText(
+                            lang == 'kr' ? '리워드 정보 없음' : 'No reward info',
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                          ),
                         ],
                       ),
                     ),
