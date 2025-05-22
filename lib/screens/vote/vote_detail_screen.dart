@@ -15,6 +15,7 @@ import '../vote/detail/vote_detail_info_tab.dart';
 import '../vote/detail/vote_detail_progress_tab.dart';
 import '../vote/detail/vote_detail_result_tab.dart';
 import '../vote/detail/vote_detail_reward_tab.dart';
+import '../../models/vote/vote_detail_content_model.dart';
 
 class VoteDetailScreen extends StatefulWidget {
   final String voteCode;
@@ -27,13 +28,12 @@ class VoteDetailScreen extends StatefulWidget {
 
 class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  int _currentTabIndex = 1;
   final ScrollController _scrollController = ScrollController();
   bool _showTopButton = false;
   bool _tabInitialized = false;
   bool _isLoading = true;
-
   late final LanguageProvider _languageProvider;
+  int _currentTabIndex = 1;
 
   @override
   void initState() {
@@ -59,9 +59,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
   Future<void> _fetchVoteDetail() async {
     await context.read<VoteDetailProvider>().fetchVoteDetail(widget.voteCode);
     await context.read<VoteRewardMediaProvider>().fetchVoteRewardMedia(widget.voteCode);
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -73,11 +71,7 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
   }
 
   void _scrollToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    _scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 
   @override
@@ -101,7 +95,6 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
 
     final vote = voteDetail.detailContent;
     final labels = VoteTextUtil.getLabelsForDetailContent(context, vote);
-
     final now = DateTime.now();
     final isRunning = now.isAfter(vote.startTime) && now.isBefore(vote.endTime);
     final isUpcoming = now.isBefore(vote.startTime);
@@ -116,185 +109,44 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
       floatingActionButton: const BackFAB(),
       body: Stack(
         children: [
-          RawScrollbar(
+          NestedScrollView(
             controller: _scrollController,
-            thumbVisibility: true,
-            radius: const Radius.circular(4),
-            thickness: 6,
-            thumbColor: const Color(0xFFD9D9D9),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  Center(
-                    child: TranslatedText('투표', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                  const SizedBox(height: 16),
-                  IntrinsicHeight(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 170,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    image: DecorationImage(
-                                      image: (vote.voteImageUrl.isNotEmpty)
-                                          ? NetworkImage(vote.voteImageUrl)
-                                          : const AssetImage('assets/images/default_vote_image.png') as ImageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                if (isRunning)
-                                  Positioned(
-                                    top: 8,
-                                    left: 8,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF2EFFAA),
-                                                borderRadius: BorderRadius.circular(6),
-                                              ),
-                                              child: Text(
-                                                labels['vote_ongoing']!,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        const SizedBox(width: 6),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.7),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 1.5),
-                                                child: const Icon(Icons.access_time_filled, color: Colors.white, size: 12),
-                                              ),
-                                              const SizedBox(width: 3),
-                                              Text(
-                                                labels['vote_remaining']!,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.0,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (isUpcoming)
-                                  _buildBadge(labels['vote_upcoming']!, color: const Color(0xFF2EFFAA), textColor: Colors.black),
-                                if (isEnded)
-                                  _buildBadge(labels['vote_closed']!, color: Colors.black.withOpacity(0.7), textColor: const Color(0xFF2EFFAA)),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TranslatedText(widget.eventName, style: const TextStyle(fontSize: 12, color: Colors.white70)),
-                                  const SizedBox(height: 4),
-                                  TranslatedText(vote.voteName, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 4),
-                                  Text(labels['vote_period']!, style: const TextStyle(fontSize: 11, color: Colors.white70)),
-                                  const SizedBox(height: 4),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: const BoxDecoration(color: Color(0xFF121212)),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const Icon(Icons.card_giftcard, size: 14, color: Colors.white),
-                                            const SizedBox(width: 4),
-                                            Text(labels['vote_reward']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 2),
-                                        TranslatedText(
-                                          voteDetail.rewards.isNotEmpty
-                                              ? voteDetail.rewards.map((reward) => reward.rewardContent).join(', ')
-                                              : labels['vote_reward_empty']!,
-                                          style: const TextStyle(color: Colors.white, fontSize: 11),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Center(
+                      child: TranslatedText('투표', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildVoteSummaryCard(vote, labels, isRunning, isUpcoming, isEnded),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TabBar(
+                        controller: _tabController,
+                        onTap: (index) => setState(() => _currentTabIndex = index),
+                        labelColor: const Color(0xFF2EFFAA),
+                        unselectedLabelColor: Colors.white60,
+                        indicatorColor: const Color(0xFF2EFFAA),
+                        tabs: tabs.map((label) => Tab(text: label)).toList(),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TabBar(
-                      controller: _tabController,
-                      onTap: (index) => setState(() => _currentTabIndex = index),
-                      labelColor: const Color(0xFF2EFFAA),
-                      unselectedLabelColor: Colors.white60,
-                      indicatorColor: const Color(0xFF2EFFAA),
-                      tabs: tabs.map((label) => Tab(text: label)).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (_currentTabIndex == 0) VoteDetailInfoTab(voteCode: widget.voteCode),
-                  if (_currentTabIndex == 1)
-                        () {
-                      if (vote.voteStatusEnum == VoteStatus.OPEN) {
-                        return VoteDetailProgressTab(voteCode: widget.voteCode);
-                      } else if (vote.voteStatusEnum == VoteStatus.CLOSED) {
-                        return VoteDetailResultTab(voteCode: widget.voteCode);
-                      }
-                      return const SizedBox();
-                    }(),
-                  if (_currentTabIndex == 2) VoteDetailRewardTab(voteCode: widget.voteCode),
-                  const SizedBox(height: 80),
-                ],
+                  ],
+                ),
               ),
+            ],
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                VoteDetailInfoTab(voteCode: widget.voteCode),
+                vote.voteStatusEnum == VoteStatus.OPEN
+                    ? VoteDetailProgressTab(voteCode: widget.voteCode)
+                    : VoteDetailResultTab(voteCode: widget.voteCode),
+                VoteDetailRewardTab(voteCode: widget.voteCode),
+              ],
             ),
           ),
           if (_showTopButton)
@@ -315,26 +167,99 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
     );
   }
 
-  Widget _buildBadge(String text,
-      {Alignment alignment = Alignment.topLeft,
-        EdgeInsets padding = const EdgeInsets.only(top: 8, left: 8),
-        Color color = Colors.black,
-        Color textColor = Colors.white}) {
-    return Align(
-      alignment: alignment,
-      child: Padding(
-        padding: padding,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            text,
-            style: TextStyle(color: textColor, fontSize: 10, fontWeight: FontWeight.w500),
-          ),
+  Widget _buildVoteSummaryCard(VoteDetailContentModel vote, Map<String, String> labels, bool isRunning, bool isUpcoming, bool isEnded) {
+    return IntrinsicHeight(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(12),
         ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Stack(
+                children: [
+                  Container(
+                    width: 170,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: DecorationImage(
+                        image: vote.voteImageUrl.isNotEmpty
+                            ? NetworkImage(vote.voteImageUrl)
+                            : const AssetImage('assets/images/default_vote_image.png') as ImageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  if (isRunning)
+                    _buildBadge(labels['vote_ongoing']!, bg: const Color(0xFF2EFFAA), fg: Colors.black),
+                  if (isUpcoming)
+                    _buildBadge(labels['vote_upcoming']!, bg: const Color(0xFF2EFFAA), fg: Colors.black),
+                  if (isEnded)
+                    _buildBadge(labels['vote_closed']!, bg: Colors.black.withOpacity(0.7), fg: const Color(0xFF2EFFAA)),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TranslatedText(widget.eventName, style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                    const SizedBox(height: 4),
+                    TranslatedText(vote.voteName, style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(labels['vote_period']!, style: const TextStyle(fontSize: 11, color: Colors.white70)),
+                    const SizedBox(height: 4),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: const BoxDecoration(color: Color(0xFF121212)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.card_giftcard, size: 14, color: Colors.white),
+                              const SizedBox(width: 4),
+                              Text(labels['vote_reward']!, style: const TextStyle(color: Colors.white, fontSize: 11)),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          TranslatedText(
+                            context.read<VoteDetailProvider>().voteDetail?.rewards.map((r) => r.rewardContent).join(', ') ?? labels['vote_reward_empty']!,
+                            style: const TextStyle(color: Colors.white, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadge(String text, {required Color bg, required Color fg}) {
+    return Positioned(
+      top: 8,
+      left: 8,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(text, style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.w500)),
       ),
     );
   }

@@ -13,12 +13,12 @@ class VoteDetailRewardTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaList = context.watch<VoteRewardMediaProvider>().mediaList;
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TranslatedText(
+          const TranslatedText(
             '보상 이벤트 결과',
             style: TextStyle(
               color: Colors.white,
@@ -28,48 +28,40 @@ class VoteDetailRewardTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           if (mediaList.isEmpty)
-            TranslatedText('등록된 보상 미디어가 없습니다.',
+            const TranslatedText('등록된 보상 미디어가 없습니다.',
                 style: TextStyle(color: Colors.white54))
           else
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: mediaList.length,
-              itemBuilder: (context, index) {
-                final media = mediaList[index];
-
-                if (media.type == VoteRewardMediaType.IMAGE) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        media.voteRewardMediaURL,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 4),
-                      TranslatedText(
-                        media.rewordContent,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  );
-                } else if (media.type == VoteRewardMediaType.VIDEO) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _VideoPlayerWidget(videoUrl: media.voteRewardMediaURL),
-                      const SizedBox(height: 4),
-                      TranslatedText(
-                        media.rewordContent,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  );
-                }
-              },
-            ),
+            ...mediaList.map((media) {
+              if (media.type == VoteRewardMediaType.IMAGE) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.network(media.voteRewardMediaURL, fit: BoxFit.contain),
+                    const SizedBox(height: 4),
+                    TranslatedText(
+                      media.rewordContent,
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              } else if (media.type == VoteRewardMediaType.VIDEO) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _VideoPlayerWidget(videoUrl: media.voteRewardMediaURL),
+                    const SizedBox(height: 4),
+                    TranslatedText(
+                      media.rewordContent,
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }).toList(),
         ],
       ),
     );

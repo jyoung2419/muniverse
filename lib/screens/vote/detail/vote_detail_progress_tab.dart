@@ -32,7 +32,8 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
       return artist.artistName.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
-    return Padding(
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,11 +73,8 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
               ),
             )
           else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredLineUp.length,
-              itemBuilder: (context, index) {
+            Column(
+              children: List.generate(filteredLineUp.length, (index) {
                 final artist = filteredLineUp[index];
                 final percentText = artist.votePercent.toStringAsFixed(1);
                 final isFirst = index == 0;
@@ -98,7 +96,11 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                           height: 60,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) =>
-                              Image.asset('assets/images/default_profile.png', width: 60, height: 60),
+                              Image.asset(
+                                'assets/images/default_profile.png',
+                                width: 60,
+                                height: 60,
+                              ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -113,7 +115,9 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: isFirst ? const Color(0xFF2EFFAA) : const Color(0xFF353C49),
+                                    color: isFirst
+                                        ? const Color(0xFF2EFFAA)
+                                        : const Color(0xFF353C49),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -132,7 +136,8 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                               value: artist.votePercent / 100,
                               minHeight: 8,
                               backgroundColor: Colors.grey.shade800,
-                              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2EFFAA)),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF2EFFAA)),
                             ),
                           ],
                         ),
@@ -145,30 +150,36 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                             onPressed: () {
                               showDialog(
                                 context: context,
-                                builder: (_) => VoteDialog(
-                                  artistName: artist.artistName,
-                                  voteCode: widget.voteCode,
-                                  voteArtistSeq: artist.voteArtistSeq,
-                                ),
+                                builder: (_) =>
+                                    VoteDialog(
+                                      artistName: artist.artistName,
+                                      voteCode: widget.voteCode,
+                                      voteArtistSeq: artist.voteArtistSeq,
+                                    ),
                               );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2EFFAA),
                               foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 2),
                               minimumSize: const Size(0, 30),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                             ),
                             child: Text(
                               lang == 'kr' ? '투표하기' : 'VOTE',
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w600),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: Text(
                               '$percentText%',
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                              style: const TextStyle(color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12),
                             ),
                           ),
                         ],
@@ -176,7 +187,7 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                     ],
                   ),
                 );
-              },
+              },),
             ),
         ],
       ),
