@@ -220,7 +220,9 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                               children: [
                                 if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
                                   ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      DefaultTabController.of(context)?.animateTo(1);
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF2EFFAA),
                                       foregroundColor: Colors.black,

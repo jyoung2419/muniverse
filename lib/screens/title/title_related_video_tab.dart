@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_related_provider.dart';
 import '../../models/event/detail/event_related_model.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../widgets/common/translate_text.dart';
 import '../../widgets/common/year_filter_drop_down.dart';
 
@@ -21,17 +20,9 @@ class TitleRelatedVideoTab extends StatefulWidget {
   State<TitleRelatedVideoTab> createState() => _TitleRelatedVideoTabState();
 }
 
-void _launchUrl(String url) async {
-  final Uri uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
-
 class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
   late int? _selectedYear;
+  final List<YoutubePlayerController> _controllers = [];
 
   @override
   void initState() {
@@ -41,6 +32,25 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
       Provider.of<EventRelatedProvider>(context, listen: false)
           .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: null);
     });
+  }
+
+  YoutubePlayerController _controllerFromUrl(String url) {
+    final videoId = YoutubePlayer.convertUrlToId(url);
+    return YoutubePlayerController(
+      initialVideoId: videoId ?? '',
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -69,8 +79,6 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
             ],
           ),
         ),
-
-        // 관련영상 리스트
         Expanded(
           child: Consumer<EventRelatedProvider>(
             builder: (context, provider, _) {
@@ -102,6 +110,9 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
                 itemCount: provider.relatedVideos.length,
                 itemBuilder: (context, index) {
                   final EventRelatedModel video = provider.relatedVideos[index];
+                  final controller = _controllerFromUrl(video.videoUrl);
+                  _controllers.add(controller);
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: ClipRRect(
@@ -109,25 +120,12 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          InkWell(
-                            onTap: () => _launchUrl(video.videoUrl),
-                            child: AspectRatio(
-                              aspectRatio: 510 / 290,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.network(
-                                    video.profileImageUrl,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                  const Icon(
-                                    Icons.play_circle_fill,
-                                    color: Colors.white70,
-                                    size: 60,
-                                  ),
-                                ],
-                              ),
+                          AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: YoutubePlayer(
+                              controller: controller,
+                              showVideoProgressIndicator: true,
+                              progressIndicatorColor: Colors.redAccent,
                             ),
                           ),
                           Padding(

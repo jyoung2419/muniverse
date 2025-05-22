@@ -11,11 +11,13 @@ import '../../widgets/info/vod_notice.dart';
 class TitleVodTab extends StatefulWidget {
   final String eventCode;
   final int? eventYear;
+  final VoidCallback? onBuyPressed;
 
   const TitleVodTab({
     super.key,
     required this.eventCode,
     required this.eventYear,
+    this.onBuyPressed,
   });
 
   @override
@@ -48,7 +50,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 20, top: 14, right: 20, bottom: 0),
+          padding: const EdgeInsets.only(left: 20, top: 14, right: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -121,7 +123,6 @@ class _TitleVodTabState extends State<TitleVodTab> {
             itemBuilder: (context, index) {
               final vod = vodList[index];
 
-              // 👇 여기에 추가
               late String status;
               late String buttonLabel;
               late bool isEnded;
@@ -235,7 +236,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                                 if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
                                   ElevatedButton(
                                     onPressed: () {
-                                      print('VOD 구매: ${vod.vodCode}');
+                                      DefaultTabController.of(context)?.animateTo(1); // 상품 탭으로 이동
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF2EFFAA),
@@ -278,7 +279,7 @@ class _TitleVodTabState extends State<TitleVodTab> {
                                   )
                                 else
                                   ElevatedButton(
-                                    onPressed: () {}, // 종료된 경우
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0x66B0B0B0),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

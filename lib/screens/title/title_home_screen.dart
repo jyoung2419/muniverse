@@ -154,8 +154,8 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
                   onTap: _scrollToTop,
                   child: SvgPicture.asset(
                     'assets/svg/scroll_top.svg',
-                    width: 80,
-                    height: 80,
+                    width: 90,
+                    height: 90,
                   ),
                 ),
               ),

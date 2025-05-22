@@ -91,6 +91,7 @@ class AppDrawer extends StatelessWidget {
               const Divider(color: Colors.white24, height: 1),
               Expanded(
                 child: ListView(
+                  physics: const ClampingScrollPhysics(),
                   children: [
                     Padding(
                       padding: EdgeInsets.fromLTRB(16, 20, 16, 6),
