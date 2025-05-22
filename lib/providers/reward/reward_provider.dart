@@ -10,20 +10,33 @@ class RewardProvider with ChangeNotifier {
   final LanguageProvider _languageProvider;
 
   List<RewardItemModel> _rewards = [];
-
   List<RewardItemModel> get rewards => _rewards;
+
+  int _currentPage = 0;
+  bool _lastPage = false;
+  bool get hasMore => !_lastPage;
 
   RewardProvider(Dio dio, this._languageProvider)
       : _rewardService = RewardService(dio) {
     _languageProvider.addListener(() {
-      fetchRewards();
+      resetAndFetchRewards();
     });
   }
 
-  Future<void> fetchRewards() async {
+  Future<void> resetAndFetchRewards() async {
+    _currentPage = 0;
+    _lastPage = false;
+    _rewards.clear();
+    await fetchNextPage();
+  }
+
+  Future<void> fetchNextPage() async {
+    if (_lastPage) return;
     try {
-      final rawList = await _rewardService.fetchRewardList();
-      _rewards = rawList.map((e) => RewardItemModel.fromJson(e)).toList().reversed.toList();
+      final response = await _rewardService.fetchRewardList(page: _currentPage, size: 10);
+      _rewards.addAll(response.content);
+      _lastPage = response.last;
+      _currentPage += 1;
       notifyListeners();
     } catch (e) {
       debugPrint('❌ Failed to fetch rewards: $e');

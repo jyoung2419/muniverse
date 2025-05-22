@@ -3,6 +3,7 @@ class UserPaymentModel {
   final double totalOrderPrice;
   final String orderStatus;
   final String paymentType;
+  final String? eventName;
   final DateTime createdAt;
   final List<OrderItemModel> orderItems;
   final List<UserPassModel> userPasses;
@@ -15,6 +16,7 @@ class UserPaymentModel {
     required this.createdAt,
     required this.orderItems,
     required this.userPasses,
+    required this.eventName,
   });
 
   factory UserPaymentModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class UserPaymentModel {
       orderStatus: json['orderStatus'],
       paymentType: json['paymentType'],
       createdAt: DateTime.parse(json['createdAt']),
+      eventName: json['eventName'] as String?,
       orderItems: (json['orderItems'] as List)
           .map((e) => OrderItemModel.fromJson(e))
           .toList(),
@@ -33,17 +36,16 @@ class UserPaymentModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'orderId': orderId,
-      'totalOrderPrice': totalOrderPrice,
-      'orderStatus': orderStatus,
-      'paymentType': paymentType,
-      'createdAt': createdAt.toIso8601String(),
-      'orderItems': orderItems.map((e) => e.toJson()).toList(),
-      'userPasses': userPasses.map((e) => e.toJson()).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'orderId': orderId,
+    'totalOrderPrice': totalOrderPrice,
+    'orderStatus': orderStatus,
+    'paymentType': paymentType,
+    'createdAt': createdAt.toIso8601String(),
+    'eventName': eventName,
+    'orderItems': orderItems.map((e) => e.toJson()).toList(),
+    'userPasses': userPasses.map((e) => e.toJson()).toList(),
+  };
 }
 
 class OrderItemModel {
@@ -68,14 +70,12 @@ class OrderItemModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'productName': productName,
-      'productImageUrl': productImageUrl,
-      'amount': amount,
-      'totalPriceForAmount': totalPriceForAmount,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'productName': productName,
+    'productImageUrl': productImageUrl,
+    'amount': amount,
+    'totalPriceForAmount': totalPriceForAmount,
+  };
 }
 
 class UserPassModel {
@@ -105,15 +105,13 @@ class UserPassModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'passName': passName,
-      'regisPinNumber': regisPinNumber,
-      'useFlag': useFlag,
-      'createdAt': createdAt.toIso8601String(),
-      'events': events.map((e) => e.toJson()).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'passName': passName,
+    'regisPinNumber': regisPinNumber,
+    'useFlag': useFlag,
+    'createdAt': createdAt.toIso8601String(),
+    'events': events.map((e) => e.toJson()).toList(),
+  };
 }
 
 class EventUseInfoModel {
@@ -137,18 +135,15 @@ class EventUseInfoModel {
       type: json['type'],
       pinNumber: json['pinNumber'],
       used: json['used'],
-      usedAt:
-      json['usedAt'] != null ? DateTime.parse(json['usedAt']) : null,
+      usedAt: json['usedAt'] != null ? DateTime.parse(json['usedAt']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'type': type,
-      'pinNumber': pinNumber,
-      'used': used,
-      'usedAt': usedAt?.toIso8601String(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'code': code,
+    'type': type,
+    'pinNumber': pinNumber,
+    'used': used,
+    'usedAt': usedAt?.toIso8601String(),
+  };
 }

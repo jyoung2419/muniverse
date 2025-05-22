@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../models/reward/reward_page_response_model.dart';
 import '../../models/reward/reward_user_info_model.dart';
 import '../../utils/shared_prefs_util.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -8,10 +9,23 @@ class RewardService {
   RewardService(this._dio);
 
   /// 당첨 리스트 조회
-  Future<List<Map<String, dynamic>>> fetchRewardList() async {
+  Future<RewardPageResponse> fetchRewardList({int page = 0, int size = 10}) async {
     try {
-      final response = await _dio.get('/api/v1/reward');
-      return List<Map<String, dynamic>>.from(response.data);
+      final token = await SharedPrefsUtil.getAccessToken();
+      if (token == null) throw Exception('❌ accessToken 없음');
+
+      final response = await _dio.get(
+        '/api/v1/reward',
+        queryParameters: {
+          'page': page,
+          'size': size,
+        },
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      return RewardPageResponse.fromJson(response.data);
     } catch (e) {
       print('❌ Reward 리스트 API 호출 실패: $e');
       rethrow;

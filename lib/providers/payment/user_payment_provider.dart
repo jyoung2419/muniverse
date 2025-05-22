@@ -9,31 +9,52 @@ class UserPaymentProvider with ChangeNotifier {
   List<UserPaymentModel> _payments = [];
   List<UserPaymentModel> get payments => _payments;
 
-  UserPaymentProvider(Dio dio) : _paymentService = UserPaymentService(dio);
-
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  Future<void> fetchUserPayments() async {
+  int _currentPage = 0;
+  final int _pageSize = 10;
+  bool _lastPage = false;
+  bool get hasMore => !_lastPage;
+
+  UserPaymentProvider(Dio dio) : _paymentService = UserPaymentService(dio);
+
+  Future<void> resetAndFetchPayments() async {
+    _currentPage = 0;
+    _lastPage = false;
+    _payments.clear();
+    notifyListeners();
+    await fetchNextPage();
+  }
+
+  Future<void> fetchNextPage() async {
+    if (_lastPage || _isLoading) return;
     try {
       _isLoading = true;
       notifyListeners();
 
-      final rawList = await _paymentService.fetchPayments();
-      _payments = rawList.map((e) => UserPaymentModel.fromJson(e)).toList();
-      print('📦 구매내역 개수: ${_payments.length}');
+      final rawList = await _paymentService.fetchPayments(
+        page: _currentPage,
+        size: _pageSize,
+        sort: 'createdAt,desc',
+      );
 
-      for (final payment in _payments) {
+      final newPayments = rawList.map((e) => UserPaymentModel.fromJson(e)).toList();
+      print('📦 Page $_currentPage: ${newPayments.length}건 로드');
+
+      for (final payment in newPayments) {
         final uniquePasses = <String, UserPassModel>{};
-
         for (final pass in payment.userPasses) {
           uniquePasses[pass.regisPinNumber] = pass;
         }
-
         payment.userPasses
           ..clear()
-          ..addAll(uniquePasses.values.toList());
+          ..addAll(uniquePasses.values);
       }
+
+      _payments.addAll(newPayments);
+      _lastPage = newPayments.length < _pageSize;
+      _currentPage += 1;
     } catch (e) {
       debugPrint('❌ Failed to fetch user payments: $e');
     } finally {
@@ -44,6 +65,8 @@ class UserPaymentProvider with ChangeNotifier {
 
   void clearPayments() {
     _payments = [];
+    _currentPage = 0;
+    _lastPage = false;
     notifyListeners();
   }
 }

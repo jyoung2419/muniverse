@@ -20,12 +20,34 @@ class RewardHistoryScreen extends StatefulWidget {
 }
 
 class _RewardHistoryScreenState extends State<RewardHistoryScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isFetchingMore = false;
+
   @override
   void initState() {
     super.initState();
+
     Future.microtask(() {
-      context.read<RewardProvider>().fetchRewards();
+      context.read<RewardProvider>().resetAndFetchRewards();
     });
+
+    _scrollController.addListener(() {
+      final provider = context.read<RewardProvider>();
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+        if (provider.hasMore && !_isFetchingMore) {
+          _isFetchingMore = true;
+          provider.fetchNextPage().whenComplete(() {
+            _isFetchingMore = false;
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   String formatDateWithWeekday(DateTime date) {
@@ -80,7 +102,8 @@ class _RewardHistoryScreenState extends State<RewardHistoryScreen> {
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
-                physics: const ClampingScrollPhysics(),
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
                 itemCount: rewards.length,
                 separatorBuilder: (_, __) =>
                 const Divider(color: Colors.white12),

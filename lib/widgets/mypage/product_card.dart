@@ -8,6 +8,7 @@ class ProductCard extends StatelessWidget {
   final int quantity;
   final double totalPriceForAmount;
   final String currency;
+  final String? eventName;
 
   const ProductCard({
     super.key,
@@ -15,7 +16,8 @@ class ProductCard extends StatelessWidget {
     required this.productImageUrl,
     required this.quantity,
     required this.totalPriceForAmount,
-    required this.currency
+    required this.currency,
+    required this.eventName,
   });
 
   @override
@@ -41,14 +43,15 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text( // eventName (하드코딩)
-                '이벤트명 필요해용',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+              if (eventName != null && eventName!.isNotEmpty)
+                Text(
+                  eventName!,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
               const SizedBox(height: 4),
               TranslatedText(
                 productName,
