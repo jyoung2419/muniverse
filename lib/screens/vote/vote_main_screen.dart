@@ -137,23 +137,20 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
                   itemCount: filteredVotes.length,
                   itemBuilder: (context, index) {
                     final vote = filteredVotes[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: VoteCardForMain(
-                        vote: vote,
-                        selectedStatus: statusKey,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => VoteDetailScreen(
-                                voteCode: vote.voteCode,
-                                eventName: vote.eventName,
-                              ),
+                    return VoteCardForMain(
+                      vote: vote,
+                      selectedStatus: statusKey,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VoteDetailScreen(
+                              voteCode: vote.voteCode,
+                              eventName: vote.eventName,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

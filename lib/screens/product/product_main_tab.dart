@@ -72,7 +72,7 @@ class _ProductMainTabState extends State<ProductMainTab> {
       return ListView.builder(
         controller: ProductMainTab.scrollController,
         physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: products.length,
         itemBuilder: (context, index) => ProductCardKR(product: products[index]),
       );

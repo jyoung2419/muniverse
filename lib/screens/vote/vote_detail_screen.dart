@@ -11,6 +11,7 @@ import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 import '../../utils/vote_text_util.dart';
+import '../../widgets/common/build_badge.dart';
 import '../vote/detail/vote_detail_info_tab.dart';
 import '../vote/detail/vote_detail_progress_tab.dart';
 import '../vote/detail/vote_detail_result_tab.dart';
@@ -190,17 +191,29 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
                       image: DecorationImage(
                         image: vote.voteImageUrl.isNotEmpty
                             ? NetworkImage(vote.voteImageUrl)
-                            : const AssetImage('assets/images/default_vote_image.png') as ImageProvider,
+                            : const AssetImage('assets/images/default_image.png') as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   if (isRunning)
-                    _buildBadge(labels['vote_ongoing']!, bg: const Color(0xFF2EFFAA), fg: Colors.black),
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: BuildBadge(text: labels['vote_ongoing']!, color: const Color(0xFF2EFFAA), textColor: Colors.black),
+                    ),
                   if (isUpcoming)
-                    _buildBadge(labels['vote_upcoming']!, bg: const Color(0xFF2EFFAA), fg: Colors.black),
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: BuildBadge(text: labels['vote_upcoming']!, color: const Color(0xFF2EFFAA), textColor: Colors.black),
+                    ),
                   if (isEnded)
-                    _buildBadge(labels['vote_closed']!, bg: Colors.black.withOpacity(0.7), fg: const Color(0xFF2EFFAA)),
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: BuildBadge(text:labels['vote_closed']!, color: Colors.black.withOpacity(0.7), textColor: const Color(0xFF2EFFAA)),
+                    ),
                 ],
               ),
             ),
@@ -245,21 +258,6 @@ class _VoteDetailScreenState extends State<VoteDetailScreen> with TickerProvider
             )
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildBadge(String text, {required Color bg, required Color fg}) {
-    return Positioned(
-      top: 8,
-      left: 8,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Text(text, style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.w500)),
       ),
     );
   }

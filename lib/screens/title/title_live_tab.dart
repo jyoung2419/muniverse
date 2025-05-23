@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_live_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/common/build_badge.dart';
 import '../../widgets/common/translate_text.dart';
 import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/live_faq.dart';
@@ -172,21 +173,10 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                         Positioned(
                           top: 8,
                           left: 8,
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                color: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          child: BuildBadge(
+                            text: status,
+                            color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
+                            textColor: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
                           ),
                         ),
                       ],
