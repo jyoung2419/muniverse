@@ -93,7 +93,8 @@ class _VoteDialogState extends State<VoteDialog> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: (remainingCount ?? 0) > 0
+                        ? () {
                       showDialog(
                         context: context,
                         builder: (_) => FreeVoteDialog(
@@ -101,7 +102,8 @@ class _VoteDialogState extends State<VoteDialog> {
                           voteArtistSeq: widget.voteArtistSeq,
                         ),
                       );
-                    },
+                    }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2EFFAA),
                       foregroundColor: Colors.black,

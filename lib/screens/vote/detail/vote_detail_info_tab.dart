@@ -11,8 +11,8 @@ class VoteDetailInfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = context.watch<VoteDetailProvider>().voteDetail?.detailContent.content ?? '';
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

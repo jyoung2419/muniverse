@@ -91,7 +91,8 @@ class _HeaderState extends State<Header> {
         child: Container(color: const Color(0xFF0B0C0C)),
       )
           : null,
-      leading: Padding(
+    leading: SafeArea(
+      child: Padding(
         padding: const EdgeInsets.only(left: 30),
         child: SizedBox(
           width: 100,
@@ -195,6 +196,7 @@ class _HeaderState extends State<Header> {
             ),
           ),),
         ),
+      ),
 
       title: GestureDetector(
         onTap: () {

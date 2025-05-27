@@ -60,6 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
     final filteredEvents = [...opened, ...upcoming];
     final matchingEvents = filteredEvents.take(7).toList();
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final appBarHeight = const Header(isHome: true).preferredSize.height;
 
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
@@ -71,12 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: kToolbarHeight + 55),
-            Stack(
-              children: [
-                HomeBannerSection(events: matchingEvents),
-              ],
-            ),
+            SizedBox(height: statusBarHeight + appBarHeight * 0.9),
+            HomeBannerSection(events: matchingEvents),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

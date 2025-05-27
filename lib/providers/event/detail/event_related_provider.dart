@@ -10,22 +10,33 @@ class EventRelatedProvider with ChangeNotifier {
   List<EventRelatedModel> _relatedVideos = [];
   bool _isLoading = false;
   String? _error;
+  int _currentPage = 0;
+  bool _isLastPage = false;
 
   List<EventRelatedModel> get relatedVideos => _relatedVideos;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isLastPage => _isLastPage;
 
   /// 특정 이벤트 코드 기반 관련영상 가져오기 (event detail 용)
-  Future<void> fetchRelatedVideosByEventCode(String eventCode, {int? eventYear}) async {
+  Future<void> fetchNextPage(String eventCode, {int? eventYear}) async {
     _isLoading = true;
-    _error = null;
     notifyListeners();
 
     try {
-      final data = await _eventTitleService.fetchEventRelatedVideos(eventCode, eventYear: eventYear);
-      _relatedVideos = data.map((e) => EventRelatedModel.fromJson(e)).toList();
+      final data = await _eventTitleService.fetchEventRelatedVideos(
+        eventCode,
+        eventYear: eventYear,
+        page: _currentPage,
+        size: 10,
+      );
+      final videos = data.map((e) => EventRelatedModel.fromJson(e)).toList();
+
+      if (videos.isEmpty) _isLastPage = true;
+      _relatedVideos.addAll(videos);
+      _currentPage += 1;
     } catch (e) {
-      _error = '❌ 관련 영상을 불러오는 데 실패했습니다.';
+      _error = '❌ 관련 영상 추가 로드 실패';
     } finally {
       _isLoading = false;
       notifyListeners();

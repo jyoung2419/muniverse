@@ -80,13 +80,24 @@ class EventTitleService {
   }
 
   // 관련영상 리스트 조회
-  Future<List<Map<String, dynamic>>> fetchEventRelatedVideos(String eventCode, {int? eventYear}) async {
+  Future<List<Map<String, dynamic>>> fetchEventRelatedVideos(
+      String eventCode, {
+        int? eventYear,
+        int page = 0,
+        int size = 10,
+      }) async {
     try {
+      final queryParams = {
+        'page': page,
+        'size': size,
+        if (eventYear != null) 'eventYear': eventYear,
+      };
       final response = await _dio.get(
         '/api/v1/event/detail/relate/$eventCode',
-        queryParameters: eventYear != null ? {'eventYear': eventYear} : null,
+        queryParameters: queryParams,
       );
-      return List<Map<String, dynamic>>.from(response.data);
+      final content = response.data['content'] as List;
+      return List<Map<String, dynamic>>.from(content);
     } catch (e) {
       print('❌ Related Video API 호출 실패: $e');
       rethrow;

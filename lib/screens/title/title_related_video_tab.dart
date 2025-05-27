@@ -23,6 +23,7 @@ class TitleRelatedVideoTab extends StatefulWidget {
 class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
   late int? _selectedYear;
   final List<YoutubePlayerController> _controllers = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -30,8 +31,18 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
     _selectedYear = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<EventRelatedProvider>(context, listen: false)
-          .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: null);
+          .fetchNextPage(widget.eventCode, eventYear: null);
     });
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final provider = Provider.of<EventRelatedProvider>(context, listen: false);
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (!provider.isLoading && !provider.isLastPage) {
+        provider.fetchNextPage(widget.eventCode, eventYear: _selectedYear);
+      }
+    }
   }
 
   YoutubePlayerController _controllerFromUrl(String url) {
@@ -50,6 +61,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
     for (var controller in _controllers) {
       controller.dispose();
     }
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -70,7 +82,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
                 years: [2025, 2024, 2023],
                 onChanged: (newYear) {
                   Provider.of<EventRelatedProvider>(context, listen: false)
-                      .fetchRelatedVideosByEventCode(widget.eventCode, eventYear: newYear);
+                      .fetchNextPage(widget.eventCode, eventYear: newYear);
                   setState(() {
                     _selectedYear = newYear;
                   });
@@ -106,6 +118,7 @@ class _TitleRelatedVideoTabState extends State<TitleRelatedVideoTab> {
 
               return ListView.builder(
                 physics: const ClampingScrollPhysics(),
+                controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 itemCount: provider.relatedVideos.length,
                 itemBuilder: (context, index) {

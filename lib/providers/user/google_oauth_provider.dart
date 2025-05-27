@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,14 +10,12 @@ class GoogleOauthProvider with ChangeNotifier {
 
   Future<void> signIn(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: dotenv.env['GOOGLE_CLIENT_ID'],
+      clientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     );
 
     final googleUser = await googleSignIn.signIn();
     final googleAuth = await googleUser?.authentication;
     final idToken = googleAuth?.idToken;
-    print("🔥 googleUser: $googleUser");
-    print("🔥 idToken: $idToken");
 
     if (idToken == null) return;
 

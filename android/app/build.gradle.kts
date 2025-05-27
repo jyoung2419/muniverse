@@ -5,6 +5,10 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+dependencies {
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+}
+
 android {
     namespace = "com.example.muniverse_app"
     compileSdk = flutter.compileSdkVersion

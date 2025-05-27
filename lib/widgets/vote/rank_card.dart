@@ -60,9 +60,11 @@ class RankCard extends StatelessWidget {
                 height: 130,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey,
-                    child: const Icon(Icons.error, color: Colors.white),
+                  return Image.asset(
+                    'assets/images/default_profile.png',
+                    width: 130,
+                    height: 130,
+                    fit: BoxFit.cover,
                   );
                 },
               ),

@@ -70,7 +70,6 @@ class _LoginForm extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            // TODO: 로그인 로직 추가 예정
             Navigator.pushReplacementNamed(context, '/home');
           },
           child: const _SocialLoginButton(

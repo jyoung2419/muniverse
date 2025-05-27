@@ -41,7 +41,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
           children: [
             const SizedBox(height: 16),
             Center(
-              child: Text(
+              child: TranslatedText(
                 noticeTitle,
                 style: TextStyle(
                   color: Color(0xFF2EFFAA),
