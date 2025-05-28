@@ -5,7 +5,6 @@ import '../title/title_home_screen.dart';
 
 class HomeBannerSection extends StatefulWidget {
   final List<EventMainModel> events;
-
   const HomeBannerSection({super.key, required this.events});
 
   @override
@@ -13,8 +12,10 @@ class HomeBannerSection extends StatefulWidget {
 }
 
 class _HomeBannerSectionState extends State<HomeBannerSection> {
+  late final PageController _pageController;
   late Timer _timer;
-  int currentIndex = 0;
+
+  int currentPage = 1;
 
   final List<String> bannerImages = [
     'assets/images/banner/Mokpo.png',
@@ -26,7 +27,7 @@ class _HomeBannerSectionState extends State<HomeBannerSection> {
     'assets/images/banner/MBC_Music_Festival.png',
   ];
 
-  List<String> bannerEventCodes = [
+  final List<String> bannerEventCodes = [
     '6334bed1-c6f2-47ab-8c1c-e73c124f8496',
     'b5d3c1b7-b1f9-45a4-9bb3-6ad5663bf48e',
     '0264a0cb-24fe-4407-8fa8-ce45c90028ec',
@@ -36,21 +37,28 @@ class _HomeBannerSectionState extends State<HomeBannerSection> {
     '35710589-1f14-47b2-a199-9611ae085a3a',
   ];
 
+  List<String> get loopedImages =>
+      [bannerImages.last, ...bannerImages, bannerImages.first];
+
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _setNextImage());
+    _pageController = PageController(initialPage: 1);
+    _startAutoScroll();
   }
 
-  void _setNextImage() {
-    setState(() {
-      currentIndex = (currentIndex + 1) % bannerImages.length;
+  void _startAutoScroll() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
   void _onTapBanner() {
-    if (currentIndex >= bannerEventCodes.length) return;
-    final eventCode = bannerEventCodes[currentIndex];
+    final index = (currentPage - 1) % bannerEventCodes.length;
+    final eventCode = bannerEventCodes[index];
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -59,34 +67,52 @@ class _HomeBannerSectionState extends State<HomeBannerSection> {
     );
   }
 
+  void _onPageChanged(int index) {
+    setState(() {
+      currentPage = index;
+    });
+
+    if (index == 0) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _pageController.jumpToPage(bannerImages.length);
+      });
+    } else if (index == bannerImages.length + 1) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _pageController.jumpToPage(1);
+      });
+    }
+  }
+
   @override
   void dispose() {
+    _pageController.dispose();
     _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentImage = bannerImages[currentIndex];
+    final height = MediaQuery.of(context).size.height * 0.6;
 
-    return GestureDetector(
-      onTap: _onTapBanner,
+    return SizedBox(
+      height: height,
       child: Stack(
-        alignment: Alignment.topCenter,
+        alignment: Alignment.bottomCenter,
         children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 800),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-            child: Image.asset(
-              currentImage,
-              key: ValueKey<String>(currentImage),
-              fit: BoxFit.fitWidth,
-              width: double.infinity,
+          GestureDetector(
+            onTap: _onTapBanner,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: loopedImages.length,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (_, index) {
+                final img = loopedImages[index];
+                return Image.asset(
+                  img,
+                  fit: BoxFit.fitWidth,
+                  width: double.infinity,
+                );
+              },
             ),
           ),
           Positioned(
@@ -94,22 +120,15 @@ class _HomeBannerSectionState extends State<HomeBannerSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(bannerImages.length, (index) {
-                final isActive = index == currentIndex;
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: isActive ? 10 : 6,
-                    height: isActive ? 10 : 6,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isActive ? Colors.white : Colors.white38,
-                    ),
+                final isActive = currentPage == index + 1;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: isActive ? 10 : 6,
+                  height: isActive ? 10 : 6,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isActive ? Colors.white : Colors.white38,
                   ),
                 );
               }),

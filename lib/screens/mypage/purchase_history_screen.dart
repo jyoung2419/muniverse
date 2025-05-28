@@ -224,7 +224,7 @@ class _PurchaseHistoryScreenState extends State<PurchaseHistoryScreen> {
                 );
               },
             ),
-          ),
+          ),const SizedBox(height: 40),
         ],
       ),
     );

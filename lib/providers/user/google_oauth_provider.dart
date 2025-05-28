@@ -13,6 +13,11 @@ class GoogleOauthProvider with ChangeNotifier {
       clientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     );
 
+
+    if (await googleSignIn.isSignedIn()) {
+      await googleSignIn.disconnect();
+    }
+    await googleSignIn.signOut();
     final googleUser = await googleSignIn.signIn();
     final googleAuth = await googleUser?.authentication;
     final idToken = googleAuth?.idToken;
@@ -21,10 +26,8 @@ class GoogleOauthProvider with ChangeNotifier {
 
     final data = await _googleOauthService.loginWithGoogle(idToken);
 
-    print('🔥 서버 응답 data: $data');
     final userId = data['userId'];
     final status = data['status'];
-    print('🔥 서버 응답 status: $status');
 
     if (userId != null) {
       await SharedPrefsUtil.saveUserId(userId);
