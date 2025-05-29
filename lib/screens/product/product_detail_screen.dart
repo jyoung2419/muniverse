@@ -17,12 +17,14 @@ class ProductDetailScreen extends StatefulWidget {
   final String productCode;
   final String viewType;
   final String eventName;
+  final List<String> viewTypes;
 
   const ProductDetailScreen({
     super.key,
     required this.productCode,
     required this.viewType,
     required this.eventName,
+    required this.viewTypes,
   });
 
   @override
@@ -34,10 +36,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
   bool _tabInitialized = false;
   bool _isLoading = true;
   int _quantity = 1;
+  final ValueNotifier<bool> isUSDNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
+    isUSDNotifier.value = lang != 'kr';
     _fetchDetail();
   }
 
@@ -71,19 +76,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
       _tabInitialized = true;
     }
 
-    final isUSD = usd != null;
-    final imageUrl = isUSD ? usd!.productImgUrl : kr!.productImgUrl;
-    final name = isUSD ? usd!.name : kr!.name;
-    final price = isUSD ? usd.priceDollar : kr!.priceWon.toDouble();
-    final fee = isUSD ? usd.chargeDollar : kr!.chargeWon.toDouble();
-    final unitPrice = isUSD ? usd.totalPrice : kr!.totalPrice.toDouble();
+    final isUSDValue = isUSDNotifier.value;
+    final imageUrl = isUSDValue ? usd!.productImgUrl : kr!.productImgUrl;
+    final name = isUSDValue ? usd!.name : kr!.name;
+    final price = isUSDValue ? usd!.priceDollar : kr!.priceWon.toDouble();
+    final fee = isUSDValue ? usd!.chargeDollar : kr!.chargeWon.toDouble();
+    final unitPrice = isUSDValue ? usd!.totalPrice : kr!.totalPrice.toDouble();
+    final unitSymbol = isUSDValue ? '\$' : '₩';
     final totalPrice = unitPrice * _quantity;
+    final currencyType = isUSDValue ? 'dollar' : 'won';
 
-    final unitSymbol = isUSD ? '\$' : '₩';
-    final formattedUnitPrice = isUSD
-        ? unitPrice.toStringAsFixed(2)
-        : NumberFormat('#,###').format(unitPrice);
-    final formattedTotalPrice = isUSD
+    final formattedPrice = isUSDValue
+        ? price.toStringAsFixed(2)
+        : NumberFormat('#,###').format(price);
+
+    final totalPriceWithoutFee = price * _quantity;
+    final formattedTotalPriceWithoutFee = isUSDValue
+        ? totalPriceWithoutFee.toStringAsFixed(2)
+        : NumberFormat('#,###').format(totalPriceWithoutFee);
+
+    final formattedTotalPrice = isUSDValue
         ? totalPrice.toStringAsFixed(2)
         : NumberFormat('#,###').format(totalPrice);
     final buyButtonText = lang == 'kr' ? '구매하기' : 'BUY';
@@ -95,179 +107,217 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
       floatingActionButton: const BackFAB(),
       body: Stack(
         children: [
-        NestedScrollView(        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+          NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1A1A1A),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: 180,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  image: DecorationImage(
-                                    image: NetworkImage(imageUrl),
-                                    fit: BoxFit.cover,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 180,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: NetworkImage(imageUrl),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      TranslatedText(widget.eventName, style: const TextStyle(fontSize: 11, color: Colors.white)),
-                                      const SizedBox(height: 6),
-                                      Text(name, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
-                                      const SizedBox(height: 6),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: widget.viewType == 'VOD' ? Colors.black : const Color(0xFF2EFFAA),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: Text(
-                                          widget.viewType,
-                                          style: TextStyle(
-                                            color: widget.viewType == 'VOD' ? const Color(0xFF2EFFAA) : Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          TranslatedText(widget.eventName, style: const TextStyle(fontSize: 11, color: Colors.white)),
+                                          const SizedBox(height: 6),
+                                          Text(name, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
+                                          const SizedBox(height: 6),
+                                          Row(
+                                            children: widget.viewTypes.map((type) {
+                                              return Container(
+                                                margin: const EdgeInsets.only(right: 4),
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black,
+                                                  borderRadius: BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  type,
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF2EFFAA),
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
                                           ),
-                                        ),
+
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '$unitSymbol $formattedPrice',
+                                                style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                                              ),
+                                              const Spacer(),
+                                              Container(
+                                                height: 24,
+                                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF1A1A1A),
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  border: Border.all(color: Colors.white24),
+                                                ),
+                                                child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    value: isUSDValue ? 'USD' : 'KRW',
+                                                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 16),
+                                                    dropdownColor: const Color(0xFF1A1A1A),
+                                                    style: const TextStyle(color: Colors.white, fontSize: 11),
+                                                    items: const [
+                                                      DropdownMenuItem(value: 'KRW', child: Text('KRW')),
+                                                      DropdownMenuItem(value: 'USD', child: Text('USD')),
+                                                    ],
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        isUSDNotifier.value = value == 'USD';
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 10),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 6),
-                                        child: Row(
-                                          children: [
-                                            Text('$unitSymbol $formattedUnitPrice', style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600)),
-                                            const Spacer(),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          const Divider(color: Colors.white10),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              RawMaterialButton(
-                                onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
-                                fillColor: const Color(0xFF992BEF),
-                                shape: const CircleBorder(),
-                                constraints: const BoxConstraints.tightFor(width: 22, height: 22),
-                                child: const Icon(Icons.remove, color: Color(0xFF212225), size: 20),
+                              const SizedBox(height: 4),
+                              const Divider(color: Colors.white10),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  RawMaterialButton(
+                                    onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
+                                    fillColor: const Color(0xFF992BEF),
+                                    shape: const CircleBorder(),
+                                    constraints: const BoxConstraints.tightFor(width: 22, height: 22),
+                                    child: const Icon(Icons.remove, color: Color(0xFF212225), size: 20),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text('$_quantity', style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
+                                  const SizedBox(width: 4),
+                                  RawMaterialButton(
+                                    onPressed: () => setState(() => _quantity++),
+                                    fillColor: const Color(0xFF992BEF),
+                                    shape: const CircleBorder(),
+                                    constraints: const BoxConstraints.tightFor(width: 22, height: 22),
+                                    child: const Icon(Icons.add, color: Color(0xFF212225), size: 20),
+                                  ),
+                                  const Spacer(),
+                                  Text('$unitSymbol $formattedTotalPriceWithoutFee', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+                                  const SizedBox(width: 14),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => OrderSheetScreen(
+                                              productCode: widget.productCode,
+                                              eventName: widget.eventName,
+                                              imageUrl: imageUrl,
+                                              productName: name,
+                                              quantity: _quantity,
+                                              formattedTotalPrice: formattedTotalPrice,
+                                              totalPrice: totalPrice,
+                                              price: price,
+                                              fee: fee,
+                                              currencyType: currencyType,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF2EFFAA),
+                                        foregroundColor: Colors.black,
+                                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                        minimumSize: const Size(0, 28),
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      ),
+                                      child: Text(buyButtonText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 4),
-                              Text('$_quantity', style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
-                              const SizedBox(width: 4),
-                              RawMaterialButton(
-                                onPressed: () => setState(() => _quantity++),
-                                fillColor: const Color(0xFF992BEF),
-                                shape: const CircleBorder(),
-                                constraints: const BoxConstraints.tightFor(width: 22, height: 22),
-                                child: const Icon(Icons.add, color: Color(0xFF212225), size: 20),
-                              ),
-                              const Spacer(),
-                              Text('$unitSymbol $formattedTotalPrice', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
-                              const SizedBox(width: 14),
                               Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => OrderSheetScreen(
-                                          eventName: widget.eventName,
-                                          imageUrl: imageUrl,
-                                          productName: name,
-                                          quantity: _quantity,
-                                          formattedTotalPrice: formattedTotalPrice,
-                                          totalPrice: totalPrice,
-                                          price: price,
-                                          fee: fee,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2EFFAA),
-                                    foregroundColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                    minimumSize: const Size(0, 28),
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  child: Text(buyButtonText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                padding: const EdgeInsets.fromLTRB(8, 0, 0, 4),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TranslatedText(
+                                      '* 해당 상품은 1장당 ${isUSDValue ? '\$${fee.toStringAsFixed(2)}' : '₩${NumberFormat('#,###').format(fee)}'}의 판매수수료가 부과됩니다.',
+                                      style: const TextStyle(color: Colors.white70, fontSize: 10),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    const TranslatedText('영상 예시 화면 확인하기', style: TextStyle(color: Color(0xFF2EFFAA), fontSize: 10)),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(8, 0, 0, 4),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TranslatedText('* 해당 상품은 1장당 1400원의 판매수수료가 부과됩니다.', style: TextStyle(color: Colors.white70, fontSize: 10)),
-                                SizedBox(height: 6),
-                                TranslatedText('영상 예시 화면 확인하기', style: TextStyle(color: Color(0xFF2EFFAA), fontSize: 10)),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: const Color(0xFF2EFFAA),
+                        unselectedLabelColor: Colors.white60,
+                        indicatorColor: const Color(0xFF2EFFAA),
+                        tabs: tabs.map((label) => Tab(text: label)).toList(),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TabBar(
-                    controller: _tabController,
-                    labelColor: const Color(0xFF2EFFAA),
-                    unselectedLabelColor: Colors.white60,
-                    indicatorColor: const Color(0xFF2EFFAA),
-                    tabs: tabs.map((label) => Tab(text: label)).toList(),
-                  ),
-                ),
+              ),
+            ],
+            body: TabBarView(
+              controller: _tabController,
+              children: const [
+                ProductDetailInfoTab(),
+                ProductDetailNoteTab(),
+                ProductDetailFAQTab(),
               ],
             ),
           ),
-        ],
-          body: TabBarView(
-            controller: _tabController,
-            children: const [
-              ProductDetailInfoTab(),
-              ProductDetailNoteTab(),
-              ProductDetailFAQTab(),
-            ],
-          ),
-        ),
           Positioned(
             bottom: 40,
             right: 16,

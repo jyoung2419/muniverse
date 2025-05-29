@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/product/product_live_kr_model.dart';
+import '../../models/product/product_live_usd_model.dart';
+import '../../models/product/product_vod_kr_model.dart';
+import '../../models/product/product_vod_usd_model.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/product/event_product_kr_provider.dart';
 import '../../providers/product/event_product_usd_provider.dart';
@@ -74,16 +78,42 @@ class _TitleProductTabState extends State<TitleProductTab> {
         );
       }
 
-      final merged = [...products.vods, ...products.lives];
+      final merged = [
+        ...products.vods.map((vod) => {'type': 'VOD', 'product': vod}),
+        ...products.lives.map((live) => {'type': 'LIVE', 'product': live}),
+      ];
 
       return ListView.builder(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: merged.length,
-        itemBuilder: (context, index) => ProductCardKR(
-          product: merged[index],
-        ),
+        itemBuilder: (context, index) {
+          final item = merged[index];
+          final product = item['product'];
+
+          List<String> viewTypes;
+          if (product is ProductVodKRModel) {
+            if (product.isPackage) {
+              viewTypes = product.categories;
+            } else {
+              viewTypes = product.categories.isNotEmpty ? [product.categories.first] : ['UNKNOWN'];
+            }
+          } else if (product is ProductLiveKRModel) {
+            if (product.isPackage) {
+              viewTypes = product.categories;
+            } else {
+              viewTypes = product.categories.isNotEmpty ? [product.categories.first] : ['UNKNOWN'];
+            }
+          } else {
+            viewTypes = ['UNKNOWN'];
+          }
+          return ProductCardKR(
+            product: product,
+            viewTypes: viewTypes,
+          );
+        },
       );
+
     } else {
       final usdProvider = context.watch<EventProductUSDProvider>();
       final products = usdProvider.products;
@@ -113,15 +143,39 @@ class _TitleProductTabState extends State<TitleProductTab> {
         );
       }
 
-      final merged = [...products.vods, ...products.lives];
+      final merged = [
+        ...products.vods.map((vod) => {'type': 'VOD', 'product': vod}),
+        ...products.lives.map((live) => {'type': 'LIVE', 'product': live}),
+      ];
 
       return ListView.builder(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: merged.length,
-        itemBuilder: (context, index) => ProductCardUSD(
-          product: merged[index],
-        ),
+        itemBuilder: (context, index) {
+          final item = merged[index];
+          final product = item['product'];
+
+          List<String> viewTypes;
+          if (product is ProductVodUSDModel) {
+            if (product.isPackage) {
+              viewTypes = product.categories;
+            } else {
+              viewTypes = product.categories.isNotEmpty ? [product.categories.first] : ['UNKNOWN'];
+            }
+          } else if (product is ProductLiveUSDModel) {
+            if (product.isPackage) {
+              viewTypes = product.categories;
+            } else {
+              viewTypes = product.categories.isNotEmpty ? [product.categories.first] : ['UNKNOWN'];
+            }
+          } else {
+            viewTypes = ['UNKNOWN'];
+          }          return ProductCardUSD(
+            product: item['product'],
+            viewTypes: viewTypes,
+          );
+        },
       );
     }
   }

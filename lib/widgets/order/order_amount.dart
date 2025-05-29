@@ -7,6 +7,7 @@ class OrderAmount extends StatelessWidget {
   final double fee;
   final double totalPrice;
   final int quantity;
+  final String currencyType;
 
   const OrderAmount({
     super.key,
@@ -15,29 +16,34 @@ class OrderAmount extends StatelessWidget {
     required this.fee,
     required this.totalPrice,
     required this.quantity,
+    required this.currencyType
   });
 
   @override
   Widget build(BuildContext context) {
-    final symbol = lang == 'kr' ? '₩' : '\$';
-    final priceText = lang == 'kr'
-        ? '$symbol${NumberFormat('#,###').format(price)}'
-        : '$symbol${price.toStringAsFixed(2)}';
-    final feeText = lang == 'kr'
-        ? '$symbol${NumberFormat('#,###').format(fee)}'
-        : '$symbol${fee.toStringAsFixed(2)}';
-    final totalText = lang == 'kr'
-        ? '$symbol${NumberFormat('#,###').format(totalPrice)}'
-        : '$symbol${totalPrice.toStringAsFixed(2)}';
+    final symbol = currencyType == 'won' ? '원' : '\$';
+
+    final priceText = currencyType == 'won'
+        ? '${NumberFormat('#,###').format(price * quantity)}$symbol'
+        : '$symbol${(price * quantity).toStringAsFixed(2)}';
+
+    final feeText = currencyType == 'won'
+        ? '${NumberFormat('#,###').format(fee * quantity)}$symbol'
+        : '$symbol${(fee * quantity).toStringAsFixed(2)}';
+
+    final totalText = currencyType == 'won'
+        ? '${NumberFormat('#,###').format((price + fee) * quantity)}$symbol'
+        : '$symbol${((price + fee) * quantity).toStringAsFixed(2)}';
 
     final priceLabel = lang == 'kr' ? '상품금액' : 'Product Price';
     final feeLabel = lang == 'kr' ? '수수료' : 'Fee';
     final totalLabel = lang == 'kr' ? '총 상품금액' : 'Total';
 
+
     return Column(
       children: [
-        _buildRow(priceLabel, priceText, quantity),
-        _buildRow(feeLabel, feeText, quantity),
+        _buildRow(priceLabel, priceText),
+        _buildRow(feeLabel, feeText),
         const SizedBox(height: 10),
         const Divider(color: Colors.white10, height: 1.0),
         const SizedBox(height: 15),
@@ -54,7 +60,7 @@ class OrderAmount extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(String label, String value, int quantity) {
+  Widget _buildRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -65,7 +71,6 @@ class OrderAmount extends StatelessWidget {
             children: [
               Text(value, style: const TextStyle(color: Colors.white)),
               const SizedBox(width: 4),
-              Text('(x$quantity)', style: const TextStyle(color: Colors.white54, fontSize: 12)),
             ],
           ),
         ],

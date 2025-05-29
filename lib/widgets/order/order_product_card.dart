@@ -11,6 +11,7 @@ class OrderProductCard extends StatelessWidget {
   final String productName;
   final int quantity;
   final double totalPrice;
+  final String currencyType;
 
   const OrderProductCard({
     super.key,
@@ -19,14 +20,15 @@ class OrderProductCard extends StatelessWidget {
     required this.productName,
     required this.quantity,
     required this.totalPrice,
+    required this.currencyType,
   });
 
   @override
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
-    final symbol = lang == 'kr' ? '₩' : '\$';
-    final formattedTotal = lang == 'kr'
-        ? '$symbol${NumberFormat('#,###').format(totalPrice)}'
+    final symbol = currencyType == 'won' ? '원' : '\$';
+    final formattedTotal = currencyType == 'won'
+        ? '${NumberFormat('#,###').format(totalPrice)}$symbol'
         : '$symbol${totalPrice.toStringAsFixed(2)}';
     final totalLabel = lang == 'kr' ? '총 상품 금액' : 'Total';
 

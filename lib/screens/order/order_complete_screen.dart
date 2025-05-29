@@ -20,6 +20,7 @@ class OrderCompleteScreen extends StatelessWidget {
   final String phone;
   final double price;
   final double fee;
+  final String currencyType;
 
   const OrderCompleteScreen({
     super.key,
@@ -32,6 +33,7 @@ class OrderCompleteScreen extends StatelessWidget {
     required this.phone,
     required this.price,
     required this.fee,
+    required this.currencyType
   });
 
   @override
@@ -106,6 +108,7 @@ class OrderCompleteScreen extends StatelessWidget {
                 productName: productName,
                 quantity: quantity,
                 totalPrice: (fee + price) * quantity,
+                currencyType: currencyType,
               ),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
@@ -126,12 +129,12 @@ class OrderCompleteScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
-            _buildPriceRow(priceLabel, price),
-            _buildPriceRow(feeLabel, fee),
+            _buildPriceRow(priceLabel, price, currencyType),
+            _buildPriceRow(feeLabel, fee, currencyType),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
-              _buildPriceRow(totalLabel, total),
+            _buildPriceRow(totalLabel, total, currencyType),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 32),
@@ -197,14 +200,19 @@ class OrderCompleteScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceRow(String label, double amount) {
+  Widget _buildPriceRow(String label, double amount, String currencyType) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(color: Colors.white)),
-          Text('₩${NumberFormat('#,###').format(amount)}', style: const TextStyle(color: Colors.white)),
+          Text(
+            currencyType == 'won'
+                ? '${NumberFormat('#,###').format(amount)}원'
+                : '\$${amount.toStringAsFixed(2)}',
+            style: const TextStyle(color: Colors.white),
+          ),
         ],
       ),
     );

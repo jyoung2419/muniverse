@@ -30,22 +30,26 @@ class ProductDetailProvider with ChangeNotifier {
     _productCode = productCode;
     _viewType = viewType;
 
-    final langCode = _languageProvider.selectedLanguageCode;
-
-    if (langCode == 'kr') {
-      final json = await _service.fetchKRProductDetail(
+    try {
+      final krJson = await _service.fetchKRProductDetail(
         productCode: productCode,
         viewType: viewType,
       );
-      _krDetail = ProductDetailKRModel.fromJson(json);
-      _usdDetail = null;
-    } else {
-      final json = await _service.fetchUSDProductDetail(
-        productCode: productCode,
-        viewType: viewType,
-      );
-      _usdDetail = ProductDetailUSDModel.fromJson(json);
+      _krDetail = ProductDetailKRModel.fromJson(krJson);
+    } catch (e) {
       _krDetail = null;
+      debugPrint('❌ KR 상품 정보 로딩 실패: $e');
+    }
+
+    try {
+      final usdJson = await _service.fetchUSDProductDetail(
+        productCode: productCode,
+        viewType: viewType,
+      );
+      _usdDetail = ProductDetailUSDModel.fromJson(usdJson);
+    } catch (e) {
+      _usdDetail = null;
+      debugPrint('❌ USD 상품 정보 로딩 실패: $e');
     }
 
     notifyListeners();

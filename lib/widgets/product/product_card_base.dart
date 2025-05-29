@@ -7,7 +7,7 @@ class ProductCardBase extends StatelessWidget {
   final String productName;
   final String imageUrl;
   final String priceLabel;
-  final bool isVod;
+  final List<String> viewTypes;
   final VoidCallback onPressed;
   final String buttonText;
 
@@ -17,7 +17,7 @@ class ProductCardBase extends StatelessWidget {
     required this.productName,
     required this.imageUrl,
     required this.priceLabel,
-    required this.isVod,
+    required this.viewTypes,
     required this.onPressed,
     required this.buttonText,
   });
@@ -25,7 +25,7 @@ class ProductCardBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 176,
+      height: 185,
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
@@ -92,45 +92,58 @@ class ProductCardBase extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: isVod ? Colors.black : const Color(0xFF2EFFAA),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          isVod ? 'VOD' : 'LIVE',
-                          style: TextStyle(
-                            color: isVod ? const Color(0xFF2EFFAA) : Colors.black,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                      Row(
+                        children: viewTypes.map((type) {
+                          final bgColor = Colors.black;
+                          final textColor = const Color(0xFF2EFFAA);
+                          return Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            margin: const EdgeInsets.only(right: 4),
+                            decoration: BoxDecoration(
+                              color: bgColor,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              type,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }).toList(),
                       ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: onPressed,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2EFFAA),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          ElevatedButton(
+                            onPressed: onPressed,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2EFFAA),
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              minimumSize: const Size(60, 30),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              buttonText,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                          minimumSize: const Size(60, 30),
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          buttonText,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

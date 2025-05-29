@@ -50,6 +50,36 @@ class _ProductMainTabState extends State<ProductMainTab> {
     }
   }
 
+  List<Map<String, dynamic>> getMixedProducts(List vods, List lives) {
+    final List<Map<String, dynamic>> result = [];
+    final liveMap = {for (var live in lives) live.productCode: live};
+
+    for (final vod in vods) {
+      final code = vod.productCode;
+      if (liveMap.containsKey(code)) {
+        result.add({
+          'type': vod.categories.isNotEmpty ? vod.categories : ['VOD', 'LIVE', 'PACKAGE'],
+          'product': vod,
+        });
+        liveMap.remove(code);
+      } else {
+        result.add({
+          'type': vod.categories.isNotEmpty ? vod.categories : ['VOD'],
+          'product': vod,
+        });
+      }
+    }
+
+    for (final live in liveMap.values) {
+      result.add({
+        'type': live.categories.isNotEmpty ? live.categories : ['LIVE'],
+        'product': live,
+      });
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
@@ -57,7 +87,7 @@ class _ProductMainTabState extends State<ProductMainTab> {
 
     if (isKR) {
       final krProvider = context.watch<ProductKRProvider>();
-      final products = [...krProvider.vods, ...krProvider.lives];
+      final products = getMixedProducts(krProvider.vods, krProvider.lives);
 
       if (krProvider.isLoading) {
         return const Center(child: CircularProgressIndicator());
@@ -74,11 +104,14 @@ class _ProductMainTabState extends State<ProductMainTab> {
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: products.length,
-        itemBuilder: (context, index) => ProductCardKR(product: products[index]),
+        itemBuilder: (context, index) {
+          final item = products[index];
+          return ProductCardKR(product: item['product'], viewTypes: item['type']);
+        },
       );
     } else {
       final usdProvider = context.watch<ProductUSDProvider>();
-      final products = [...usdProvider.vods, ...usdProvider.lives];
+      final products = getMixedProducts(usdProvider.vods, usdProvider.lives);
 
       if (usdProvider.isLoading) {
         return const Center(child: CircularProgressIndicator());
@@ -95,7 +128,10 @@ class _ProductMainTabState extends State<ProductMainTab> {
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         itemCount: products.length,
-        itemBuilder: (context, index) => ProductCardUSD(product: products[index]),
+        itemBuilder: (context, index) {
+          final item = products[index];
+          return ProductCardUSD(product: item['product'], viewTypes: item['type']);
+        },
       );
     }
   }

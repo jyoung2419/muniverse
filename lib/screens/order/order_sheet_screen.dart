@@ -12,6 +12,7 @@ import '../../widgets/order/orderer_info.dart';
 import 'order_complete_screen.dart';
 
 class OrderSheetScreen extends StatefulWidget {
+  final String productCode;
   final String eventName;
   final String imageUrl;
   final String productName;
@@ -20,9 +21,11 @@ class OrderSheetScreen extends StatefulWidget {
   final double totalPrice;
   final double price;
   final double fee;
+  final String currencyType; // 'won' 또는 'dollar'
 
   const OrderSheetScreen({
     super.key,
+    required this.productCode,
     required this.eventName,
     required this.imageUrl,
     required this.productName,
@@ -31,6 +34,7 @@ class OrderSheetScreen extends StatefulWidget {
     required this.totalPrice,
     required this.price,
     required this.fee,
+    required this.currencyType,
   });
 
   @override
@@ -54,11 +58,12 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final titleText = lang == 'kr' ? '주문자 정보 입력' : 'Orderer Information';
+    final symbol = widget.currencyType == 'won' ? '원' : '\$';
 
-    final symbol = lang == 'kr' ? '₩' : '\$';
-    final total = lang == 'kr'
-        ? NumberFormat('#,###').format(widget.totalPrice)
-        : widget.totalPrice.toStringAsFixed(2);
+    final double finalTotal = (widget.price + widget.fee) * widget.quantity;
+    final total = widget.currencyType == 'won'
+        ? '${NumberFormat('#,###').format(finalTotal)}$symbol'
+        : '$symbol${finalTotal.toStringAsFixed(2)}';
     final payText = lang == 'kr' ? '결제하기' : 'PAY NOW';
 
     return Scaffold(
@@ -94,6 +99,7 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                 productName: widget.productName,
                 quantity: widget.quantity,
                 totalPrice: widget.totalPrice,
+                currencyType: widget.currencyType
               ),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
@@ -118,6 +124,7 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                 fee: widget.fee,
                 totalPrice: widget.totalPrice,
                 quantity: widget.quantity,
+                currencyType: widget.currencyType
               ),
               const SizedBox(height: 30),
               Row(
@@ -125,11 +132,13 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                   TranslatedText('총 ${widget.quantity}건',
                       style: const TextStyle(color: Colors.white)),
                   const Spacer(),
-                  Text('$symbol$total',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500)),
+                  Text(total,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   const SizedBox(width: 12),
                   ElevatedButton(
                     onPressed: () {
@@ -146,6 +155,7 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                             phone: phoneController.text,
                             price: widget.price,
                             fee: widget.fee,
+                            currencyType: widget.currencyType,
                           ),
                         ),
                       );
