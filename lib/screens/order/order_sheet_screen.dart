@@ -5,14 +5,21 @@ import '../../../providers/language_provider.dart';
 import '../../../widgets/common/app_drawer.dart';
 import '../../../widgets/common/back_fab.dart';
 import '../../../widgets/common/header.dart';
+import '../../models/order/order_item_model.dart';
+import '../../models/order/order_request_model.dart';
+import '../../providers/order/order_provider.dart';
+import '../../providers/payment/user_payment_provider.dart';
 import '../../widgets/common/translate_text.dart';
 import '../../widgets/order/order_amount.dart';
 import '../../widgets/order/order_product_card.dart';
 import '../../widgets/order/orderer_info.dart';
 import 'order_complete_screen.dart';
+import 'order_fail_screen.dart';
+import 'payment_web_view_screen.dart';
 
 class OrderSheetScreen extends StatefulWidget {
   final String productCode;
+  final String viewType;
   final String eventName;
   final String imageUrl;
   final String productName;
@@ -26,6 +33,7 @@ class OrderSheetScreen extends StatefulWidget {
   const OrderSheetScreen({
     super.key,
     required this.productCode,
+    required this.viewType,
     required this.eventName,
     required this.imageUrl,
     required this.productName,
@@ -141,32 +149,116 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => OrderCompleteScreen(
-                            eventName: widget.eventName,
-                            imageUrl: widget.imageUrl,
-                            productName: widget.productName,
-                            quantity: widget.quantity,
-                            userName: nameController.text,
-                            email: emailController.text,
-                            phone: phoneController.text,
-                            price: widget.price,
-                            fee: widget.fee,
-                            currencyType: widget.currencyType,
+                    onPressed: () async {
+                      if (nameController.text.isEmpty ||
+                          emailController.text.isEmpty ||
+                          phoneController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              lang == 'kr'
+                                  ? '이름, 이메일, 전화번호를 모두 입력해주세요.'
+                                  : 'Please fill in all fields: name, email, and phone number.',
+                            ),
+                            backgroundColor: Colors.red,
                           ),
-                        ),
+                        );
+                        return;
+                      }
+
+                      final orderRequest = OrderRequest(
+                        items: [
+                          OrderItem(
+                            viewType: widget.viewType,
+                            productCode: widget.productCode,
+                            amount: widget.quantity,
+                          ),
+                        ],
+                        paymentType: widget.currencyType == 'won' ? 'WON' : 'DOLLAR',
+                        phoneNumber: phoneController.text,
+                        payLanguage: lang == 'kr'
+                            ? 'ko'
+                            : (lang == 'cn' || lang == 'tw')
+                            ? 'cn'
+                            : 'en',
+                        email: emailController.text,
+                        orderedName: nameController.text,
                       );
+
+                      try {
+                        final nextUrl = await context.read<OrderProvider>().createPayment(orderRequest);
+                        if (nextUrl != null) {
+                          final fullUrl = 'https://api-test.muniverse.io$nextUrl';
+
+                          final orderId = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PaymentWebViewScreen(url: fullUrl),
+                            ),
+                          );
+
+                          if (orderId != null && mounted) {
+                            final provider = context.read<UserPaymentProvider>();
+                            await provider.resetAndFetchPayments();
+
+                            final order = provider.payments.firstWhere((p) => p.orderId == orderId);
+                            final item = order.orderItems.first;
+
+                            if (order.orderStatus == 'COMPLETED') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => OrderCompleteScreen(
+                                    eventName: order.eventName ?? '',
+                                    imageUrl: item.productImageUrl,
+                                    productName: item.productName,
+                                    quantity: item.amount,
+                                    userName: nameController.text,
+                                    email: emailController.text,
+                                    phone: phoneController.text,
+                                    price: item.totalPriceForAmount / item.amount,
+                                    fee: order.totalOrderPrice - item.totalPriceForAmount,
+                                    currencyType: widget.currencyType,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => OrderFailScreen(
+                                    eventName: order.eventName ?? '',
+                                    imageUrl: item.productImageUrl,
+                                    productName: item.productName,
+                                    quantity: item.amount,
+                                    price: item.totalPriceForAmount / item.amount,
+                                    fee: order.totalOrderPrice - item.totalPriceForAmount,
+                                    currencyType: widget.currencyType,
+                                    orderStatus: order.orderStatus,
+                                    productCode: widget.productCode,
+                                    viewType: widget.viewType,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(lang == 'kr' ? '결제 URL을 불러오지 못했습니다.' : 'Failed to get payment URL')),
+                          );
+                        }
+                      } catch (e) {
+                        print('❌ 결제 요청 실패: $e');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(lang == 'kr' ? '결제 요청 중 오류가 발생했습니다.' : 'Error during payment request')),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2EFFAA),
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: Text(payText),
                   ),

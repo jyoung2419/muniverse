@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'providers/order/order_provider.dart';
 import 'providers/payment/user_payment_provider.dart';
 import 'providers/popup/popup_provider.dart';
 import 'providers/product/event_product_kr_provider.dart';
@@ -42,6 +43,7 @@ import 'screens/user/google_signup_screen.dart';
 import 'screens/info/notice_screen.dart';
 import 'screens/info/faq_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'services/order/order_service.dart';
 import 'utils/dio_client.dart';
 
 Future<void> main() async {
@@ -87,6 +89,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
         ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
         ChangeNotifierProvider(create: (context) => ProductDetailProvider(dio, context.read<LanguageProvider>())),
+        ChangeNotifierProvider(create: (_) => OrderProvider(OrderService(dio))),
         ChangeNotifierProvider(create: (_) => VoteTicketProvider()),  // 수정 예정
         ChangeNotifierProvider(create: (context) => UserPassProvider(dio, context.read<LanguageProvider>())),
         ChangeNotifierProvider(create: (context) => VoteMainProvider(dio, context.read<LanguageProvider>())),

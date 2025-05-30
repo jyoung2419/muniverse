@@ -40,10 +40,12 @@ class OrderCompleteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
     final titleText = lang == 'kr' ? '주문 완료' : 'Order Complete';
-    final total = price + fee;
     final priceLabel = lang == 'kr' ? '상품금액' : 'Product Price';
     final feeLabel = lang == 'kr' ? '수수료' : 'Fee';
     final totalLabel = lang == 'kr' ? '총 상품금액' : 'Total';
+    final totalProductPrice = price * quantity;
+    final totalFee = fee * quantity;
+    final total = (price + fee) * quantity;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0C0C),
@@ -107,7 +109,7 @@ class OrderCompleteScreen extends StatelessWidget {
                 imageUrl: imageUrl,
                 productName: productName,
                 quantity: quantity,
-                totalPrice: (fee + price) * quantity,
+                totalPrice: price * quantity,
                 currencyType: currencyType,
               ),
               const SizedBox(height: 10),
@@ -129,8 +131,8 @@ class OrderCompleteScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),
-            _buildPriceRow(priceLabel, price, currencyType),
-            _buildPriceRow(feeLabel, fee, currencyType),
+            _buildPriceRow(priceLabel, totalProductPrice, currencyType),
+            _buildPriceRow(feeLabel, totalFee, currencyType),
               const SizedBox(height: 10),
               const Divider(color: Colors.white12, height: 1.0),
               const SizedBox(height: 10),

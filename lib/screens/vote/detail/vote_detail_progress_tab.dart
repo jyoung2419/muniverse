@@ -41,7 +41,7 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
           TextField(
             cursorColor: Colors.white,
             decoration: InputDecoration(
-              hintText: '검색',
+              hintText: lang == 'kr' ? '검색' : 'SEARCH',
               hintStyle: const TextStyle(color: Colors.white54),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -121,12 +121,16 @@ class _VoteDetailProgressTabState extends State<VoteDetailProgressTab> {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                TranslatedText(
-                                  artist.artistName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: Colors.white,
+                                Expanded(
+                                  child: TranslatedText(
+                                    artist.artistName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],

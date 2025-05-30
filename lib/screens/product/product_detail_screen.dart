@@ -249,6 +249,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                                           MaterialPageRoute(
                                             builder: (_) => OrderSheetScreen(
                                               productCode: widget.productCode,
+                                              viewType: widget.viewType,
                                               eventName: widget.eventName,
                                               imageUrl: imageUrl,
                                               productName: name,
