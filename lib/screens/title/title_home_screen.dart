@@ -185,7 +185,7 @@ class _TitleHomeScreenState extends State<TitleHomeScreen> {
                   Theme(
                     data: Theme.of(context).copyWith(
                       dividerColor: Colors.transparent,
-                      tabBarTheme: const TabBarTheme(
+                      tabBarTheme: const TabBarThemeData(
                         dividerColor: Colors.transparent,
                         overlayColor: WidgetStatePropertyAll(Colors.transparent),
                         indicator: UnderlineTabIndicator(

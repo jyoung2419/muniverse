@@ -67,18 +67,15 @@ class ProductCardBase extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Html(
-                        data: productName,
-                        style: {
-                          'body': Style(
-                            margin: Margins.zero,
-                            padding: HtmlPaddings.zero,
-                            fontSize: FontSize(14),
-                            color: Colors.white,
-                            maxLines: 2,
-                            textOverflow: TextOverflow.ellipsis,
-                          ),
-                        },
+                      TranslatedText(
+                        productName,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 2,
                       ),
                       const SizedBox(height: 8),
                       Text(

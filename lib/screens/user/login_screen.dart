@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../providers/user/google_oauth_provider.dart';
+import '../../providers/user/twitter_oauth_provider.dart';
 import '../../widgets/common/muniverse_logo.dart';
 import 'package:provider/provider.dart';
 
@@ -69,8 +70,8 @@ class _LoginForm extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.pushReplacementNamed(context, '/home');
+          onTap: () async {
+            await Provider.of<TwitterOauthProvider>(context, listen: false).signIn();
           },
           child: const _SocialLoginButton(
             text: 'X로 로그인',

@@ -10,9 +10,10 @@ class GoogleOauthProvider with ChangeNotifier {
 
   Future<void> signIn(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+      clientId: Platform.isIOS
+          ? dotenv.env['GOOGLE_IOS_CLIENT_ID']
+          : dotenv.env['GOOGLE_WEB_CLIENT_ID'],
     );
-
 
     if (await googleSignIn.isSignedIn()) {
       await googleSignIn.disconnect();
@@ -24,7 +25,10 @@ class GoogleOauthProvider with ChangeNotifier {
 
     if (idToken == null) return;
 
-    final data = await _googleOauthService.loginWithGoogle(idToken);
+    final data = await _googleOauthService.loginWithGoogle(
+      idToken,
+      Platform.isIOS ? 'ios' : 'android',
+    );
 
     final userId = data['userId'];
     final status = data['status'];

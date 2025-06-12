@@ -5,10 +5,13 @@ import '../../utils/shared_prefs_util.dart';
 class GoogleOauthService {
   final Dio _dio = DioClient().dio;
 
-  Future<Map<String, dynamic>> loginWithGoogle(String idToken) async {
+  Future<Map<String, dynamic>> loginWithGoogle(String idToken, String platform) async {
     final response = await _dio.post(
       '/api/v1/user/app/oauth/google',
-      data: {'idToken': idToken},
+      data: {
+        'idToken': idToken,
+        'platform': platform,
+      },
       options: Options(
         headers: {'Content-Type': 'application/json'},
       ),
