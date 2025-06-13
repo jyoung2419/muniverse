@@ -18,39 +18,11 @@ class HomeAward extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    const TextSpan(
-                      text: 'Weekly ',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Transform.translate(
-                        offset: const Offset(1, -2),
-                        child: SvgPicture.asset(
-                          'assets/svg/m_logo.svg',
-                          height: 26,
-                        ),
-                      ),
-                    ),
-                    const TextSpan(
-                      text: '-Pick',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+              Image.asset(
+                'assets/svg/mpick.png',
+                height: 36,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 10),
               if (vote != null)
                 TranslatedText(
                   '${vote!.voteName} 투표에 참여하세요',

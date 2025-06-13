@@ -86,29 +86,9 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Center(
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Transform.translate(
-                            offset: const Offset(1, -2),
-                            child: SvgPicture.asset(
-                              'assets/svg/m_logo.svg',
-                              height: 26,
-                            ),
-                          ),
-                        ),
-                        const TextSpan(
-                          text: '-Pick',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: Image.asset(
+                    'assets/svg/mpick.png',
+                    height: 36,
                   ),
                 ),
               ),
