@@ -125,6 +125,9 @@ class _RewardHistoryScreenState extends State<RewardHistoryScreen> {
                         isActive = true;
                         break;
                       case RewardStatus.INFORMED:
+                        buttonLabel = lang == 'kr' ? '당첨 내역 확인' : 'CHECK REWARD';
+                        isActive = true;
+                        break;
                       case RewardStatus.CLOSED:
                       default:
                         buttonLabel = lang == 'kr' ? '종료' : 'END';
