@@ -111,20 +111,17 @@ class _TitleVoteTabState extends State<TitleVoteTab> {
           )
               : ListView.builder(
             physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 85),
             itemCount: filteredVotes.length,
             itemBuilder: (context, index) {
               final vote = filteredVotes[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: VoteCard(
-                  vote: vote,
-                  event: widget.event,
-                  selectedStatus: statusKey,
-                  onPressed: () {
-                    print('투표 클릭: ${vote.voteCode}');
-                  },
-                ),
+              return VoteCard(
+                vote: vote,
+                event: widget.event,
+                selectedStatus: statusKey,
+                onPressed: () {
+                  print('투표 클릭: ${vote.voteCode}');
+                },
               );
             },
           ),

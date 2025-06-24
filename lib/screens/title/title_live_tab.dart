@@ -112,7 +112,7 @@ class _TitleLiveTabState extends ConsumerState<TitleLiveTab> {
           )
               : ListView.builder(
             physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 85),
             itemCount: lives.length,
             itemBuilder: (context, index) {
               final item = lives[index];
@@ -137,32 +137,31 @@ class _TitleLiveTabState extends ConsumerState<TitleLiveTab> {
               }
 
               return Container(
-                height: 160,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                     color: const Color(0xFF1A1A1A),
                     width: 1,
                   ),
                 ),
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Stack(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Container(
-                            width: 170,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: NetworkImage(item.profileImageURL),
-                                fit: BoxFit.cover,
-                              ),
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 1.58,
+                            child: Image.network(
+                              item.profileImageURL,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
                             ),
                           ),
                         ),
@@ -177,100 +176,97 @@ class _TitleLiveTabState extends ConsumerState<TitleLiveTab> {
                         ),
                       ],
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDateTime)} ~ ${DateFormat('yyyy.MM.dd HH:mm').format(item.taskEndDateTime)}(KST)',
-                              style: const TextStyle(color: Colors.white70, fontSize: 11),
-                            ),
-                            const SizedBox(height: 4),
-                            TranslatedText(
-                              item.name,
-                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 6),
-                            TranslatedText(
-                              item.content,
-                              style: const TextStyle(color: Colors.white54, fontSize: 12),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      DefaultTabController.of(context)?.animateTo(1);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF2EFFAA),
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                      elevation: 0,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${DateFormat('yyyy.MM.dd HH:mm').format(item.taskDateTime)}(KST) ~ ${DateFormat('yyyy.MM.dd HH:mm').format(item.taskEndDateTime)}(KST)',
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                          const SizedBox(height: 4),
+                          TranslatedText(
+                            item.name,
+                            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 6),
+                          TranslatedText(
+                            item.content,
+                            style: const TextStyle(color: Colors.white54, fontSize: 12),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
+                                ElevatedButton(
+                                  onPressed: () {
+                                    DefaultTabController.of(context)?.animateTo(1);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2EFFAA),
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  )
-                                else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
-                                  OutlinedButton(
-                                    onPressed: () {},
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: const Color(0xFF2EFFAA),
-                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                    ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF2EFFAA),
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0x66B0B0B0),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                      elevation: 0,
-                                    ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF171719),
-                                      ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(60, 30),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                              ],
-                            )
-                          ],
-                        ),
+                                )
+                              else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
+                                OutlinedButton(
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: const Color(0xFF2EFFAA),
+                                    side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(60, 30),
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF2EFFAA),
+                                    ),
+                                  ),
+                                )
+                              else
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0x66B0B0B0),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(60, 30),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF171719),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               );

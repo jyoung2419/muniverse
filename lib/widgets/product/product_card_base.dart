@@ -92,7 +92,7 @@ class ProductCardBase extends StatelessWidget {
                           type,
                           style: const TextStyle(
                             color: Color(0xFF2EFFAA),
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

@@ -113,7 +113,7 @@ class _VoteMainScreenState extends State<VoteMainScreen> {
                     : ListView.builder(
                   controller: _scrollController,
                   physics: const ClampingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 85),
                   itemCount: filteredVotes.length,
                   itemBuilder: (context, index) {
                     final vote = filteredVotes[index];

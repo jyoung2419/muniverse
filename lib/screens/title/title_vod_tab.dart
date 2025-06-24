@@ -117,7 +117,7 @@ class _TitleVodTabState extends ConsumerState<TitleVodTab> {
           )
               : ListView.builder(
             physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 85),
             itemCount: vodList.length,
             itemBuilder: (context, index) {
               final vod = vodList[index];
@@ -149,145 +149,136 @@ class _TitleVodTabState extends ConsumerState<TitleVodTab> {
               }
 
               return Container(
-                height: 160,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                     color: const Color(0xFF1A1A1A),
                     width: 1,
                   ),
                 ),
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: 170,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: NetworkImage(vod.profileImageUrl),
-                                fit: BoxFit.cover,
-                              ),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            topRight: Radius.circular(4),
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 1.58,
+                            child: Image.network(
+                              vod.profileImageUrl,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
                             ),
                           ),
-                          Positioned(
-                            top: 8,
-                            left: 8,
-                            child: BuildBadge(
-                              text: status,
-                              color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
-                              textColor: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
-                            ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: BuildBadge(
+                            text: status,
+                            color: isEnded ? Colors.black : const Color(0xFF2EFFAA),
+                            textColor: isEnded ? const Color(0xFF2EFFAA) : Colors.black,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 12, 6),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${DateFormat('yyyy.MM.dd HH:mm').format(vod.openDate)} ~ ${DateFormat('yyyy.MM.dd HH:mm').format(vod.endDate)}(KST)',
-                              style: const TextStyle(color: Colors.white70, fontSize: 11),
-                            ),
-                            const SizedBox(height: 4),
-                            TranslatedText(
-                              vod.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            TranslatedText(
-                              vod.content,
-                              style: const TextStyle(color: Colors.white54, fontSize: 12),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      DefaultTabController.of(context)?.animateTo(1); // 상품 탭으로 이동
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF2EFFAA),
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      minimumSize: const Size(60, 30),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      elevation: 0,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${DateFormat('yyyy.MM.dd HH:mm').format(vod.openDate)}(KST) ~ ${DateFormat('yyyy.MM.dd HH:mm').format(vod.endDate)}(KST)',
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                          const SizedBox(height: 4),
+                          TranslatedText(
+                            vod.name,
+                            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 6),
+                          TranslatedText(
+                            vod.content,
+                            style: const TextStyle(color: Colors.white54, fontSize: 12),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (buttonLabel == '구매하기' || buttonLabel == 'BUY')
+                                ElevatedButton(
+                                  onPressed: () {
+                                    DefaultTabController.of(context)?.animateTo(1);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2EFFAA),
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  )
-                                else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      print('VOD 시청: ${vod.vodCode}');
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: const Color(0xFF2EFFAA),
-                                      side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                    ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF2EFFAA),
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0x66B0B0B0),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      minimumSize: const Size(60, 30),
-                                      elevation: 0,
-                                    ),
-                                    child: Text(
-                                      buttonLabel,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF171719),
-                                      ),
+                                    minimumSize: const Size(60, 30),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                )
+                              else if (buttonLabel == '시청하기' || buttonLabel == 'Watch')
+                                OutlinedButton(
+                                  onPressed: () {
+                                    print('VOD 시청: ${vod.vodCode}');
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: const Color(0xFF2EFFAA),
+                                    side: const BorderSide(color: Color(0xFF2EFFAA), width: 1),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(60, 30),
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF2EFFAA),
+                                    ),
+                                  ),
+                                )
+                              else
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0x66B0B0B0),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    minimumSize: const Size(60, 30),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    buttonLabel,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF171719),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],

@@ -16,7 +16,7 @@ class BuildBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(6),
@@ -25,7 +25,7 @@ class BuildBadge extends StatelessWidget {
         text,
         style: TextStyle(
           color: textColor,
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
       ),
