@@ -1,53 +1,70 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/product/product_group_usd_model.dart';
 import '../../models/product/product_live_usd_model.dart';
 import '../../models/product/product_vod_usd_model.dart';
 import '../../services/product/product_service.dart';
 import '../../utils/shared_prefs_util.dart';
+import '../../utils/dio_client.dart';
 
-class ProductUSDProvider with ChangeNotifier {
+final productUSDProvider = StateNotifierProvider<ProductUSDNotifier, ProductUSDState>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ProductUSDNotifier(ProductService(dio));
+});
+
+class ProductUSDState {
+  final List<ProductVodUSDModel> vods;
+  final List<ProductLiveUSDModel> lives;
+  final bool isLoading;
+  final String? error;
+
+  const ProductUSDState({
+    this.vods = const [],
+    this.lives = const [],
+    this.isLoading = false,
+    this.error,
+  });
+
+  ProductUSDState copyWith({
+    List<ProductVodUSDModel>? vods,
+    List<ProductLiveUSDModel>? lives,
+    bool? isLoading,
+    String? error,
+  }) {
+    return ProductUSDState(
+      vods: vods ?? this.vods,
+      lives: lives ?? this.lives,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+    );
+  }
+}
+
+class ProductUSDNotifier extends StateNotifier<ProductUSDState> {
   final ProductService _productService;
-  ProductUSDProvider(Dio dio) : _productService = ProductService(dio);
 
-  List<ProductVodUSDModel> _vods = [];
-  List<ProductLiveUSDModel> _lives = [];
-  bool _isLoading = false;
-  String? _error;
+  ProductUSDNotifier(this._productService) : super(const ProductUSDState());
 
-  List<ProductVodUSDModel> get vods => _vods;
-  List<ProductLiveUSDModel> get lives => _lives;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  /// USD 상품 데이터 조회
   Future<void> fetchProducts() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
+    state = state.copyWith(isLoading: true, error: null);
     try {
       final langHeader = await SharedPrefsUtil.getAcceptLanguage();
       final data = await _productService.fetchUSDProducts(langHeader: langHeader);
-      final eventModel = ProductGroupUSDModel.fromJson(data);
-      _vods = eventModel.vods;
-      _lives = eventModel.lives;
+      final productGroup = ProductGroupUSDModel.fromJson(data);
+      state = state.copyWith(
+        vods: productGroup.vods,
+        lives: productGroup.lives,
+        isLoading: false,
+      );
     } catch (e) {
-      _error = '❌ 상품 정보를 불러오는 데 실패했습니다.';
-      print('❌ ProductUSDProvider fetchProducts error: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      print('❌ ProductUSDNotifier fetchProducts error: $e');
+      state = state.copyWith(
+        error: '❌ 상품 정보를 불러오는 데 실패했습니다.',
+        isLoading: false,
+      );
     }
   }
 
-
-  /// 상태 초기화
   void clear() {
-    _vods = [];
-    _lives = [];
-    _error = null;
-    _isLoading = false;
-    notifyListeners();
+    state = const ProductUSDState();
   }
 }

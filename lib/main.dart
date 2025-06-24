@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'providers/order/order_provider.dart';
 import 'providers/payment/user_payment_provider.dart';
 import 'providers/product/event_product_kr_provider.dart';
 import 'providers/product/event_product_usd_provider.dart';
 import 'providers/product/product_detail_provider.dart';
 import 'providers/translation_provider.dart';
-import 'providers/product/product_kr_provider.dart';
-import 'providers/product/product_usd_provider.dart';
 import 'providers/reward/reward_provider.dart';
 import 'providers/user/twitter_oauth_provider.dart';
 import 'providers/user/user_profile_provider.dart';
@@ -76,10 +73,7 @@ Future<void> main() async {
         legacy_provider.ChangeNotifierProvider(create: (context) => EventProductUSDProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventVoteProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => NoticeProvider(dio, context.read<LanguageProvider>())),
-        legacy_provider.ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
-        legacy_provider.ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),
         legacy_provider.ChangeNotifierProvider(create: (context) => ProductDetailProvider(dio, context.read<LanguageProvider>())),
-        legacy_provider.ChangeNotifierProvider(create: (_) => OrderProvider(OrderService(dio))),
         legacy_provider.ChangeNotifierProvider(create: (_) => VoteTicketProvider()),
         legacy_provider.ChangeNotifierProvider(create: (context) => UserPassProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => VoteMainProvider(dio, context.read<LanguageProvider>())),

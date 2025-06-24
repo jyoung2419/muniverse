@@ -130,14 +130,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with TickerPr
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    width: 180,
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(imageUrl),
-                                        fit: BoxFit.cover,
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4, top: 4),
+                                    child: Container(
+                                      width: 180,
+                                      child: AspectRatio(
+                                        aspectRatio: 1.58,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(imageUrl),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),

@@ -86,8 +86,9 @@ class _TitleProductTabState extends State<TitleProductTab> {
       return ListView.builder(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
-        itemCount: merged.length,
+        itemCount: merged.length + 1,
         itemBuilder: (context, index) {
+          if (index == merged.length) return const SizedBox(height: 85);
           final item = merged[index];
           final product = item['product'];
 
@@ -151,8 +152,9 @@ class _TitleProductTabState extends State<TitleProductTab> {
       return ListView.builder(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(16),
-        itemCount: merged.length,
+        itemCount: merged.length + 1,
         itemBuilder: (context, index) {
+          if (index == merged.length) return const SizedBox(height: 85);
           final item = merged[index];
           final product = item['product'];
 

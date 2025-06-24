@@ -1,49 +1,69 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/product/product_group_kr_model.dart';
-import '../../models/product/product_vod_kr_model.dart';
 import '../../models/product/product_live_kr_model.dart';
+import '../../models/product/product_vod_kr_model.dart';
 import '../../services/product/product_service.dart';
+import '../../utils/dio_client.dart';
 
-class ProductKRProvider with ChangeNotifier {
+final productKRProvider = StateNotifierProvider<ProductKRNotifier, ProductKRState>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ProductKRNotifier(ProductService(dio));
+});
+
+class ProductKRState {
+  final List<ProductVodKRModel> vods;
+  final List<ProductLiveKRModel> lives;
+  final bool isLoading;
+  final String? error;
+
+  const ProductKRState({
+    this.vods = const [],
+    this.lives = const [],
+    this.isLoading = false,
+    this.error,
+  });
+
+  ProductKRState copyWith({
+    List<ProductVodKRModel>? vods,
+    List<ProductLiveKRModel>? lives,
+    bool? isLoading,
+    String? error,
+  }) {
+    return ProductKRState(
+      vods: vods ?? this.vods,
+      lives: lives ?? this.lives,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+    );
+  }
+}
+
+class ProductKRNotifier extends StateNotifier<ProductKRState> {
   final ProductService _productService;
-  ProductKRProvider(Dio dio) : _productService = ProductService(dio);
 
-  List<ProductVodKRModel> _vods = [];
-  List<ProductLiveKRModel> _lives = [];
-  bool _isLoading = false;
-  String? _error;
+  ProductKRNotifier(this._productService) : super(const ProductKRState());
 
-  List<ProductVodKRModel> get vods => _vods;
-  List<ProductLiveKRModel> get lives => _lives;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  /// KR 상품 데이터 조회
   Future<void> fetchProducts() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+    state = state.copyWith(isLoading: true, error: null);
 
     try {
       final data = await _productService.fetchKRProducts();
       final productGroup = ProductGroupKRModel.fromJson(data);
-      _vods = productGroup.vods;
-      _lives = productGroup.lives;
+      state = state.copyWith(
+        vods: productGroup.vods,
+        lives: productGroup.lives,
+        isLoading: false,
+      );
     } catch (e) {
-      _error = '❌ 상품 정보를 불러오는 데 실패했습니다.';
-      print('❌ ProductKRProvider fetchProducts error: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      state = state.copyWith(
+        isLoading: false,
+        error: '❌ 상품 정보를 불러오는 데 실패했습니다.',
+      );
+      print('❌ ProductKRNotifier fetchProducts error: $e');
     }
   }
 
   void clear() {
-    _vods = [];
-    _lives = [];
-    _error = null;
-    _isLoading = false;
-    notifyListeners();
+    state = const ProductKRState();
   }
 }

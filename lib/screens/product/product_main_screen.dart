@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
@@ -9,19 +10,19 @@ import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/back_fab.dart';
 import '../../widgets/common/header.dart';
 
-class ProductMainScreen extends StatefulWidget {
+class ProductMainScreen extends ConsumerStatefulWidget {
   const ProductMainScreen({super.key});
 
   @override
-  State<ProductMainScreen> createState() => _ProductMainScreenState();
+  ConsumerState<ProductMainScreen> createState() => _ProductMainScreenState();
 }
 
-class _ProductMainScreenState extends State<ProductMainScreen> {
+class _ProductMainScreenState extends ConsumerState<ProductMainScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<ProductUSDProvider>().fetchProducts();
+      ref.read(productUSDProvider.notifier).fetchProducts();
     });
   }
 

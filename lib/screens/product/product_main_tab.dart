@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import '../../providers/language_provider.dart';
 import '../../providers/product/product_usd_provider.dart';
@@ -7,7 +8,7 @@ import '../../widgets/common/translate_text.dart';
 import '../../widgets/product/product_card_usd.dart';
 import '../../widgets/product/product_card_kr.dart';
 
-class ProductMainTab extends StatefulWidget {
+class ProductMainTab extends ConsumerStatefulWidget {
   const ProductMainTab({super.key});
 
   static final ScrollController scrollController = ScrollController();
@@ -23,17 +24,17 @@ class ProductMainTab extends StatefulWidget {
   }
 
   @override
-  State<ProductMainTab> createState() => _ProductMainTabState();
+  ConsumerState<ProductMainTab> createState() => _ProductMainTabState();
 }
 
-class _ProductMainTabState extends State<ProductMainTab> {
+class _ProductMainTabState extends ConsumerState<ProductMainTab> {
   String? _lastLang;
   bool _initialized = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final lang = context.watch<LanguageProvider>().selectedLanguageCode;
+    final lang = context.read<LanguageProvider>().selectedLanguageCode;
 
     if (!_initialized || _lastLang != lang) {
       _lastLang = lang;
@@ -42,9 +43,9 @@ class _ProductMainTabState extends State<ProductMainTab> {
       Future.microtask(() {
         if (!mounted) return;
         if (lang == 'kr') {
-          context.read<ProductKRProvider>().fetchProducts();
+          ref.read(productKRProvider.notifier).fetchProducts();
         } else {
-          context.read<ProductUSDProvider>().fetchProducts();
+          ref.read(productUSDProvider.notifier).fetchProducts();
         }
       });
     }
@@ -86,14 +87,14 @@ class _ProductMainTabState extends State<ProductMainTab> {
     final isKR = lang == 'kr';
 
     if (isKR) {
-      final krProvider = context.watch<ProductKRProvider>();
-      final products = getMixedProducts(krProvider.vods, krProvider.lives);
+      final krState = ref.watch(productKRProvider);
+      final products = getMixedProducts(krState.vods, krState.lives);
 
-      if (krProvider.isLoading) {
+      if (krState.isLoading) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (krProvider.error != null) {
-        return Center(child: Text('⚠️ 에러 발생: ${krProvider.error}', style: TextStyle(color: Colors.red)));
+      if (krState.error != null) {
+        return Center(child: Text('⚠️ 에러 발생: ${krState.error}', style: TextStyle(color: Colors.red)));
       }
       if (products.isEmpty) {
         return const Center(child: TranslatedText('상품이 없습니다.'));
@@ -103,21 +104,24 @@ class _ProductMainTabState extends State<ProductMainTab> {
         controller: ProductMainTab.scrollController,
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: products.length,
+        itemCount: products.length + 1,
         itemBuilder: (context, index) {
+          if (index == products.length) {
+            return const SizedBox(height: 85);
+          }
           final item = products[index];
           return ProductCardKR(product: item['product'], viewTypes: item['type']);
         },
       );
     } else {
-      final usdProvider = context.watch<ProductUSDProvider>();
-      final products = getMixedProducts(usdProvider.vods, usdProvider.lives);
+      final usdState = ref.watch(productUSDProvider);
+      final products = getMixedProducts(usdState.vods, usdState.lives);
 
-      if (usdProvider.isLoading) {
+      if (usdState.isLoading) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (usdProvider.error != null) {
-        return Center(child: Text('⚠️ 에러 발생: ${usdProvider.error}', style: TextStyle(color: Colors.red)));
+      if (usdState.error != null) {
+        return Center(child: Text('⚠️ 에러 발생: ${usdState.error}', style: TextStyle(color: Colors.red)));
       }
       if (products.isEmpty) {
         return const Center(child: TranslatedText('No products available.'));
@@ -126,11 +130,14 @@ class _ProductMainTabState extends State<ProductMainTab> {
       return ListView.builder(
         controller: ProductMainTab.scrollController,
         physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        itemCount: products.length,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: products.length + 1,
         itemBuilder: (context, index) {
+          if (index == products.length) {
+            return const SizedBox(height: 85);
+          }
           final item = products[index];
-          return ProductCardUSD(product: item['product'], viewTypes: item['type']);
+          return ProductCardKR(product: item['product'], viewTypes: item['type']);
         },
       );
     }

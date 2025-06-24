@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/language_provider.dart';
@@ -17,7 +19,7 @@ import 'order_complete_screen.dart';
 import 'order_fail_screen.dart';
 import 'payment_web_view_screen.dart';
 
-class OrderSheetScreen extends StatefulWidget {
+class OrderSheetScreen extends ConsumerStatefulWidget {
   final String productCode;
   final String viewType;
   final String eventName;
@@ -46,10 +48,10 @@ class OrderSheetScreen extends StatefulWidget {
   });
 
   @override
-  State<OrderSheetScreen> createState() => _OrderSheetScreenState();
+  ConsumerState<OrderSheetScreen> createState() => _OrderSheetScreenState();
 }
 
-class _OrderSheetScreenState extends State<OrderSheetScreen> {
+class _OrderSheetScreenState extends ConsumerState<OrderSheetScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -186,9 +188,9 @@ class _OrderSheetScreenState extends State<OrderSheetScreen> {
                       );
 
                       try {
-                        final nextUrl = await context.read<OrderProvider>().createPayment(orderRequest);
+                        final nextUrl = await ref.read(orderProvider).createPayment(orderRequest);
                         if (nextUrl != null) {
-                          final fullUrl = 'https://api-test.muniverse.io$nextUrl';
+                          final fullUrl = '${dotenv.env['BASE_URL']}$nextUrl';
 
                           final orderId = await Navigator.push(
                             context,
