@@ -1,30 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../../models/event/main/event_nav_model.dart';
 import '../../../services/event/event_main_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventNavProvider with ChangeNotifier {
-  final EventMainService _eventMainService;
+final eventNavProvider =
+StateNotifierProvider<EventNavNotifier, AsyncValue<List<EventNavModel>>>((ref) {
+  final dio = ref.watch(dioProvider);
+  return EventNavNotifier(dio);
+});
 
-  EventNavProvider(Dio dio) : _eventMainService = EventMainService(dio);
+class EventNavNotifier extends StateNotifier<AsyncValue<List<EventNavModel>>> {
+  final EventMainService _service;
 
-  List<EventNavModel> _navs = [];
-  List<EventNavModel> get navs => _navs;
+  EventNavNotifier(Dio dio)
+      : _service = EventMainService(dio),
+        super(const AsyncLoading()) {
+    fetch();
+  }
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
-  Future<void> fetchEventNavs() async {
-    _isLoading = true;
-    notifyListeners();
-
+  Future<void> fetch() async {
     try {
-      _navs = await _eventMainService.fetchEventNavList();
-    } catch (e) {
-      _navs = [];
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      final result = await _service.fetchEventNavList();
+      state = AsyncData(result);
+    } catch (e, st) {
+      state = AsyncError(e, st);
     }
+  }
+
+  void clear() {
+    state = const AsyncData([]);
   }
 }

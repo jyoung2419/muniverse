@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/event/main/event_main_vote_model.dart';
 import '../../utils/vote_text_util.dart';
-import '../../widgets/vote/voting_progress_list.dart';
-import '../../widgets/vote/voting_result_list.dart';
+import '../vote/voting_progress_list.dart';
+import '../vote/voting_result_list.dart';
 
 class HomeAwardSection extends StatelessWidget {
   final EventMainVoteModel vote;

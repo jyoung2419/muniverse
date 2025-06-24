@@ -1,35 +1,29 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import '../../../models/event/main/event_main_model.dart';
 import '../../../services/event/event_main_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventMainProvider with ChangeNotifier {
-  final List<EventMainModel> _events = [];
+final eventMainProvider = StateNotifierProvider<EventMainNotifier, List<EventMainModel>>((ref) {
+  final dio = DioClient().dio;
+  return EventMainNotifier(dio);
+});
 
+class EventMainNotifier extends StateNotifier<List<EventMainModel>> {
   final EventMainService _eventService;
-  EventMainProvider(Dio dio) : _eventService = EventMainService(dio);
 
-  List<EventMainModel> get events => _events;
+  EventMainNotifier(Dio dio) : _eventService = EventMainService(dio), super([]);
 
   Future<void> fetchMainEvents() async {
     try {
       final response = await _eventService.fetchMainEvents();
-      print('✅ Event response length: ${response.length}');
-      _events
-        ..clear()
-        ..addAll(response.map((e) => EventMainModel.fromJson(e)));
-      notifyListeners();
+      state = response.map((e) => EventMainModel.fromJson(e)).toList();
     } catch (e) {
-      debugPrint('❌ Error fetching main events: $e');
+      print('❌ Error fetching main events: $e');
     }
   }
 
-
   EventMainModel? getEventByCode(String code) {
-    try {
-      return _events.firstWhere((e) => e.eventCode == code);
-    } catch (_) {
-      return null;
-    }
+    return state.firstWhere((e) => e.eventCode == code, orElse: () => null as EventMainModel);
   }
 }

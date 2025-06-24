@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muniverse_app/widgets/common/translate_text.dart';
 import 'package:provider/provider.dart';
 import '../../models/event/main/event_nav_model.dart';
@@ -9,7 +10,7 @@ import '../../screens/title/title_home_screen.dart';
 import '../../utils/shared_prefs_util.dart';
 import 'muniverse_logo.dart';
 
-class Header extends StatefulWidget implements PreferredSizeWidget {
+class Header extends ConsumerStatefulWidget implements PreferredSizeWidget {
   final double height;
   final bool showMenu;
   final bool isHome;
@@ -24,27 +25,27 @@ class Header extends StatefulWidget implements PreferredSizeWidget {
   });
 
   @override
-  State<Header> createState() => _HeaderState();
+  ConsumerState<Header> createState() => _HeaderState();
 
   @override
   Size get preferredSize => Size.fromHeight(height);
 }
 
-class _HeaderState extends State<Header> {
+class _HeaderState extends ConsumerState<Header> {
   String? selectedEventName;
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<EventNavProvider>().fetchEventNavs();
+      ref.read(eventNavProvider.notifier).fetch();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final navs = ref.watch(eventNavProvider).value ?? [];
     final languageProvider = context.watch<LanguageProvider>();
-    final navs = context.watch<EventNavProvider>().navs;
     final currentRoute = ModalRoute.of(context)?.settings.name;
     final homeText = languageProvider.selectedLanguageCode == 'kr' ? '홈' : 'HOME';
 

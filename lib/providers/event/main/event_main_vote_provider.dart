@@ -1,21 +1,26 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/event/main/event_main_vote_model.dart';
 import '../../../services/event/event_main_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventMainVoteProvider with ChangeNotifier {
-  List<EventMainVoteModel> _votes = [];
+final eventMainVoteProvider =
+StateNotifierProvider<EventMainVoteNotifier, List<EventMainVoteModel>>((ref) {
+  final dio = ref.watch(dioProvider);
+  return EventMainVoteNotifier(dio);
+});
 
-  List<EventMainVoteModel> get votes => _votes;
-
+class EventMainVoteNotifier extends StateNotifier<List<EventMainVoteModel>> {
   final EventMainService _eventMainService;
-  EventMainVoteProvider(Dio dio) : _eventMainService = EventMainService(dio);
+
+  EventMainVoteNotifier(Dio dio)
+      : _eventMainService = EventMainService(dio),
+        super([]);
 
   Future<void> fetchEventMainVotes() async {
     try {
-      final List<Map<String, dynamic>> rawVotes = await _eventMainService.fetchEventMainVotes();
-      _votes = rawVotes.map((e) => EventMainVoteModel.fromJson(e)).toList();
-      notifyListeners();
+      final rawVotes = await _eventMainService.fetchEventMainVotes();
+      state = rawVotes.map((e) => EventMainVoteModel.fromJson(e)).toList();
     } catch (e) {
       print('❌ Failed to fetch main votes: $e');
     }

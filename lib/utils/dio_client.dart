@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../providers/language_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/shared_prefs_util.dart';
 import 'package:flutter/material.dart';
 
@@ -95,3 +95,7 @@ class DioClient {
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+final dioProvider = Provider<Dio>((ref) {
+  return DioClient().dio;
+});

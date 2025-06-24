@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/event/main/event_main_model.dart';
-import '../title/title_home_screen.dart';
+import '../../screens/title/title_home_screen.dart';
 
 class HomeBannerSection extends StatefulWidget {
   final List<EventMainModel> events;

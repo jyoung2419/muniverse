@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/event/main/event_main_provider.dart';
 import '../../providers/event/main/event_main_vote_provider.dart';
 import '../../providers/popup/popup_provider.dart';
@@ -10,17 +11,17 @@ import '../../widgets/common/header.dart';
 import '../../widgets/home/home_related_video_section.dart';
 import '../../widgets/home/show_popup_dialog.dart';
 import 'home_award.dart';
-import 'home_banner_section.dart';
-import 'home_award_section.dart';
+import '../../widgets/home/home_banner_section.dart';
+import '../../widgets/home/home_award_section.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   @override
   void initState() {
@@ -28,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _printCurrentUserId();
 
     Future.microtask(() async {
-      context.read<EventMainProvider>().fetchMainEvents();
-      context.read<EventMainVoteProvider>().fetchEventMainVotes();
+      ref.read(eventMainProvider.notifier).fetchMainEvents();
+      ref.read(eventMainVoteProvider.notifier).fetchEventMainVotes();
       context.read<UserMeProvider>().fetchUserMe();
 
       final popupProvider = context.read<PopupProvider>();
@@ -53,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mainVotes = context.watch<EventMainVoteProvider>().votes;
+    final mainVotes = ref.watch(eventMainVoteProvider);
     final mainVote = mainVotes.isNotEmpty ? mainVotes.first : null;
-    final allEvents = context.watch<EventMainProvider>().events;
+    final allEvents = ref.watch(eventMainProvider);
     final opened = allEvents.where((e) => e.status != 'PRE_OPEN').toList();
     final upcoming = allEvents.where((e) => e.status == 'PRE_OPEN').toList();
     final filteredEvents = [...opened, ...upcoming];
