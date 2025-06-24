@@ -1,14 +1,17 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/event/detail/event_live_model.dart';
 import '../../../services/event/event_title_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventLiveProvider with ChangeNotifier {
+final eventLiveProvider = StateNotifierProvider.autoDispose<EventLiveNotifier, List<EventLiveModel>>((ref) {
+  final dio = ref.watch(dioProvider);
+  return EventLiveNotifier(EventTitleService(dio));
+});
+
+class EventLiveNotifier extends StateNotifier<List<EventLiveModel>> {
   final EventTitleService _eventTitleService;
-  EventLiveProvider(Dio dio) : _eventTitleService = EventTitleService(dio);
 
-  List<EventLiveModel> _lives = [];
-  List<EventLiveModel> get lives => _lives;
+  EventLiveNotifier(this._eventTitleService) : super([]);
 
   Future<void> fetchLives(String eventCode, int? eventYear) async {
     try {
@@ -16,7 +19,6 @@ class EventLiveProvider with ChangeNotifier {
 
       if (eventYear == null) {
         final years = [2025, 2024, 2023];
-
         for (final y in years) {
           final res = await _eventTitleService.fetchEventLiveList(eventCode, y);
           allLives.addAll(res.map((json) => EventLiveModel.fromJson(json)));
@@ -25,16 +27,15 @@ class EventLiveProvider with ChangeNotifier {
         final res = await _eventTitleService.fetchEventLiveList(eventCode, eventYear);
         allLives = res.map((json) => EventLiveModel.fromJson(json)).toList();
       }
-      _lives = allLives;
-      notifyListeners();
+
+      state = allLives;
     } catch (e) {
-      print('❌ Live 불러오기 실패: \$e');
+      print('❌ Live 불러오기 실패: $e');
       rethrow;
     }
   }
 
   void clear() {
-    _lives = [];
-    notifyListeners();
+    state = [];
   }
 }

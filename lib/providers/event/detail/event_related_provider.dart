@@ -1,52 +1,74 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/event/detail/event_related_model.dart';
 import '../../../services/event/event_title_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventRelatedProvider with ChangeNotifier {
+final eventRelatedProvider = StateNotifierProvider.autoDispose<EventRelatedNotifier, EventRelatedState>((ref) {
+  final dio = ref.watch(dioProvider);
+  return EventRelatedNotifier(EventTitleService(dio));
+});
+
+class EventRelatedState {
+  final List<EventRelatedModel> relatedVideos;
+  final bool isLoading;
+  final String? error;
+  final int currentPage;
+  final bool isLastPage;
+
+  const EventRelatedState({
+    this.relatedVideos = const [],
+    this.isLoading = false,
+    this.error,
+    this.currentPage = 0,
+    this.isLastPage = false,
+  });
+
+  EventRelatedState copyWith({
+    List<EventRelatedModel>? relatedVideos,
+    bool? isLoading,
+    String? error,
+    int? currentPage,
+    bool? isLastPage,
+  }) {
+    return EventRelatedState(
+      relatedVideos: relatedVideos ?? this.relatedVideos,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+      currentPage: currentPage ?? this.currentPage,
+      isLastPage: isLastPage ?? this.isLastPage,
+    );
+  }
+}
+
+class EventRelatedNotifier extends StateNotifier<EventRelatedState> {
   final EventTitleService _eventTitleService;
-  EventRelatedProvider(Dio dio) : _eventTitleService = EventTitleService(dio);
 
-  List<EventRelatedModel> _relatedVideos = [];
-  bool _isLoading = false;
-  String? _error;
-  int _currentPage = 0;
-  bool _isLastPage = false;
+  EventRelatedNotifier(this._eventTitleService) : super(const EventRelatedState());
 
-  List<EventRelatedModel> get relatedVideos => _relatedVideos;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  bool get isLastPage => _isLastPage;
-
-  /// 특정 이벤트 코드 기반 관련영상 가져오기 (event detail 용)
   Future<void> fetchNextPage(String eventCode, {int? eventYear}) async {
-    _isLoading = true;
-    notifyListeners();
+    if (state.isLoading || state.isLastPage) return;
 
+    state = state.copyWith(isLoading: true);
     try {
       final data = await _eventTitleService.fetchEventRelatedVideos(
         eventCode,
         eventYear: eventYear,
-        page: _currentPage,
+        page: state.currentPage,
         size: 10,
       );
       final videos = data.map((e) => EventRelatedModel.fromJson(e)).toList();
-
-      if (videos.isEmpty) _isLastPage = true;
-      _relatedVideos.addAll(videos);
-      _currentPage += 1;
+      state = state.copyWith(
+        relatedVideos: [...state.relatedVideos, ...videos],
+        currentPage: state.currentPage + 1,
+        isLoading: false,
+        isLastPage: videos.isEmpty,
+      );
     } catch (e) {
-      _error = '❌ 관련 영상 추가 로드 실패';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      state = state.copyWith(isLoading: false, error: '❌ 관련 영상 추가 로드 실패');
     }
   }
 
   void clear() {
-    _relatedVideos = [];
-    _error = null;
-    _isLoading = false;
-    notifyListeners();
+    state = const EventRelatedState();
   }
 }

@@ -1,15 +1,18 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/event/detail/event_vod_model.dart';
 import '../../../services/event/event_title_service.dart';
+import '../../../utils/dio_client.dart';
 
-class EventVODProvider with ChangeNotifier {
+final eventVODProvider =
+StateNotifierProvider.autoDispose<EventVODNotifier, List<EventVODModel>>((ref) {
+  final dio = ref.watch(dioProvider);
+  return EventVODNotifier(EventTitleService(dio));
+});
+
+class EventVODNotifier extends StateNotifier<List<EventVODModel>> {
   final EventTitleService _eventTitleService;
-  EventVODProvider(Dio dio) : _eventTitleService = EventTitleService(dio);
 
-  List<EventVODModel> _vods = [];
-
-  List<EventVODModel> get vods => _vods;
+  EventVODNotifier(this._eventTitleService) : super([]);
 
   Future<void> fetchVODs(String eventCode, int? eventYear) async {
     try {
@@ -26,8 +29,7 @@ class EventVODProvider with ChangeNotifier {
         allVods = res.map((json) => EventVODModel.fromJson(json)).toList();
       }
 
-      _vods = allVods;
-      notifyListeners();
+      state = allVods;
     } catch (e) {
       print('❌ VOD 불러오기 실패: $e');
       rethrow;
@@ -35,7 +37,6 @@ class EventVODProvider with ChangeNotifier {
   }
 
   void clear() {
-    _vods = [];
-    notifyListeners();
+    state = [];
   }
 }

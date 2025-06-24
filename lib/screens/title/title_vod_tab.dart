@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_vod_provider.dart';
@@ -9,7 +10,7 @@ import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/vod_faq.dart';
 import '../../widgets/info/vod_notice.dart';
 
-class TitleVodTab extends StatefulWidget {
+class TitleVodTab extends ConsumerStatefulWidget {
   final String eventCode;
   final int? eventYear;
   final VoidCallback? onBuyPressed;
@@ -22,10 +23,10 @@ class TitleVodTab extends StatefulWidget {
   });
 
   @override
-  State<TitleVodTab> createState() => _TitleVodTabState();
+  ConsumerState<TitleVodTab> createState() => _TitleVodTabState();
 }
 
-class _TitleVodTabState extends State<TitleVodTab> {
+class _TitleVodTabState extends ConsumerState<TitleVodTab> {
   late int? _selectedYear;
 
   @override
@@ -33,19 +34,17 @@ class _TitleVodTabState extends State<TitleVodTab> {
     super.initState();
     _selectedYear = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<EventVODProvider>(context, listen: false)
-          .fetchVODs(widget.eventCode, null);
+      ref.read(eventVODProvider.notifier).fetchVODs(widget.eventCode, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final vodList = context.watch<EventVODProvider>().vods;
+    final vodList = ref.watch(eventVODProvider);
     final lang = context.watch<LanguageProvider>().selectedLanguageCode;
 
     final faqText = 'FAQ';
     final infoText = lang == 'kr' ? '이용안내' : 'INFORMATION';
-    final buyText = lang == 'kr' ? '구매하기' : 'BUY';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,11 +96,10 @@ class _TitleVodTabState extends State<TitleVodTab> {
                     selectedYear: _selectedYear,
                     years: [2025, 2024, 2023],
                     onChanged: (newYear) {
-                      Provider.of<EventVODProvider>(context, listen: false)
-                          .fetchVODs(widget.eventCode, newYear);
                       setState(() {
                         _selectedYear = newYear;
                       });
+                      ref.read(eventVODProvider.notifier).fetchVODs(widget.eventCode, newYear);
                     },
                   ),
                 ],

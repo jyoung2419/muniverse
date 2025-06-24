@@ -24,6 +24,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   @override
+  @override
   void initState() {
     super.initState();
     _printCurrentUserId();
@@ -31,15 +32,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Future.microtask(() async {
       ref.read(eventMainProvider.notifier).fetchMainEvents();
       ref.read(eventMainVoteProvider.notifier).fetchEventMainVotes();
-      context.read<UserMeProvider>().fetchUserMe();
+      context.read<UserMeProvider>().fetchUserMe(); // 이건 provider 방식 유지
 
-      final popupProvider = context.read<PopupProvider>();
-      await popupProvider.loadPopups();
-      final popupList = popupProvider.popupList;
+      final popupNotifier = ref.read(popupProvider.notifier);
+      await popupNotifier.loadPopups();
 
-      if (popupList != null && !await SharedPrefsUtil.isPopupHiddenToday()) {
-        showPopupDialog(context, popupList);
-      }
+      final popupState = ref.read(popupProvider);
+      popupState.when(
+        data: (popupList) async {
+          if (popupList != null && !await SharedPrefsUtil.isPopupHiddenToday()) {
+            showPopupDialog(context, popupList);
+          }
+        },
+        loading: () {},
+        error: (e, _) => print('❌ 팝업 로딩 실패: $e'),
+      );
     });
   }
 

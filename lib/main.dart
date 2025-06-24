@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/order/order_provider.dart';
 import 'providers/payment/user_payment_provider.dart';
-import 'providers/popup/popup_provider.dart';
 import 'providers/product/event_product_kr_provider.dart';
 import 'providers/product/event_product_usd_provider.dart';
 import 'providers/product/product_detail_provider.dart';
@@ -18,7 +17,6 @@ import 'providers/user/twitter_oauth_provider.dart';
 import 'providers/user/user_profile_provider.dart';
 import 'providers/vote/vote_availability_provider.dart';
 import 'providers/event/detail/event_info_provider.dart';
-import 'providers/event/detail/event_related_provider.dart';
 import 'providers/event/detail/event_vote_provider.dart';
 import 'providers/language_provider.dart';
 import 'providers/user/user_me_provider.dart';
@@ -30,8 +28,6 @@ import 'screens/user/twitter_signup_screen.dart';
 import 'screens/vote/vote_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/event/detail/event_provider.dart';
-import 'providers/event/detail/event_live_provider.dart';
-import 'providers/event/detail/event_vod_provider.dart';
 import 'providers/notice/notice_provider.dart';
 import 'providers/ticket/user_pass_provider.dart';
 import 'providers/ticket/vote_ticket_provider.dart';
@@ -69,20 +65,16 @@ Future<void> main() async {
   final dio = DioClient().dio;
 
   runApp(
-    ProviderScope( // riverpod
+    ProviderScope(
       child: legacy_provider.MultiProvider(
         providers: [
         legacy_provider.ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
         legacy_provider.ChangeNotifierProvider(create: (_) => TranslationProvider()),
-        legacy_provider.ChangeNotifierProvider(create: (_) => PopupProvider(dio)),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventInfoProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventProductKRProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventProductUSDProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (context) => EventVoteProvider(dio, context.read<LanguageProvider>())),
-        legacy_provider.ChangeNotifierProvider(create: (_) => EventVODProvider(dio)),
-        legacy_provider.ChangeNotifierProvider(create: (_) => EventLiveProvider(dio)),
-        legacy_provider.ChangeNotifierProvider(create: (_) => EventRelatedProvider(dio)),
         legacy_provider.ChangeNotifierProvider(create: (context) => NoticeProvider(dio, context.read<LanguageProvider>())),
         legacy_provider.ChangeNotifierProvider(create: (_) => ProductKRProvider(dio)),
         legacy_provider.ChangeNotifierProvider(create: (_) => ProductUSDProvider(dio)),

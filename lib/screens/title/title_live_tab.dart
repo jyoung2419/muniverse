@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/event/detail/event_live_provider.dart';
@@ -9,7 +10,7 @@ import '../../widgets/common/year_filter_drop_down.dart';
 import '../../widgets/info/live_faq.dart';
 import '../../widgets/info/live_notice.dart';
 
-class TitleLiveTab extends StatefulWidget {
+class TitleLiveTab extends ConsumerStatefulWidget {
   final String eventCode;
   final int? eventYear;
 
@@ -20,10 +21,10 @@ class TitleLiveTab extends StatefulWidget {
   });
 
   @override
-  State<TitleLiveTab> createState() => _TitleLiveTabState();
+  ConsumerState<TitleLiveTab> createState() => _TitleLiveTabState();
 }
 
-class _TitleLiveTabState extends State<TitleLiveTab> {
+class _TitleLiveTabState extends ConsumerState<TitleLiveTab> {
   late int? _selectedYear;
 
   @override
@@ -32,15 +33,13 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
     _selectedYear = null;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<EventLiveProvider>(context, listen: false)
-          .fetchLives(widget.eventCode, null);
+      ref.read(eventLiveProvider.notifier).fetchLives(widget.eventCode, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final lives = context.watch<EventLiveProvider>().lives;
-    final now = DateTime.now();
+    final lives = ref.watch(eventLiveProvider);
     final lang = context.read<LanguageProvider>().selectedLanguageCode;
 
     return Column(
@@ -54,30 +53,26 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
               Row(
                 children: [
                   TextButton.icon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const LiveFAQ(),
-                      );
-                    },
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.all(Colors.white),
-                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => const LiveFAQ(),
+                    ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      overlayColor: Colors.transparent,
                       splashFactory: NoSplash.splashFactory,
                     ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
                     label: const Text('FAQ', style: TextStyle(color: Colors.white, fontSize: 13)),
                   ),
                   TextButton.icon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const LiveNotice(),
-                      );
-                    },
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.all(Colors.white),
-                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => const LiveNotice(),
+                    ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      overlayColor: Colors.transparent,
                       splashFactory: NoSplash.splashFactory,
                     ),
                     icon: const Icon(Icons.help, color: Colors.white, size: 13),
@@ -99,8 +94,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                       setState(() {
                         _selectedYear = newYear;
                       });
-                      Provider.of<EventLiveProvider>(context, listen: false)
-                          .fetchLives(widget.eventCode, newYear);
+                      ref.read(eventLiveProvider.notifier).fetchLives(widget.eventCode, newYear);
                     },
                   ),
                 ],
@@ -122,6 +116,8 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
             itemCount: lives.length,
             itemBuilder: (context, index) {
               final item = lives[index];
+              final now = DateTime.now();
+
               late String status;
               late String buttonLabel;
               late bool isEnded;
@@ -274,7 +270,7 @@ class _TitleLiveTabState extends State<TitleLiveTab> {
                           ],
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               );
